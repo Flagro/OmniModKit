@@ -23,22 +23,8 @@ class AI:
         self.prompt_manager = prompt_manager
         self.models_toolkit = ModelsToolkit(openai_api_key, ai_config)
 
-    async def engage_is_needed(
-        self, person: Person, context: Context, message: Message
-    ) -> bool:
-        prompt = await self.prompt_manager.compose_engage_needed_prompt(
-            message.message_text
-        )
-        toolkit = AIAgentToolkit(
-            person, context, message, self.models_toolkit, self.prompt_manager
-        )
-        return await toolkit.check_engage_needed.arun(prompt)
-
     async def describe_image(
         self,
-        person: Person,
-        context: Context,
-        message: Message,
         in_memory_image_stream: io.BytesIO,
     ) -> str:
         # TODO: person, context, message likely not needed for utility functions
@@ -53,9 +39,6 @@ class AI:
 
     async def transcribe_audio(
         self,
-        person: Person,
-        context: Context,
-        message: Message,
         in_memory_audio_stream: io.BytesIO,
     ) -> str:
         if not self.moderation.moderate_audio(in_memory_audio_stream):
@@ -68,7 +51,7 @@ class AI:
         return audio_description
 
     async def generate_image(
-        self, person: Person, context: Context, message: Message, prompt: str
+        self, prompt: str
     ) -> str:
         """
         Returns the URL of the generated image
