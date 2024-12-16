@@ -4,6 +4,10 @@ from typing import Optional
 from openai import OpenAI
 
 
+class ModerationError(Exception):
+    pass
+
+
 class Moderation:
     def __init__(self, model: OpenAI):
         self.client = model
