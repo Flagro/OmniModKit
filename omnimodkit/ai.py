@@ -3,7 +3,7 @@ import io
 from typing import AsyncIterator
 from openai import OpenAI
 
-from ...models.config.ai_config import AIConfig
+from .ai_config import AIConfig
 from ...models.handlers_input import Message, Person, Context
 from ...models.base_moderation import ModerationError
 from ..prompt_manager import PromptManager
