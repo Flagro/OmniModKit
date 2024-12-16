@@ -1,0 +1,34 @@
+AIConfig:
+  TextGeneration:
+    temperature: 0.7
+    max_tokens: 2048
+    top_p: 1
+    frequency_penalty: 0
+    presence_penalty: 0
+    request_timeout: 60.0
+    Models:
+      gpt-4:
+        name: "gpt-4"
+        rate:
+          input_token_price: 5
+          output_token_price: 50
+
+      gpt-4o:
+        name: "gpt-4o"
+        text_default: true
+        vision_defaul: true
+        rate:
+          input_token_price: 1
+          output_token_price: 10
+          input_pixel_price: 0.0001
+
+  ImageGeneration:
+    request_timeout: 60.0
+    output_image_size: "512x512"
+    Models:
+      dalle-3:
+        name: "dalle-3"
+        image_generation_default: true
+        rate:
+          input_token_price: 0.0001
+          output_pixel_price: 10
