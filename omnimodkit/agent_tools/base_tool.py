@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from ..models_toolkit import ModelsToolkit
-from ...prompt_manager import PromptManager
+from ..prompt_manager import PromptManager
 
 
 class BaseTool(ABC):
