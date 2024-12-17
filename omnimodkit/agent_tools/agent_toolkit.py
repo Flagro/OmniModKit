@@ -1,10 +1,8 @@
-from .autofact_generation import CheckIfFactsNeededTool, ComposeFactsBasedOnMessagesTool
-from .check_engage_needed import CheckEngageNeededTool
-from .generate_image import ImageGeneratorTool
-from .get_facts import GetChatFactsTool, GetUserFactsTool
-from .get_response import GetResponseTool
+from typing import List
+
+from .base_tool import BaseTool
 from ..models_toolkit import ModelsToolkit
-from ...prompt_manager import PromptManager
+from ..prompt_manager import PromptManager
 
 
 class AIAgentToolkit:
@@ -12,25 +10,8 @@ class AIAgentToolkit:
         self,
         models_toolkit: ModelsToolkit,
         prompt_manager: PromptManager,
+        tools: List[BaseTool],
     ):
-        self.check_if_facts_needed = CheckIfFactsNeededTool(
-            models_toolkit, prompt_manager
-        )
-        self.compose_facts_based_on_messages = ComposeFactsBasedOnMessagesTool(
-            models_toolkit, prompt_manager
-        )
-        self.check_engage_needed = CheckEngageNeededTool(
-            models_toolkit, prompt_manager
-        )
-        self.image_generator = ImageGeneratorTool(
-            models_toolkit, prompt_manager
-        )
-        self.get_chat_facts = GetChatFactsTool(
-            models_toolkit, prompt_manager
-        )
-        self.get_user_facts = GetUserFactsTool(
-            models_toolkit, prompt_manager
-        )
-        self.get_response = GetResponseTool(
-            models_toolkit, prompt_manager
-        )
+        self.models_toolkit = models_toolkit
+        self.prompt_manager = prompt_manager
+        self.tools = tools
