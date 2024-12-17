@@ -2,7 +2,7 @@ from typing import Literal, Optional, AsyncGenerator, List, Dict
 from openai import OpenAI
 from tenacity import retry, stop_after_attempt, retry_if_exception_type
 
-from ...models.config.ai_config import AIConfig, Model
+from .ai_config import AIConfig, Model
 
 
 class YesOrNoInvalidResponse(Exception):
