@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "omnimodkit"
+package-mode = false
+version = "0.0.0"
+description = "Get structured output from multimodal AI models and integrate them into multitool agents"
+authors = ["Anton Potapov <fgreyeducation@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+python-telegram-bot = {version="20.1", extras=["rate-limiter"]}
+openai = "^1.40.0"
+langchain = "0.2.15"
+langchain-openai = "0.1.23"
+tiktoken = "^0.7.0"
+PyYAML = "6.0"
+motor = "*"
+python-decouple = "*"
+tenacity = "8.2.2"
+pydub = "^0.25.1"
+pydantic = "^2.7.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
