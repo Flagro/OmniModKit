@@ -1,4 +1,5 @@
 from typing import Literal, Optional, AsyncGenerator, List, Dict
+import tiktoken
 from openai import OpenAI
 from tenacity import retry, stop_after_attempt, retry_if_exception_type
 
@@ -147,3 +148,7 @@ class ModelsToolkit:
         if "no" in lower_response:
             return False
         raise YesOrNoInvalidResponse(f"Response: {text_response}")
+
+    @staticmethod
+    def count_tokens(text: str) -> int:
+        return tiktoken.count(text)

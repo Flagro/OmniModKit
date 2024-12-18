@@ -1,4 +1,3 @@
-import tiktoken
 import io
 from typing import AsyncIterator
 from openai import OpenAI
@@ -60,10 +59,6 @@ class AI:
             self.models_toolkit, self.prompt_manager
         )
         return await toolkit.image_generator.arun(prompt)
-
-    @staticmethod
-    def count_tokens(text: str) -> int:
-        return tiktoken.count(text)
 
     async def get_reply(self, user_input: str, system_prompt: str) -> str:
         if not self.moderation.moderate_text(user_input):
