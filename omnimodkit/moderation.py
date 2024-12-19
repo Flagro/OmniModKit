@@ -1,6 +1,5 @@
 import io
 from typing import Optional
-
 from openai import OpenAI
 
 

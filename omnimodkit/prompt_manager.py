@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from .ai_agent.ai_utils.describe_image import ImageInformation
-from .ai_agent.ai_utils.describe_audio import AudioInformation
+from .ai_utils.describe_image import ImageInformation
+from .ai_utils.describe_audio import AudioInformation
 
 
 def _get_current_date_prompt() -> str:
