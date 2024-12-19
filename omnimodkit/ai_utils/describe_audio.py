@@ -7,7 +7,6 @@ from .base_utility import BaseUtility
 
 
 class DefaultAudioInformation(BaseModel):
-    # TODO: move this to prompt manager
     audio_description: str = Field(description="a short description of the audio")
 
     def __str__(self):
