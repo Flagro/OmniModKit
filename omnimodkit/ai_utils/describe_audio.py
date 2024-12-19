@@ -1,11 +1,12 @@
 import io
+from typing import Type
 from langchain_core.pydantic_v1 import BaseModel, Field
 from langchain_core.output_parsers import JsonOutputParser
 
 from .base_utility import BaseUtility
 
 
-class AudioInformation(BaseModel):
+class DefaultAudioInformation(BaseModel):
     # TODO: move this to prompt manager
     audio_description: str = Field(description="a short description of the audio")
 
@@ -14,12 +15,20 @@ class AudioInformation(BaseModel):
 
 
 class DescribeAudioUtililty(BaseUtility):
-    def run(self, in_memory_image_stream: io.BytesIO) -> AudioInformation:
+    def run(
+        self,
+        in_memory_image_stream: io.BytesIO,
+        pydantic_object: Type[BaseModel] = DefaultAudioInformation,
+    ) -> BaseModel:
         # Encode in base64:
-        parser = JsonOutputParser(pydantic_object=AudioInformation)
+        parser = JsonOutputParser(pydantic_object=pydantic_object)
 
-        return AudioInformation(audio_description="an audio")
+        return pydantic_object(audio_description="an audio")
 
-    async def arun(self, in_memory_image_stream: io.BytesIO) -> AudioInformation:
+    async def arun(
+        self,
+        in_memory_image_stream: io.BytesIO,
+        pydantic_object: Type[BaseModel] = DefaultAudioInformation,
+    ) -> BaseModel:
         # TODO: make it non-blocking
         return self.run(in_memory_image_stream)
