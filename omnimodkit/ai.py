@@ -4,7 +4,6 @@ from openai import OpenAI
 
 from .ai_config import AIConfig
 from .moderation import ModerationError
-from .prompt_manager import PromptManager
 from .ai_utils.describe_image import DescribeImageUtililty
 from .ai_utils.describe_audio import DescribeAudioUtililty
 from .models_toolkit import ModelsToolkit
@@ -14,12 +13,11 @@ from .agent_tools.agent_toolkit import AIAgentToolkit
 
 class AI:
     def __init__(
-        self, openai_api_key: str, ai_config: AIConfig, prompt_manager: PromptManager
+        self, openai_api_key: str, ai_config: AIConfig
     ):
         moderation_model = OpenAI(api_key=openai_api_key)
         self.moderation = Moderation(model=moderation_model)
         self.ai_config = ai_config
-        self.prompt_manager = prompt_manager
         self.models_toolkit = ModelsToolkit(openai_api_key, ai_config)
 
     async def describe_image(
