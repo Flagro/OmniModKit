@@ -1,19 +1,41 @@
+from typing import Type, List, Literal
 from datetime import datetime
+from pydantic import BaseModel, Field
 
-from .ai_utils.describe_image import ImageInformation
-from .ai_utils.describe_audio import AudioInformation
+
+class DefaultAudioInformation(BaseModel):
+    audio_description: str = Field(description="a short description of the audio")
+
+    def __str__(self):
+        return self.audio_description
+
+
+class DefaultImageInformation(BaseModel):
+    image_description: str = Field(description="a short description of the image")
+    image_type: Literal["screenshot", "picture", "selfie", "anime"] = Field(
+        description="type of the image"
+    )
+    main_objects: List[str] = Field(
+        description="list of the main objects on the picture"
+    )
+
+    def __str__(self):
+        main_objects_prompt = ", ".join(self.main_objects)
+        return (
+            f'Image description: "{self.image_description}", '
+            f'Image type: "{self.image_type}", '
+            f'Main objects: "{main_objects_prompt}"'
+        )
 
 
 class PromptManager:
-    async def compose_image_description_prompt(
-        self, image_information: ImageInformation
-    ) -> str:
-        return f"The description of the image is: {image_information}"
+    @staticmethod
+    def get_default_audio_information() -> Type[BaseModel]:
+        return DefaultAudioInformation
 
-    async def compose_audio_description_prompt(
-        self, audio_description: AudioInformation
-    ) -> str:
-        return f"The description of the audio is: {audio_description}"
+    @staticmethod
+    def get_default_image_information() -> Type[BaseModel]:
+        return DefaultImageInformation
 
     @staticmethod
     def get_current_date_prompt() -> str:
