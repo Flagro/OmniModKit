@@ -8,7 +8,6 @@ from .base_utility import BaseUtility
 from ..prompt_manager import PromptManager
 
 
-
 class DescribeImageUtililty(BaseUtility):
     def run(
         self,
@@ -31,7 +30,7 @@ class DescribeImageUtililty(BaseUtility):
     async def arun(
         self,
         in_memory_image_stream: io.BytesIO,
-        pydantic_object: Optional[Type[BaseModel]] = None
+        pydantic_object: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
         # TODO: make it non-blocking
         return self.run(in_memory_image_stream, pydantic_object)
