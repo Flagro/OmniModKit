@@ -19,6 +19,7 @@ class Model(BaseModel):
 
 
 class TextGeneration(BaseModel):
+    moderation_needed: bool = True
     temperature: float
     max_tokens: int
     top_p: int
@@ -29,6 +30,7 @@ class TextGeneration(BaseModel):
 
 
 class ImageGeneration(BaseModel):
+    moderation_needed: bool = True
     output_image_size: str
     request_timeout: float
     Models: Dict[str, Model]

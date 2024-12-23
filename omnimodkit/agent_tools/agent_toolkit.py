@@ -9,6 +9,8 @@ class AIAgentToolkit:
         self,
         models_toolkit: ModelsToolkit,
         tools: List[BaseTool],
+        moderation_needed: bool = False,
     ):
         self.models_toolkit = models_toolkit
         self.tools = tools
+        self.moderation_needed = moderation_needed
