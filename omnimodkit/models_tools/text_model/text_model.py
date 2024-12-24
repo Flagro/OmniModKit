@@ -30,6 +30,16 @@ class TextModel(BaseModelToolkit):
             system_prompt, role="system"
         ) + TextModel.compose_message_openai(user_input, role="user")
 
+    def run(self, messages: List[Dict[str, str]]) -> str:
+        response = self.llm.chat.completions.create(
+            model=self._get_default_model("text").name,
+            messages=messages,
+            stream=False,
+            temperature=self.get_default_temperature(),
+        )
+        text_response = response.choices[0].message.content
+        return text_response
+
     async def arun(self, messages: List[Dict[str, str]]) -> str:
         response = self.llm.chat.completions.create(
             model=self._get_default_model("text").name,
