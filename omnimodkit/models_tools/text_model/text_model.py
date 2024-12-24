@@ -30,7 +30,7 @@ class TextModel(BaseModelToolkit):
             system_prompt, role="system"
         ) + TextModel.compose_message_openai(user_input, role="user")
 
-    async def get_response(self, messages: List[Dict[str, str]]) -> str:
+    async def arun(self, messages: List[Dict[str, str]]) -> str:
         response = self.llm.chat.completions.create(
             model=self._get_default_model("text").name,
             messages=messages,
@@ -40,9 +40,7 @@ class TextModel(BaseModelToolkit):
         text_response = response.choices[0].message.content
         return text_response
 
-    async def get_streaming_response(
-        self, messages: List[Dict[str, str]]
-    ) -> AsyncGenerator[str]:
+    async def astream(self, messages: List[Dict[str, str]]) -> AsyncGenerator[str]:
         response = self.llm.chat.completions.create(
             model=self._get_default_model("text").name,
             messages=messages,
