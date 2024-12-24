@@ -1,4 +1,4 @@
-from typing import Literal, AsyncGenerator, List, Dict
+from typing import Literal, AsyncGenerator, List, Dict, Generator
 import tiktoken
 from tenacity import retry, stop_after_attempt, retry_if_exception_type
 
@@ -49,6 +49,16 @@ class TextModel(BaseModelToolkit):
         )
         text_response = response.choices[0].message.content
         return text_response
+
+    def stream(self, messages: List[Dict[str, str]]) -> Generator[str]:
+        response = self.llm.chat.completions.create(
+            model=self._get_default_model("text").name,
+            messages=messages,
+            stream=True,
+            temperature=self.get_default_temperature(),
+        )
+        for message in response:
+            yield message.choices[0].message.content
 
     async def astream(self, messages: List[Dict[str, str]]) -> AsyncGenerator[str]:
         response = self.llm.chat.completions.create(
