@@ -25,18 +25,6 @@ class Moderation:
         # TODO: implement this
         return True
 
-    def moderate_image_description(self, image_description: str) -> bool:
-        """
-        Moderates the image and returns True if the image is safe
-        """
-        return self.moderate_text(image_description, input_description="image")
-
-    def moderate_audio_description(self, audio_description: str) -> bool:
-        """
-        Moderates the audio and returns True if the audio is safe
-        """
-        return self.moderate_text(audio_description, input_description="audio")
-
     def moderate_text(self, text: str, input_description: Optional[str] = None) -> bool:
         """
         Moderates the text and returns True if the text is safe
