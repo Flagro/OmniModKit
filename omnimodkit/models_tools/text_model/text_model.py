@@ -83,6 +83,9 @@ class TextModel(BaseModelToolkit):
             return False
         raise YesOrNoInvalidResponse(f"Response: {text_response}")
 
-    @staticmethod
-    def count_tokens(text: str) -> int:
-        return tiktoken.count(text)
+    def count_tokens(self, text: str) -> int:
+        encoding_for_model = tiktoken.encoding_for_model(
+            self._get_default_model("text").name
+        )
+        nums_tokens = len(encoding_for_model.encode(text))
+        return nums_tokens
