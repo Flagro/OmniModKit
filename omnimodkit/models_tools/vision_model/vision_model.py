@@ -37,3 +37,10 @@ class VisionModel(BaseModelToolkit):
     ) -> BaseModel:
         # TODO: make it non-blocking
         return self.run(in_memory_image_stream, pydantic_object)
+
+    def get_price(
+        self,
+        image_pixels_count: int,
+    ) -> float:
+        input_pixel_price = self._get_default_model("vision").rate.input_pixel_price
+        return image_pixels_count * input_pixel_price
