@@ -30,3 +30,10 @@ class AudioRecognitionModel(BaseModelToolkit):
     ) -> BaseModel:
         # TODO: make it non-blocking
         return self.run(in_memory_image_stream, pydantic_object)
+
+    def get_price(
+        self,
+        audio_length: int,
+    ) -> float:
+        input_token_price = self._get_default_model("text").rate.input_token_price
+        return audio_length * input_token_price
