@@ -89,3 +89,12 @@ class TextModel(BaseModelToolkit):
         )
         nums_tokens = len(encoding_for_model.encode(text))
         return nums_tokens
+
+    def get_price(
+        self,
+        token_len: int,
+    ) -> float:
+        input_token_price = self._get_default_model("text").rate.input_token_price
+        output_token_price = self._get_default_model("text").rate.output_token_price
+
+        return token_len * input_token_price + token_len * output_token_price
