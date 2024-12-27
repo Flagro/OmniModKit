@@ -8,6 +8,8 @@ from ...prompt_manager import PromptManager
 
 
 class AudioRecognitionModel(BaseModelToolkit):
+    model_name = "audio_recognition"
+
     def __init__(self, model):
         self.client = model
 
@@ -35,5 +37,7 @@ class AudioRecognitionModel(BaseModelToolkit):
         self,
         audio_length: int,
     ) -> float:
-        input_token_price = self._get_default_model("text").rate.input_token_price
+        input_token_price = self._get_default_model(
+            self.model_name
+        ).rate.input_token_price
         return audio_length * input_token_price

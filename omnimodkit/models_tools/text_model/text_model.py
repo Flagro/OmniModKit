@@ -10,6 +10,8 @@ class YesOrNoInvalidResponse(Exception):
 
 
 class TextModel(BaseModelToolkit):
+    model_name = "text"
+
     def __init__(self, model):
         self.client = model
 
@@ -32,7 +34,7 @@ class TextModel(BaseModelToolkit):
 
     def run(self, messages: List[Dict[str, str]]) -> str:
         response = self.llm.chat.completions.create(
-            model=self._get_default_model("text").name,
+            model=self._get_default_model(self.model_name).name,
             messages=messages,
             stream=False,
             temperature=self.get_default_temperature(),
@@ -42,7 +44,7 @@ class TextModel(BaseModelToolkit):
 
     async def arun(self, messages: List[Dict[str, str]]) -> str:
         response = self.llm.chat.completions.create(
-            model=self._get_default_model("text").name,
+            model=self._get_default_model(self.model_name).name,
             messages=messages,
             stream=False,
             temperature=self.get_default_temperature(),
@@ -52,7 +54,7 @@ class TextModel(BaseModelToolkit):
 
     def stream(self, messages: List[Dict[str, str]]) -> Generator[str]:
         response = self.llm.chat.completions.create(
-            model=self._get_default_model("text").name,
+            model=self._get_default_model(self.model_name).name,
             messages=messages,
             stream=True,
             temperature=self.get_default_temperature(),
@@ -62,7 +64,7 @@ class TextModel(BaseModelToolkit):
 
     async def astream(self, messages: List[Dict[str, str]]) -> AsyncGenerator[str]:
         response = self.llm.chat.completions.create(
-            model=self._get_default_model("text").name,
+            model=self._get_default_model(self.model_name).name,
             messages=messages,
             stream=True,
             temperature=self.get_default_temperature(),
@@ -85,7 +87,7 @@ class TextModel(BaseModelToolkit):
 
     def count_tokens(self, text: str) -> int:
         encoding_for_model = tiktoken.encoding_for_model(
-            self._get_default_model("text").name
+            self._get_default_model(self.model_name).name
         )
         nums_tokens = len(encoding_for_model.encode(text))
         return nums_tokens
@@ -94,7 +96,11 @@ class TextModel(BaseModelToolkit):
         self,
         token_len: int,
     ) -> float:
-        input_token_price = self._get_default_model("text").rate.input_token_price
-        output_token_price = self._get_default_model("text").rate.output_token_price
+        input_token_price = self._get_default_model(
+            self.model_name
+        ).rate.input_token_price
+        output_token_price = self._get_default_model(
+            self.model_name
+        ).rate.output_token_price
 
         return token_len * input_token_price + token_len * output_token_price

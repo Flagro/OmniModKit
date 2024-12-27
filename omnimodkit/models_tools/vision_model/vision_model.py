@@ -9,6 +9,8 @@ from ...prompt_manager import PromptManager
 
 
 class VisionModel(BaseModelToolkit):
+    model_name = "vision"
+
     def __init__(self, model):
         self.client = model
 
@@ -42,5 +44,7 @@ class VisionModel(BaseModelToolkit):
         self,
         image_pixels_count: int,
     ) -> float:
-        input_pixel_price = self._get_default_model("vision").rate.input_pixel_price
+        input_pixel_price = self._get_default_model(
+            self.model_name
+        ).rate.input_pixel_price
         return image_pixels_count * input_pixel_price

@@ -2,6 +2,8 @@ from ..base_model_toolkit import BaseModelToolkit
 
 
 class ImageGenerationModel(BaseModelToolkit):
+    model_name = "image_generation"
+
     def __init__(self, model):
         self.client = model
 
@@ -20,7 +22,7 @@ class ImageGenerationModel(BaseModelToolkit):
         image_generation_needed: whether the image generation is needed
         """
         output_pixel_price = self._get_default_model(
-            "image_generation"
+            self.model_name
         ).rate.output_pixel_price
 
         image_generation_dimensions = self.ai_config.ImageGeneration.output_image_size
