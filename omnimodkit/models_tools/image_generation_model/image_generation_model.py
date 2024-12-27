@@ -7,9 +7,6 @@ class ImageGenerationModel(BaseModelToolkit):
 
     def get_price(
         self,
-        token_len: int,
-        audio_length: int,
-        image_pixels_count: int,
         image_generation_needed: bool,
     ) -> float:
         """
