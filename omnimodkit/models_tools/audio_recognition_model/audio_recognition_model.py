@@ -37,7 +37,5 @@ class AudioRecognitionModel(BaseModelToolkit):
         self,
         audio_length: int,
     ) -> float:
-        input_token_price = self._get_default_model(
-            self.model_name
-        ).rate.input_token_price
+        input_token_price = self.get_model().rate.input_token_price
         return audio_length * input_token_price

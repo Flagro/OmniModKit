@@ -21,9 +21,7 @@ class ImageGenerationModel(BaseModelToolkit):
         image_pixels_count: the number of pixels in the image
         image_generation_needed: whether the image generation is needed
         """
-        output_pixel_price = self._get_default_model(
-            self.model_name
-        ).rate.output_pixel_price
+        output_pixel_price = self.get_model().rate.output_pixel_price
 
         image_generation_dimensions = self.ai_config.ImageGeneration.output_image_size
         if "x" not in image_generation_dimensions:
