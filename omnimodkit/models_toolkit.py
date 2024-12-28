@@ -1,7 +1,6 @@
-from typing import Literal, Optional
 from openai import OpenAI
 
-from .ai_config import AIConfig, Model
+from .ai_config import AIConfig
 
 
 class ModelsToolkit:
@@ -19,31 +18,6 @@ class ModelsToolkit:
             api_key=openai_api_key,
             model=self._get_default_model("image_generation").name,
         )
-
-    def _get_default_model(
-        self, model_type: Literal["text", "vision", "image_generation"]
-    ) -> Optional[Model]:
-        params_dict = {
-            "text": {
-                "models_dict": self.ai_config.TextGeneration.Models,
-                "default_attr": "text_default",
-            },
-            "vision": {
-                "models_dict": self.ai_config.TextGeneration.Models,
-                "default_attr": "vision_default",
-            },
-            "image_generation": {
-                "models_dict": self.ai_config.ImageGeneration.Models,
-                "default_attr": "image_generation_default",
-            },
-        }
-        first_model = None
-        for model in params_dict[model_type]["models_dict"].values():
-            if getattr(model, params_dict[model_type]["default_attr"]):
-                return model
-            if first_model is None:
-                first_model = model
-        return first_model
 
     def get_price(
         self,
