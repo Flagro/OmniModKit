@@ -14,3 +14,6 @@ class BaseModelToolkit(ABC):
     @abstractmethod
     def get_price(*args, **kwargs):
         raise NotImplementedError
+
+    def get_model(self):
+        return self._get_default_model(self.model_name)
