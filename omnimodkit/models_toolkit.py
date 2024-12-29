@@ -15,6 +15,7 @@ class ModelsToolkit:
         self.text_model = TextModel(openai_api_key)
         self.vision_model = VisionModel(openai_api_key)
         self.image_generation_model = ImageGenerationModel(openai_api_key)
+        self.audio_recognition_model = AudioRecognitionModel(openai_api_key)
 
     def get_price(
         self,

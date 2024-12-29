@@ -1,5 +1,6 @@
 import io
 from typing import Type, Optional
+from openai import OpenAI
 from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.output_parsers import JsonOutputParser
 
@@ -10,8 +11,11 @@ from ...prompt_manager import PromptManager
 class AudioRecognitionModel(BaseModelToolkit):
     model_name = "audio_recognition"
 
-    def __init__(self, model):
-        self.client = model
+    def __init__(self, openai_api_key: str):
+        self.audio_recognition_model = OpenAI(
+            api_key=openai_api_key,
+            model=self._get_default_model("audio_recognition").name,
+        )
 
     def run(
         self,
