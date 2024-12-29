@@ -10,7 +10,7 @@ class ImageGenerationModel(BaseModelToolkit):
         # TODO: fix this - this is not OpenAI object
         self.image_generation_model = OpenAI(
             api_key=openai_api_key,
-            model=self._get_default_model("image_generation").name,
+            model=self.get_model().name,
         )
 
     def get_price(

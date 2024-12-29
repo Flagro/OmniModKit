@@ -15,7 +15,7 @@ class VisionModel(BaseModelToolkit):
     def __init__(self, openai_api_key: str):
         self.vision_model = OpenAI(
             api_key=openai_api_key,
-            model=self._get_default_model("vision").name,
+            model=self.get_model().name,
         )
 
     def run(

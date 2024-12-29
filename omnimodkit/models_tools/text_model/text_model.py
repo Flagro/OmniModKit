@@ -15,7 +15,7 @@ class TextModel(BaseModelToolkit):
 
     def __init__(self, openai_api_key):
         self.llm = OpenAI(
-            api_key=openai_api_key, model=self._get_default_model("text").name
+            api_key=openai_api_key, model=self.get_model().name
         )
 
     @staticmethod
