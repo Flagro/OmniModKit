@@ -14,11 +14,7 @@ class ModelsToolkit:
         self.ai_config = ai_config
         self.text_model = TextModel(openai_api_key)
         self.vision_model = VisionModel(openai_api_key)
-        # TODO: fix this - this is not OpenAI object
-        self.image_generation_model = OpenAI(
-            api_key=openai_api_key,
-            model=self._get_default_model("image_generation").name,
-        )
+        self.image_generation_model = ImageGenerationModel(openai_api_key)
 
     def get_price(
         self,

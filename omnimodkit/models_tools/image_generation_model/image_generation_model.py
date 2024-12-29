@@ -1,11 +1,17 @@
+from openai import OpenAI
+
 from ..base_model_toolkit import BaseModelToolkit
 
 
 class ImageGenerationModel(BaseModelToolkit):
     model_name = "image_generation"
 
-    def __init__(self, model):
-        self.client = model
+    def __init__(self, openai_api_key: str):
+        # TODO: fix this - this is not OpenAI object
+        self.image_generation_model = OpenAI(
+            api_key=openai_api_key,
+            model=self._get_default_model("image_generation").name,
+        )
 
     def get_price(
         self,
