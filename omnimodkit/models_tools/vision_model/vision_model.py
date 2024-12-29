@@ -1,6 +1,7 @@
 import io
 import base64
 from typing import Type, Optional
+from openai import OpenAI
 from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.output_parsers import JsonOutputParser
 
@@ -11,8 +12,11 @@ from ...prompt_manager import PromptManager
 class VisionModel(BaseModelToolkit):
     model_name = "vision"
 
-    def __init__(self, model):
-        self.client = model
+    def __init__(self, openai_api_key: str):
+        self.vision_model = OpenAI(
+            api_key=openai_api_key,
+            model=self._get_default_model("vision").name,
+        )
 
     def run(
         self,

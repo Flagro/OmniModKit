@@ -1,18 +1,19 @@
 from openai import OpenAI
 
 from .ai_config import AIConfig
+from .models_tools import (
+    TextModel,
+    VisionModel,
+    ImageGenerationModel,
+    AudioRecognitionModel,
+)
 
 
 class ModelsToolkit:
     def __init__(self, openai_api_key: str, ai_config: AIConfig):
         self.ai_config = ai_config
-        self.llm = OpenAI(
-            api_key=openai_api_key, model=self._get_default_model("text").name
-        )
-        self.vision_model = OpenAI(
-            api_key=openai_api_key,
-            model=self._get_default_model("vision").name,
-        )
+        self.text_model = TextModel(openai_api_key)
+        self.vision_model = VisionModel(openai_api_key)
         # TODO: fix this - this is not OpenAI object
         self.image_generation_model = OpenAI(
             api_key=openai_api_key,

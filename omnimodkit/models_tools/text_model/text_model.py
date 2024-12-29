@@ -1,5 +1,6 @@
 from typing import Literal, AsyncGenerator, List, Dict, Generator
 import tiktoken
+from openai import OpenAI
 from tenacity import retry, stop_after_attempt, retry_if_exception_type
 
 from ..base_model_toolkit import BaseModelToolkit
@@ -12,8 +13,10 @@ class YesOrNoInvalidResponse(Exception):
 class TextModel(BaseModelToolkit):
     model_name = "text"
 
-    def __init__(self, model):
-        self.client = model
+    def __init__(self, openai_api_key):
+        self.llm = OpenAI(
+            api_key=openai_api_key, model=self._get_default_model("text").name
+        )
 
     @staticmethod
     def compose_message_openai(
