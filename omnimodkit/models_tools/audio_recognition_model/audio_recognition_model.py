@@ -1,6 +1,9 @@
 import io
+import base64
 from typing import Type, Optional
 from openai import OpenAI
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage
 from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.output_parsers import JsonOutputParser
 
@@ -19,15 +22,44 @@ class AudioRecognitionModel(BaseModelToolkit):
 
     def run(
         self,
-        in_memory_image_stream: io.BytesIO,
+        in_memory_audio_stream: io.BytesIO,
         pydantic_object: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
         if pydantic_object is None:
             # TODO: prompt manager should be available as part of the utility
             pydantic_object = PromptManager.get_default_audio_information()
         # Encode in base64:
+        audio_base64 = base64.b64encode(in_memory_audio_stream.getvalue()).decode()
         parser = JsonOutputParser(pydantic_object=pydantic_object)
-        return pydantic_object(audio_description="an audio")
+
+        model = ChatOpenAI(
+            temperature=0.7, model=self.get_model().name, max_tokens=1024
+        )
+
+        prompt = """
+            Based on the audio, fill out the provided fields.
+        """
+
+        msg = model.invoke(
+            [
+                HumanMessage(
+                    content=[
+                        {"type": "text", "text": prompt},
+                        {"type": "text", "text": parser.get_format_instructions()},
+                        {
+                            "type": "input_audio",
+                            "input_audio": {
+                                "data": audio_base64,
+                                "format": "mp3",
+                            },
+                        },
+                    ]
+                )
+            ]
+        )
+        contents = msg.content
+        parsed_output = parser.invoke(contents)
+        return pydantic_object(**parsed_output)
 
     async def arun(
         self,
