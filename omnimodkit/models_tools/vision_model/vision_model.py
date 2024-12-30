@@ -2,6 +2,8 @@ import io
 import base64
 from typing import Type, Optional
 from openai import OpenAI
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage
 from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.output_parsers import JsonOutputParser
 
@@ -29,12 +31,33 @@ class VisionModel(BaseModelToolkit):
         image_base64 = base64.b64encode(in_memory_image_stream.getvalue()).decode()
         parser = JsonOutputParser(pydantic_object=pydantic_object)
 
-        # TODO: implement image chain runnable
-        # TODO: pass the image model here
-
-        return pydantic_object(
-            image_description="an image", image_type="picture", main_objects=["image"]
+        model = ChatOpenAI(
+            temperature=0.7, model=self.get_model().name, max_tokens=1024
         )
+
+        prompt = """
+            Based on the image, fill out the provided fields.
+        """
+
+        msg = model.invoke(
+            [
+                HumanMessage(
+                    content=[
+                        {"type": "text", "text": prompt},
+                        {"type": "text", "text": parser.get_format_instructions()},
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{image_base64}"
+                            },
+                        },
+                    ]
+                )
+            ]
+        )
+        contents = msg.content
+        parsed_output = parser.invoke(contents)
+        return pydantic_object(**parsed_output)
 
     async def arun(
         self,
