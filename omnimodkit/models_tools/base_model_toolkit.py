@@ -1,7 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Literal
-from prompt_manager import PromptManager
-from ai_config import AIConfig, Model
+from typing import Optional, Literal, Dict, Any, Type
+from pydantic import BaseModel
+from langchain_core.pydantic_v1 import BaseModel
+from langchain_core.output_parsers import JsonOutputParser
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage
+from ..prompt_manager import PromptManager
+from ..ai_config import AIConfig, Model
 
 
 class BaseModelToolkit(ABC):
@@ -43,3 +48,28 @@ class BaseModelToolkit(ABC):
 
     def get_model(self) -> Model:
         return self._get_default_model(self.model_name)
+
+    def get_structured_output(
+        self,
+        input_dict: Dict[str, Any],
+        system_prompt: str,
+        pydantic_object: Type[BaseModel],
+    ) -> Dict[str, Any]:
+        parser = JsonOutputParser(pydantic_object=pydantic_object)
+        model = ChatOpenAI(
+            temperature=0.7, model=self.get_model().name, max_tokens=1024
+        )
+        msg = model.invoke(
+            [
+                HumanMessage(
+                    content=[
+                        {"type": "text", "text": system_prompt},
+                        {"type": "text", "text": parser.get_format_instructions()},
+                        input_dict,
+                    ]
+                )
+            ]
+        )
+        contents = msg.content
+        parsed_output = parser.invoke(contents)
+        return pydantic_object(**parsed_output)
