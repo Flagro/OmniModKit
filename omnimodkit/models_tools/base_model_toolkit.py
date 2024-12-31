@@ -46,6 +46,10 @@ class BaseModelToolkit(ABC):
                 first_model = model
         return first_model
 
+    @abstractmethod
+    def get_models_dict(self) -> Dict[str, Model]:
+        raise NotImplementedError
+
     def get_model(self) -> Model:
         return self._get_default_model(self.model_name)
 

@@ -1,6 +1,6 @@
 import io
 import base64
-from typing import Type, Optional
+from typing import Type, Optional, Dict
 from openai import OpenAI
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
@@ -8,6 +8,7 @@ from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.output_parsers import JsonOutputParser
 
 from ..base_model_toolkit import BaseModelToolkit
+from ...ai_config import AIConfig, Model
 from ...prompt_manager import PromptManager
 
 
@@ -19,6 +20,9 @@ class AudioRecognitionModel(BaseModelToolkit):
             api_key=openai_api_key,
             model=self.get_model().name,
         )
+
+    def get_models_dict(self) -> Dict[str, Model]:
+        return self.ai_config.AudioRecognition.Models
 
     def run(
         self,

@@ -1,6 +1,7 @@
+from typing import Dict
 from openai import OpenAI
-
 from ..base_model_toolkit import BaseModelToolkit
+from ...ai_config import Model
 
 
 class ImageGenerationModel(BaseModelToolkit):
@@ -12,6 +13,9 @@ class ImageGenerationModel(BaseModelToolkit):
             api_key=openai_api_key,
             model=self.get_model().name,
         )
+
+    def get_models_dict(self) -> Dict[str, Model]:
+        return self.ai_config.ImageGeneration.Models
 
     def get_price(
         self,

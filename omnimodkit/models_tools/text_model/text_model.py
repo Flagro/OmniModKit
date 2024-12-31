@@ -4,6 +4,7 @@ from openai import OpenAI
 from tenacity import retry, stop_after_attempt, retry_if_exception_type
 
 from ..base_model_toolkit import BaseModelToolkit
+from ...ai_config import Model
 
 
 class YesOrNoInvalidResponse(Exception):
@@ -14,9 +15,10 @@ class TextModel(BaseModelToolkit):
     model_name = "text"
 
     def __init__(self, openai_api_key):
-        self.llm = OpenAI(
-            api_key=openai_api_key, model=self.get_model().name
-        )
+        self.llm = OpenAI(api_key=openai_api_key, model=self.get_model().name)
+
+    def get_models_dict(self) -> Dict[str, Model]:
+        return self.ai_config.TextGeneration.Models
 
     @staticmethod
     def compose_message_openai(
