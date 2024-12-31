@@ -8,7 +8,7 @@ from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.output_parsers import JsonOutputParser
 
 from ..base_model_toolkit import BaseModelToolkit
-from ...ai_config import AIConfig, Model
+from ...ai_config import Model
 from ...prompt_manager import PromptManager
 
 
@@ -23,6 +23,9 @@ class AudioRecognitionModel(BaseModelToolkit):
 
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.AudioRecognition.Models
+
+    def get_default_attr(self) -> str:
+        return "audio_recognition_default"
 
     def run(
         self,

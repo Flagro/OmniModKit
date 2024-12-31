@@ -17,6 +17,9 @@ class ImageGenerationModel(BaseModelToolkit):
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.ImageGeneration.Models
 
+    def get_default_attr(self) -> str:
+        return "image_generation_default"
+
     def get_price(
         self,
         image_generation_needed: bool,

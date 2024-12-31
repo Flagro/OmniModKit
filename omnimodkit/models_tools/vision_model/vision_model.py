@@ -24,6 +24,9 @@ class VisionModel(BaseModelToolkit):
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.TextGeneration.Models
 
+    def get_default_attr(self) -> str:
+        return "vision_default"
+
     def run(
         self,
         in_memory_image_stream: io.BytesIO,

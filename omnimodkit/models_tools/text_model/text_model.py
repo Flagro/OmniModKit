@@ -20,6 +20,9 @@ class TextModel(BaseModelToolkit):
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.TextGeneration.Models
 
+    def get_default_attr(self) -> str:
+        return "text_default"
+
     @staticmethod
     def compose_message_openai(
         message_text: str, role: Literal["user", "system"] = "user"
