@@ -12,6 +12,7 @@ class Rate(BaseModel):
 
 class Model(BaseModel):
     name: str
+    temperature: float
     text_default: Optional[bool] = False
     vision_default: Optional[bool] = False
     image_generation_default: Optional[bool] = False
@@ -20,7 +21,6 @@ class Model(BaseModel):
 
 class TextGeneration(BaseModel):
     moderation_needed: bool = True
-    temperature: float
     max_tokens: int
     top_p: int
     frequency_penalty: int
