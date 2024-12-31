@@ -22,13 +22,15 @@ class BaseModelToolkit(ABC):
         raise NotImplementedError
 
     def _get_default_model(self) -> Optional[Model]:
-        first_model = None
-        for model in self.get_models_dict().values():
-            if getattr(model, self.get_default_attr()):
-                return model
-            if first_model is None:
-                first_model = model
-        return first_model
+        return next(
+            iter(
+                filter(
+                    lambda model: getattr(model, self.get_default_attr()),
+                    self.get_models_dict().values(),
+                )
+            ),
+            None,
+        )
 
     @abstractmethod
     def get_models_dict(self) -> Dict[str, Model]:
