@@ -57,7 +57,7 @@ class BaseModelToolkit(ABC):
     ) -> Dict[str, Any]:
         parser = JsonOutputParser(pydantic_object=pydantic_object)
         model = ChatOpenAI(
-            temperature=0.7, model=self.get_model().name, max_tokens=1024
+            temperature=0.0, model=self.get_model().name, max_tokens=1024
         )
         msg = model.invoke(
             [
