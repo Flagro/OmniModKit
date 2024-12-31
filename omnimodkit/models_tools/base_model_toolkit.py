@@ -21,26 +21,10 @@ class BaseModelToolkit(ABC):
     def get_price(*args, **kwargs):
         raise NotImplementedError
 
-    def _get_default_model(
-        self, model_type: Literal["text", "vision", "image_generation"]
-    ) -> Optional[Model]:
-        params_dict = {
-            "text": {
-                "models_dict": self.ai_config.TextGeneration.Models,
-                "default_attr": "text_default",
-            },
-            "vision": {
-                "models_dict": self.ai_config.TextGeneration.Models,
-                "default_attr": "vision_default",
-            },
-            "image_generation": {
-                "models_dict": self.ai_config.ImageGeneration.Models,
-                "default_attr": "image_generation_default",
-            },
-        }
+    def _get_default_model(self) -> Optional[Model]:
         first_model = None
-        for model in params_dict[model_type]["models_dict"].values():
-            if getattr(model, params_dict[model_type]["default_attr"]):
+        for model in self.get_models_dict().values():
+            if getattr(model, self.get_default_attr()):
                 return model
             if first_model is None:
                 first_model = model
@@ -50,8 +34,12 @@ class BaseModelToolkit(ABC):
     def get_models_dict(self) -> Dict[str, Model]:
         raise NotImplementedError
 
+    @abstractmethod
+    def get_default_attr(self) -> str:
+        raise NotImplementedError
+
     def get_model(self) -> Model:
-        return self._get_default_model(self.model_name)
+        return self._get_default_model()
 
     def get_structured_output(
         self,
