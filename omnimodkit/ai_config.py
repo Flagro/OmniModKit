@@ -36,9 +36,16 @@ class ImageGeneration(BaseModel):
     Models: Dict[str, Model]
 
 
+class AudioRecognition(BaseModel):
+    moderation_needed: bool = True
+    request_timeout: float
+    Models: Dict[str, Model]
+
+
 class AIConfig(BaseModel):
     TextGeneration: TextGeneration
     ImageGeneration: ImageGeneration
+    AudioRecognition: AudioRecognition
 
     @classmethod
     def load(cls, file_path: str):

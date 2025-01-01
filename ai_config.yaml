@@ -34,3 +34,14 @@ AIConfig:
         rate:
           input_token_price: 0.0001
           output_pixel_price: 10
+
+  AudioRecognition:
+    request_timeout: 60.0
+    Models:
+      whisper:
+        name: "whisper-1"
+        temperature: 0.7
+        audio_recognition_default: true
+        rate:
+          input_audio_price_per_second: 0.0001
+          output_token_price: 1
