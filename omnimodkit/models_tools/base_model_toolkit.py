@@ -37,8 +37,13 @@ class BaseModelToolkit(ABC):
     def get_models_dict(self) -> Dict[str, Model]:
         raise NotImplementedError
 
-    def get_model(self) -> Model:
-        return self._get_default_model()
+    def get_model(self, model_name: Optional[str] = None) -> Model:
+        if model_name is None:
+            return self._get_default_model()
+        model = self.get_models_dict().get(model_name)
+        if model is None:
+            raise ValueError(f"Model {model_name} not found")
+        return model
 
     def get_structured_output(
         self,
