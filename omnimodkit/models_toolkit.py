@@ -1,5 +1,3 @@
-from openai import OpenAI
-
 from .ai_config import AIConfig
 from .models_tools import (
     TextModel,
