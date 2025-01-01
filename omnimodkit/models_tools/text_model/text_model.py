@@ -13,15 +13,13 @@ class YesOrNoInvalidResponse(Exception):
 
 class TextModel(BaseModelToolkit):
     model_name = "text"
+    default_attribute = "text_default"
 
     def __init__(self, openai_api_key):
         self.llm = OpenAI(api_key=openai_api_key, model=self.get_model().name)
 
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.TextGeneration.Models
-
-    def get_default_attr(self) -> str:
-        return "text_default"
 
     @staticmethod
     def compose_message_openai(

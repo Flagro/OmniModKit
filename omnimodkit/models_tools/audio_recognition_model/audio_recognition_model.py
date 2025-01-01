@@ -14,6 +14,7 @@ from ...prompt_manager import PromptManager
 
 class AudioRecognitionModel(BaseModelToolkit):
     model_name = "audio_recognition"
+    default_attribute = "audio_recognition_default"
 
     def __init__(self, openai_api_key: str):
         self.audio_recognition_model = OpenAI(
@@ -23,9 +24,6 @@ class AudioRecognitionModel(BaseModelToolkit):
 
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.AudioRecognition.Models
-
-    def get_default_attr(self) -> str:
-        return "audio_recognition_default"
 
     def run(
         self,

@@ -14,6 +14,7 @@ from ...prompt_manager import PromptManager
 
 class VisionModel(BaseModelToolkit):
     model_name = "vision"
+    default_attribute = "vision_default"
 
     def __init__(self, openai_api_key: str):
         self.vision_model = OpenAI(
@@ -23,9 +24,6 @@ class VisionModel(BaseModelToolkit):
 
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.TextGeneration.Models
-
-    def get_default_attr(self) -> str:
-        return "vision_default"
 
     def run(
         self,

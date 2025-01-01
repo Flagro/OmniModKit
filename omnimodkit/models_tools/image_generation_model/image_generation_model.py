@@ -6,6 +6,7 @@ from ...ai_config import Model
 
 class ImageGenerationModel(BaseModelToolkit):
     model_name = "image_generation"
+    default_attribute = "image_generation_default"
 
     def __init__(self, openai_api_key: str):
         # TODO: fix this - this is not OpenAI object
@@ -16,9 +17,6 @@ class ImageGenerationModel(BaseModelToolkit):
 
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.ImageGeneration.Models
-
-    def get_default_attr(self) -> str:
-        return "image_generation_default"
 
     def get_price(
         self,

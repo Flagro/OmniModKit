@@ -11,6 +11,7 @@ from ..ai_config import AIConfig, Model
 
 class BaseModelToolkit(ABC):
     model_name: str
+    default_attribute: str
 
     def __init__(self, model, ai_config: AIConfig, prompt_manager: PromptManager):
         self.client = model
@@ -25,7 +26,7 @@ class BaseModelToolkit(ABC):
         return next(
             iter(
                 filter(
-                    lambda model: getattr(model, self.get_default_attr()),
+                    lambda model: getattr(model, self.default_attribute, False),
                     self.get_models_dict().values(),
                 )
             ),
@@ -34,10 +35,6 @@ class BaseModelToolkit(ABC):
 
     @abstractmethod
     def get_models_dict(self) -> Dict[str, Model]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_default_attr(self) -> str:
         raise NotImplementedError
 
     def get_model(self) -> Model:
