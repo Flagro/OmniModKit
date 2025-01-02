@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Literal, Dict, Any, Type
+from typing import Optional, Dict, Any, Type
 from pydantic import BaseModel
 from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.output_parsers import JsonOutputParser
