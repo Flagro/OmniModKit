@@ -71,3 +71,30 @@ class BaseModelToolkit(ABC):
         contents = msg.content
         parsed_output = parser.invoke(contents)
         return pydantic_object(**parsed_output)
+
+    async def aget_strctured_output(
+        self,
+        input_dict: Dict[str, Any],
+        system_prompt: str,
+        pydantic_object: Type[BaseModel],
+    ) -> Dict[str, Any]:
+        parser = JsonOutputParser(pydantic_object=pydantic_object)
+        model = ChatOpenAI(
+            temperature=self.get_model().temperature,
+            model=self.get_model().name,
+            max_tokens=1024,
+        )
+        msg = await model.ainvoke(
+            [
+                HumanMessage(
+                    content=[
+                        {"type": "text", "text": system_prompt},
+                        {"type": "text", "text": parser.get_format_instructions()},
+                        input_dict,
+                    ]
+                )
+            ]
+        )
+        contents = msg.content
+        parsed_output = parser.ainvoke(contents)
+        return pydantic_object(**parsed_output)
