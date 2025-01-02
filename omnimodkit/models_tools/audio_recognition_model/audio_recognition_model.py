@@ -2,10 +2,7 @@ import io
 import base64
 from typing import Type, Optional, Dict
 from openai import OpenAI
-from langchain_openai import ChatOpenAI
-from langchain_core.messages import HumanMessage
 from langchain_core.pydantic_v1 import BaseModel
-from langchain_core.output_parsers import JsonOutputParser
 
 from ..base_model_toolkit import BaseModelToolkit
 from ...ai_config import Model
@@ -49,11 +46,26 @@ class AudioRecognitionModel(BaseModelToolkit):
 
     async def arun(
         self,
-        in_memory_image_stream: io.BytesIO,
+        in_memory_audio_stream: io.BytesIO,
         pydantic_object: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
         # TODO: make it non-blocking
-        return self.run(in_memory_image_stream, pydantic_object)
+        if pydantic_object is None:
+            # TODO: prompt manager should be available as part of the utility
+            pydantic_object = PromptManager.get_default_audio_information()
+        # Encode in base64:
+        audio_base64 = base64.b64encode(in_memory_audio_stream.getvalue()).decode()
+        return await self.aget_structured_output(
+            input_dict={
+                "type": "input_audio",
+                "input_audio": {
+                    "data": audio_base64,
+                    "format": "mp3",
+                },
+            },
+            system_prompt="Based on the audio, fill out the provided fields.",
+            pydantic_object=pydantic_object,
+        )
 
     def get_price(
         self,
