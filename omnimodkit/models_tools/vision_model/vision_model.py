@@ -48,8 +48,18 @@ class VisionModel(BaseModelToolkit):
         in_memory_image_stream: io.BytesIO,
         pydantic_object: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
-        # TODO: make it non-blocking
-        return self.run(in_memory_image_stream, pydantic_object)
+        if pydantic_object is None:
+            pydantic_object = PromptManager.get_default_image_information()
+        # Encode in base64:
+        image_base64 = base64.b64encode(in_memory_image_stream.getvalue()).decode()
+        return await self.aget_structured_output(
+            input_dict={
+                "type": "image_url",
+                "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"},
+            },
+            system_prompt="Based on the image, fill out the provided fields.",
+            pydantic_object=pydantic_object,
+        )
 
     def get_price(
         self,
