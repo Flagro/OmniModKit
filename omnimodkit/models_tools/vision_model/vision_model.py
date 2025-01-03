@@ -34,35 +34,14 @@ class VisionModel(BaseModelToolkit):
             pydantic_object = PromptManager.get_default_image_information()
         # Encode in base64:
         image_base64 = base64.b64encode(in_memory_image_stream.getvalue()).decode()
-        parser = JsonOutputParser(pydantic_object=pydantic_object)
-
-        model = ChatOpenAI(
-            temperature=0.7, model=self.get_model().name, max_tokens=1024
+        return self.get_structured_output(
+            input_dict={
+                "type": "image_url",
+                "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"},
+            },
+            system_prompt="Based on the image, fill out the provided fields.",
+            pydantic_object=pydantic_object,
         )
-
-        prompt = """
-            Based on the image, fill out the provided fields.
-        """
-
-        msg = model.invoke(
-            [
-                HumanMessage(
-                    content=[
-                        {"type": "text", "text": prompt},
-                        {"type": "text", "text": parser.get_format_instructions()},
-                        {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": f"data:image/jpeg;base64,{image_base64}"
-                            },
-                        },
-                    ]
-                )
-            ]
-        )
-        contents = msg.content
-        parsed_output = parser.invoke(contents)
-        return pydantic_object(**parsed_output)
 
     async def arun(
         self,
