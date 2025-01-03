@@ -32,31 +32,9 @@ class ModelsToolkit:
         image_pixels_count: the number of pixels in the image
         image_generation_needed: whether the image generation is needed
         """
-        input_token_price = self._get_default_model("text").rate.input_token_price
-        output_token_price = self._get_default_model("text").rate.output_token_price
-        input_pixel_price = self._get_default_model("vision").rate.input_pixel_price
-        output_pixel_price = self._get_default_model(
-            "image_generation"
-        ).rate.output_pixel_price
-
-        image_generation_dimensions = self.ai_config.ImageGeneration.output_image_size
-        if "x" not in image_generation_dimensions:
-            raise ValueError(
-                f"Invalid image generation dimensions: {image_generation_dimensions}"
-            )
-        image_generation_dimensions_x, image_generation_dimensions_y = (
-            image_generation_dimensions.split("x")
-        )
-        image_generation_pixels = (
-            0
-            if not image_generation_needed
-            else int(image_generation_dimensions_x) * int(image_generation_dimensions_y)
-        )
-
         return (
-            token_len * input_token_price
-            + token_len * output_token_price
-            + audio_length * input_token_price
-            + image_pixels_count * input_pixel_price
-            + image_generation_pixels * output_pixel_price
+            self.audio_recognition_model.get_price(audio_length)
+            + self.image_generation_model.get_price(image_generation_needed)
+            + self.text_model.get_price(token_len)
+            + self.vision_model.get_price(image_pixels_count)
         )
