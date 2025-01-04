@@ -1,6 +1,6 @@
 import io
 import base64
-from typing import Type, Optional, Dict
+from typing import Type, Optional, Dict, Any
 from openai import OpenAI
 from langchain_core.pydantic_v1 import BaseModel
 
@@ -22,41 +22,39 @@ class VisionModel(BaseModelToolkit):
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.TextGeneration.Models
 
+    def _prepare_input(
+        self,
+        in_memory_image_stream: io.BytesIO,
+        pydantic_object: Optional[Type[BaseModel]] = None,
+    ) -> Dict[str, Any]:
+        if pydantic_object is None:
+            pydantic_object = PromptManager.get_default_image_information()
+        # Encode in base64:
+        image_base64 = base64.b64encode(in_memory_image_stream.getvalue()).decode()
+        return {
+            "input_dict": {
+                "type": "image_url",
+                "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"},
+            },
+            "system_prompt": "Based on the image, fill out the provided fields.",
+            "pydantic_object": pydantic_object,
+        }
+
     def run(
         self,
         in_memory_image_stream: io.BytesIO,
         pydantic_object: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
-        if pydantic_object is None:
-            pydantic_object = PromptManager.get_default_image_information()
-        # Encode in base64:
-        image_base64 = base64.b64encode(in_memory_image_stream.getvalue()).decode()
-        return self.get_structured_output(
-            input_dict={
-                "type": "image_url",
-                "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"},
-            },
-            system_prompt="Based on the image, fill out the provided fields.",
-            pydantic_object=pydantic_object,
-        )
+        kwargs = self._prepare_input(in_memory_image_stream, pydantic_object)
+        return self.get_structured_output(**kwargs)
 
     async def arun(
         self,
         in_memory_image_stream: io.BytesIO,
         pydantic_object: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
-        if pydantic_object is None:
-            pydantic_object = PromptManager.get_default_image_information()
-        # Encode in base64:
-        image_base64 = base64.b64encode(in_memory_image_stream.getvalue()).decode()
-        return await self.aget_structured_output(
-            input_dict={
-                "type": "image_url",
-                "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"},
-            },
-            system_prompt="Based on the image, fill out the provided fields.",
-            pydantic_object=pydantic_object,
-        )
+        kwargs = self._prepare_input(in_memory_image_stream, pydantic_object)
+        return await self.aget_structured_output(**kwargs)
 
     def get_price(
         self,
