@@ -22,50 +22,42 @@ class AudioRecognitionModel(BaseModelToolkit):
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.AudioRecognition.Models
 
-    def run(
+    def _prepare_input(
         self,
         in_memory_audio_stream: io.BytesIO,
         pydantic_object: Optional[Type[BaseModel]] = None,
-    ) -> BaseModel:
+    ) -> dict:
         if pydantic_object is None:
-            # TODO: prompt manager should be available as part of the utility
             pydantic_object = PromptManager.get_default_audio_information()
         # Encode in base64:
         audio_base64 = base64.b64encode(in_memory_audio_stream.getvalue()).decode()
-        return self.get_structured_output(
-            input_dict={
+        return {
+            "input_dict": {
                 "type": "input_audio",
                 "input_audio": {
                     "data": audio_base64,
                     "format": "mp3",
                 },
             },
-            system_prompt="Based on the audio, fill out the provided fields.",
-            pydantic_object=pydantic_object,
-        )
+            "system_prompt": "Based on the audio, fill out the provided fields.",
+            "pydantic_object": pydantic_object,
+        }
+
+    def run(
+        self,
+        in_memory_audio_stream: io.BytesIO,
+        pydantic_object: Optional[Type[BaseModel]] = None,
+    ) -> BaseModel:
+        kwargs = self._prepare_input(in_memory_audio_stream, pydantic_object)
+        return self.get_structured_output(**kwargs)
 
     async def arun(
         self,
         in_memory_audio_stream: io.BytesIO,
         pydantic_object: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
-        # TODO: make it non-blocking
-        if pydantic_object is None:
-            # TODO: prompt manager should be available as part of the utility
-            pydantic_object = PromptManager.get_default_audio_information()
-        # Encode in base64:
-        audio_base64 = base64.b64encode(in_memory_audio_stream.getvalue()).decode()
-        return await self.aget_structured_output(
-            input_dict={
-                "type": "input_audio",
-                "input_audio": {
-                    "data": audio_base64,
-                    "format": "mp3",
-                },
-            },
-            system_prompt="Based on the audio, fill out the provided fields.",
-            pydantic_object=pydantic_object,
-        )
+        kwargs = self._prepare_input(in_memory_audio_stream, pydantic_object)
+        return await self.aget_structured_output(**kwargs)
 
     def get_price(
         self,
