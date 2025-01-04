@@ -32,6 +32,7 @@ class ModelsToolkit:
         image_pixels_count: the number of pixels in the image
         image_generation_needed: whether the image generation is needed
         """
+        # TODO: pass values as kwargs
         return (
             self.audio_recognition_model.get_price(audio_length)
             + self.image_generation_model.get_price(image_generation_needed)
