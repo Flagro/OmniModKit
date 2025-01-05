@@ -17,25 +17,16 @@ class ModelsToolkit:
 
     def get_price(
         self,
-        token_len: int,
-        audio_length: int,
-        image_pixels_count: int,
-        image_generation_needed: bool,
+        *args,
+        **kwargs,
     ) -> float:
         """
         Returns the price of the AI services for the given
         input parameters
-
-        Args:
-        token_len: the number of tokens in the input text
-        audio_length: the length of the audio in seconds
-        image_pixels_count: the number of pixels in the image
-        image_generation_needed: whether the image generation is needed
         """
-        # TODO: pass values as kwargs
         return (
-            self.audio_recognition_model.get_price(audio_length)
-            + self.image_generation_model.get_price(image_generation_needed)
-            + self.text_model.get_price(token_len)
-            + self.vision_model.get_price(image_pixels_count)
+            self.audio_recognition_model.get_price(*args, **kwargs)
+            + self.image_generation_model.get_price(*args, **kwargs)
+            + self.text_model.get_price(*args, **kwargs)
+            + self.vision_model.get_price(*args, **kwargs)
         )
