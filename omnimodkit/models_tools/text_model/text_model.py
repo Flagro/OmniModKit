@@ -13,7 +13,6 @@ class YesOrNoInvalidResponse(Exception):
 
 class TextModel(BaseModelToolkit):
     model_name = "text"
-    default_attribute = "text_default"
 
     def __init__(self, openai_api_key):
         self.llm = OpenAI(api_key=openai_api_key, model=self.get_model().name)

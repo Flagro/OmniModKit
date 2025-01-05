@@ -11,12 +11,15 @@ from ..ai_config import AIConfig, Model
 
 class BaseModelToolkit(ABC):
     model_name: str
-    default_attribute: str
 
     def __init__(self, model, ai_config: AIConfig, prompt_manager: PromptManager):
         self.client = model
         self.ai_config = ai_config
         self.prompt_manager = prompt_manager
+
+    @property
+    def default_attribute(self) -> str:
+        return f"{self.model_name}_default"
 
     @abstractmethod
     def get_price(*args, **kwargs):
