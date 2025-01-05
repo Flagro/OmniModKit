@@ -99,6 +99,8 @@ class TextModel(BaseModelToolkit):
     def get_price(
         self,
         token_len: int,
+        *args,
+        **kwargs,
     ) -> float:
         input_token_price = self.get_model().rate.input_token_price
         output_token_price = self.get_model().rate.output_token_price

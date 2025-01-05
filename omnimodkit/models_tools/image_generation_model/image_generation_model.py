@@ -21,6 +21,8 @@ class ImageGenerationModel(BaseModelToolkit):
     def get_price(
         self,
         image_generation_needed: bool,
+        *args,
+        **kwargs,
     ) -> float:
         """
         Returns the price of the AI services for the given

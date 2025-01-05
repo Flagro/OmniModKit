@@ -59,6 +59,8 @@ class VisionModel(BaseModelToolkit):
     def get_price(
         self,
         image_pixels_count: int,
+        *args,
+        **kwargs,
     ) -> float:
         input_pixel_price = self.get_model().rate.input_pixel_price
         return image_pixels_count * input_pixel_price

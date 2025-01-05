@@ -62,6 +62,8 @@ class AudioRecognitionModel(BaseModelToolkit):
     def get_price(
         self,
         audio_length: int,
+        *args,
+        **kwargs,
     ) -> float:
         input_token_price = self.get_model().rate.input_token_price
         return audio_length * input_token_price
