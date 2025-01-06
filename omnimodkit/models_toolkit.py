@@ -20,7 +20,7 @@ class ModelsToolkit:
 
     def __init__(self, openai_api_key: str, ai_config: AIConfig):
         self.ai_config = ai_config
-        self.tools = [model(openai_api_key) for model in self.models]
+        self.tools = {model.model_name: model(openai_api_key) for model in self.models}
 
     def get_price(
         self,
@@ -31,4 +31,4 @@ class ModelsToolkit:
         Returns the price of the AI services for the given
         input parameters
         """
-        return sum([tool.get_price(*args, **kwargs) for tool in self.tools])
+        return sum([tool.get_price(*args, **kwargs) for tool in self.tools.values()])
