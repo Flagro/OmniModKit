@@ -31,9 +31,4 @@ class ModelsToolkit:
         Returns the price of the AI services for the given
         input parameters
         """
-        return (
-            self.audio_recognition_model.get_price(*args, **kwargs)
-            + self.image_generation_model.get_price(*args, **kwargs)
-            + self.text_model.get_price(*args, **kwargs)
-            + self.vision_model.get_price(*args, **kwargs)
-        )
+        return sum([tool.get_price(*args, **kwargs) for tool in self.tools])
