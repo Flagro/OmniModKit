@@ -28,6 +28,18 @@ class DefaultImageInformation(BaseModel):
         )
 
 
+class DefaultImage(BaseModel):
+    image_url: str = Field(description="url of the image")
+
+
+class DefaultText(BaseModel):
+    text: str = Field(description="text to be processed")
+
+
+class DefaultTextChunk(BaseModel):
+    text_chunk: str = Field(description="text chunk to be processed")
+
+
 class PromptManager:
     @staticmethod
     def get_default_audio_information() -> Type[BaseModel]:
