@@ -28,6 +28,12 @@ class BaseModelToolkit(ABC):
     async def arun(*args, **kwargs):
         raise NotImplementedError
 
+    def stream(*args, **kwargs):
+        raise NotImplementedError
+
+    async def astream(*args, **kwargs):
+        raise NotImplementedError
+
     @abstractmethod
     def get_price(*args, **kwargs):
         raise NotImplementedError
