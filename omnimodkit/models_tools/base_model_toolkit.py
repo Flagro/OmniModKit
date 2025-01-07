@@ -22,6 +22,14 @@ class BaseModelToolkit(ABC):
         return f"{self.model_name}_default"
 
     @abstractmethod
+    def run(*args, **kwargs):
+        raise NotImplementedError
+
+    @abstractmethod
+    async def arun(*args, **kwargs):
+        raise NotImplementedError
+
+    @abstractmethod
     def get_price(*args, **kwargs):
         raise NotImplementedError
 
