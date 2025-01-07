@@ -25,7 +25,6 @@ class BaseModelToolkit(ABC):
     def run(*args, **kwargs):
         raise NotImplementedError
 
-    @abstractmethod
     async def arun(*args, **kwargs):
         raise NotImplementedError
 
