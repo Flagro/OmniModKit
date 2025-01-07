@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Dict, Any, Type
+from typing import Optional, Dict, Any, Type, Generator, AsyncGenerator
 from pydantic import BaseModel
 from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.output_parsers import JsonOutputParser
@@ -22,16 +22,16 @@ class BaseModelToolkit(ABC):
         return f"{self.model_name}_default"
 
     @abstractmethod
-    def run(*args, **kwargs):
+    def run(*args, **kwargs) -> BaseModel:
         raise NotImplementedError
 
-    async def arun(*args, **kwargs):
+    async def arun(*args, **kwargs) -> BaseModel:
         raise NotImplementedError
 
-    def stream(*args, **kwargs):
+    def stream(*args, **kwargs) -> Generator[BaseModel]:
         raise NotImplementedError
 
-    async def astream(*args, **kwargs):
+    async def astream(*args, **kwargs) -> AsyncGenerator[BaseModel]:
         raise NotImplementedError
 
     @abstractmethod
