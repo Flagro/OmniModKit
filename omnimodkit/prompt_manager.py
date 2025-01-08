@@ -50,6 +50,13 @@ class PromptManager:
         return DefaultImageInformation
 
     @staticmethod
+    def get_default_image() -> Type[BaseModel]:
+        return DefaultImage
+
+    def get_default_text() -> Type[BaseModel]:
+        return DefaultText
+
+    @staticmethod
     def get_current_date_prompt() -> str:
         date_prompt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         return date_prompt
