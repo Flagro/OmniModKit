@@ -1,6 +1,8 @@
 from typing import Dict
+from langchain_core.pydantic_v1 import BaseModel
 from openai import OpenAI
 from ..base_model_toolkit import BaseModelToolkit
+from ...prompt_manager import PromptManager
 from ...ai_config import Model
 
 
@@ -17,8 +19,9 @@ class ImageGenerationModel(BaseModelToolkit):
     def run(
         self,
         text_description: str,
-    ):
-        raise NotImplementedError
+    ) -> BaseModel:
+        # TODO: get URL of the image
+        return PromptManager.get_default_image()
 
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.ImageGeneration.Models
