@@ -14,6 +14,12 @@ class ImageGenerationModel(BaseModelToolkit):
             model=self.get_model().name,
         )
 
+    def run(
+        self,
+        text_description: str,
+    ):
+        raise NotImplementedError
+
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.ImageGeneration.Models
 
