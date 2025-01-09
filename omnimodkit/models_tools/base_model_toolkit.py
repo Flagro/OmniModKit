@@ -11,6 +11,7 @@ from ..ai_config import AIConfig, Model
 
 class BaseModelToolkit(ABC):
     model_name: str
+    openai_api_key: str
 
     def __init__(self, model, ai_config: AIConfig, prompt_manager: PromptManager):
         self.client = model
@@ -69,6 +70,7 @@ class BaseModelToolkit(ABC):
     ) -> Dict[str, Any]:
         parser = JsonOutputParser(pydantic_object=pydantic_object)
         model = ChatOpenAI(
+            api_key=self.openai_api_key,
             temperature=self.get_model().temperature,
             model=self.get_model().name,
             max_tokens=1024,
@@ -96,6 +98,7 @@ class BaseModelToolkit(ABC):
     ) -> Dict[str, Any]:
         parser = JsonOutputParser(pydantic_object=pydantic_object)
         model = ChatOpenAI(
+            api_key=self.openai_api_key,
             temperature=self.get_model().temperature,
             model=self.get_model().name,
             max_tokens=1024,
