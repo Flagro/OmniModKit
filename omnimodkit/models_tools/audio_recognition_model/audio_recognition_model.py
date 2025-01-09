@@ -13,10 +13,7 @@ class AudioRecognitionModel(BaseModelToolkit):
     model_name = "audio_recognition"
 
     def __init__(self, openai_api_key: str):
-        self.audio_recognition_model = OpenAI(
-            api_key=openai_api_key,
-            model=self.get_model().name,
-        )
+        self.openai_api_key = openai_api_key
 
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.AudioRecognition.Models
