@@ -27,7 +27,7 @@ class TextModel(BaseModelToolkit):
         return [{"role": role, "content": message_text}]
 
     def get_default_temperature(self) -> float:
-        return self.ai_config.TextGeneration.temperature
+        return self.get_model().temperature
 
     @staticmethod
     def compose_messages_openai(
