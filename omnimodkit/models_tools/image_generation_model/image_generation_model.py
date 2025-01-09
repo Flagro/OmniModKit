@@ -1,6 +1,5 @@
 from typing import Dict
 from langchain_core.pydantic_v1 import BaseModel
-from openai import OpenAI
 from ..base_model_toolkit import BaseModelToolkit
 from ...prompt_manager import PromptManager
 from ...ai_config import Model
@@ -10,11 +9,7 @@ class ImageGenerationModel(BaseModelToolkit):
     model_name = "image_generation"
 
     def __init__(self, openai_api_key: str):
-        # TODO: fix this - this is not OpenAI object
-        self.image_generation_model = OpenAI(
-            api_key=openai_api_key,
-            model=self.get_model().name,
-        )
+        self.openai_api_key = openai_api_key
 
     def run(
         self,
