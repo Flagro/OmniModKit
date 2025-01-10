@@ -19,6 +19,14 @@ class BaseModelToolkit(ABC):
         self.ai_config = ai_config
         self.prompt_manager = prompt_manager
 
+    def get_model_chain(self):
+        return ChatOpenAI(
+            api_key=self.openai_api_key,
+            temperature=self.get_model().temperature,
+            model=self.get_model().name,
+            max_tokens=self.structured_output_max_tokens,
+        )
+
     @property
     def default_attribute(self) -> str:
         return f"{self.model_name}_default"
@@ -70,12 +78,7 @@ class BaseModelToolkit(ABC):
         pydantic_object: Type[BaseModel],
     ) -> Dict[str, Any]:
         parser = JsonOutputParser(pydantic_object=pydantic_object)
-        model = ChatOpenAI(
-            api_key=self.openai_api_key,
-            temperature=self.get_model().temperature,
-            model=self.get_model().name,
-            max_tokens=self.structured_output_max_tokens,
-        )
+        model = self.get_model_chain()
         msg = model.invoke(
             [
                 HumanMessage(
