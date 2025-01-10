@@ -19,7 +19,7 @@ class BaseModelToolkit(ABC):
         self.ai_config = ai_config
         self.prompt_manager = prompt_manager
 
-    def get_model_chain(self):
+    def get_model_chain(self) -> ChatOpenAI:
         return ChatOpenAI(
             api_key=self.openai_api_key,
             temperature=self.get_model().temperature,
