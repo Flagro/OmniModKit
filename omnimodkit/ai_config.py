@@ -13,6 +13,7 @@ class Rate(BaseModel):
 class Model(BaseModel):
     name: str
     temperature: float
+    structured_output_max_tokens: int = 1024
     text_default: Optional[bool] = False
     vision_default: Optional[bool] = False
     image_generation_default: Optional[bool] = False

@@ -12,7 +12,6 @@ from ..ai_config import AIConfig, Model
 class BaseModelToolkit(ABC):
     model_name: str
     openai_api_key: str
-    structured_output_max_tokens: int = 1024
 
     def __init__(self, model, ai_config: AIConfig, prompt_manager: PromptManager):
         self.client = model
@@ -26,6 +25,9 @@ class BaseModelToolkit(ABC):
             model=self.get_model().name,
             max_tokens=self.structured_output_max_tokens,
         )
+
+    def get_structured_output_max_tokens(self) -> int:
+        return self.get_model().structured_output_max_tokens
 
     @property
     def default_attribute(self) -> str:
