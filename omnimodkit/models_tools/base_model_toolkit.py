@@ -23,11 +23,8 @@ class BaseModelToolkit(ABC):
             api_key=self.openai_api_key,
             temperature=self.get_model().temperature,
             model=self.get_model().name,
-            max_tokens=self.structured_output_max_tokens,
+            max_tokens=self.get_model().structured_output_max_tokens,
         )
-
-    def get_structured_output_max_tokens(self) -> int:
-        return self.get_model().structured_output_max_tokens
 
     @property
     def default_attribute(self) -> str:
