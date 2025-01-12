@@ -78,17 +78,16 @@ class BaseModelToolkit(ABC):
     ) -> Dict[str, Any]:
         parser = JsonOutputParser(pydantic_object=pydantic_object)
         model = self.get_model_chain()
-        msg = model.invoke(
-            [
-                HumanMessage(
-                    content=[
-                        {"type": "text", "text": system_prompt},
-                        {"type": "text", "text": parser.get_format_instructions()},
-                        input_dict,
-                    ]
-                )
-            ]
-        )
+        messages = [
+            HumanMessage(
+                content=[
+                    {"type": "text", "text": system_prompt},
+                    {"type": "text", "text": parser.get_format_instructions()},
+                    input_dict,
+                ]
+            )
+        ]
+        msg = model.invoke(messages)
         contents = msg.content
         parsed_output = parser.invoke(contents)
         return pydantic_object(**parsed_output)
@@ -106,17 +105,16 @@ class BaseModelToolkit(ABC):
             model=self.get_model().name,
             max_tokens=1024,
         )
-        msg = await model.ainvoke(
-            [
-                HumanMessage(
-                    content=[
-                        {"type": "text", "text": system_prompt},
-                        {"type": "text", "text": parser.get_format_instructions()},
-                        input_dict,
-                    ]
-                )
-            ]
-        )
+        messages = [
+            HumanMessage(
+                content=[
+                    {"type": "text", "text": system_prompt},
+                    {"type": "text", "text": parser.get_format_instructions()},
+                    input_dict,
+                ]
+            )
+        ]
+        msg = await model.ainvoke(messages)
         contents = msg.content
         parsed_output = parser.ainvoke(contents)
         return pydantic_object(**parsed_output)
