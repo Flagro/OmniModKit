@@ -109,5 +109,5 @@ class BaseModelToolkit(ABC):
             )
         ]
         msg = await model.ainvoke(messages)
-        parsed_output = parser.ainvoke(msg.content)
+        parsed_output = await parser.ainvoke(msg.content)
         return pydantic_object(**parsed_output)
