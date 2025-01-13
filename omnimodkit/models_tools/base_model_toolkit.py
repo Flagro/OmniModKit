@@ -88,8 +88,7 @@ class BaseModelToolkit(ABC):
             )
         ]
         msg = model.invoke(messages)
-        contents = msg.content
-        parsed_output = parser.invoke(contents)
+        parsed_output = parser.invoke(msg.content)
         return pydantic_object(**parsed_output)
 
     async def aget_structured_output(
@@ -110,6 +109,5 @@ class BaseModelToolkit(ABC):
             )
         ]
         msg = await model.ainvoke(messages)
-        contents = msg.content
-        parsed_output = parser.ainvoke(contents)
+        parsed_output = parser.ainvoke(msg.content)
         return pydantic_object(**parsed_output)
