@@ -21,10 +21,10 @@ class VisionModel(BaseModelToolkit):
     def _prepare_input(
         self,
         in_memory_image_stream: io.BytesIO,
-        pydantic_object: Optional[Type[BaseModel]] = None,
+        pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> Dict[str, Any]:
-        if pydantic_object is None:
-            pydantic_object = PromptManager.get_default_image_information()
+        if pydantic_model is None:
+            pydantic_model = PromptManager.get_default_image_information()
         # Encode in base64:
         image_base64 = base64.b64encode(in_memory_image_stream.getvalue()).decode()
         return {
@@ -33,23 +33,23 @@ class VisionModel(BaseModelToolkit):
                 "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"},
             },
             "system_prompt": "Based on the image, fill out the provided fields.",
-            "pydantic_object": pydantic_object,
+            "pydantic_model": pydantic_model,
         }
 
     def run(
         self,
         in_memory_image_stream: io.BytesIO,
-        pydantic_object: Optional[Type[BaseModel]] = None,
+        pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
-        kwargs = self._prepare_input(in_memory_image_stream, pydantic_object)
+        kwargs = self._prepare_input(in_memory_image_stream, pydantic_model)
         return self.get_structured_output(**kwargs)
 
     async def arun(
         self,
         in_memory_image_stream: io.BytesIO,
-        pydantic_object: Optional[Type[BaseModel]] = None,
+        pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
-        kwargs = self._prepare_input(in_memory_image_stream, pydantic_object)
+        kwargs = self._prepare_input(in_memory_image_stream, pydantic_model)
         return await self.aget_structured_output(**kwargs)
 
     def get_price(

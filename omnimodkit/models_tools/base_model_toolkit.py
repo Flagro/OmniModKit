@@ -74,9 +74,9 @@ class BaseModelToolkit(ABC):
         self,
         input_dict: Dict[str, Any],
         system_prompt: str,
-        pydantic_object: Type[BaseModel],
+        pydantic_model: Type[BaseModel],
     ) -> Dict[str, Any]:
-        parser = JsonOutputParser(pydantic_object=pydantic_object)
+        parser = JsonOutputParser(pydantic_model=pydantic_model)
         model = self.get_model_chain()
         messages = [
             HumanMessage(
@@ -89,15 +89,15 @@ class BaseModelToolkit(ABC):
         ]
         msg = model.invoke(messages)
         parsed_output = parser.invoke(msg.content)
-        return pydantic_object(**parsed_output)
+        return pydantic_model(**parsed_output)
 
     async def aget_structured_output(
         self,
         input_dict: Dict[str, Any],
         system_prompt: str,
-        pydantic_object: Type[BaseModel],
+        pydantic_model: Type[BaseModel],
     ) -> Dict[str, Any]:
-        parser = JsonOutputParser(pydantic_object=pydantic_object)
+        parser = JsonOutputParser(pydantic_model=pydantic_model)
         model = self.get_model_chain()
         messages = [
             HumanMessage(
@@ -110,4 +110,4 @@ class BaseModelToolkit(ABC):
         ]
         msg = await model.ainvoke(messages)
         parsed_output = await parser.ainvoke(msg.content)
-        return pydantic_object(**parsed_output)
+        return pydantic_model(**parsed_output)

@@ -20,10 +20,10 @@ class AudioRecognitionModel(BaseModelToolkit):
     def _prepare_input(
         self,
         in_memory_audio_stream: io.BytesIO,
-        pydantic_object: Optional[Type[BaseModel]] = None,
+        pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> dict:
-        if pydantic_object is None:
-            pydantic_object = PromptManager.get_default_audio_information()
+        if pydantic_model is None:
+            pydantic_model = PromptManager.get_default_audio_information()
         # Encode in base64:
         audio_base64 = base64.b64encode(in_memory_audio_stream.getvalue()).decode()
         return {
@@ -35,23 +35,23 @@ class AudioRecognitionModel(BaseModelToolkit):
                 },
             },
             "system_prompt": "Based on the audio, fill out the provided fields.",
-            "pydantic_object": pydantic_object,
+            "pydantic_model": pydantic_model,
         }
 
     def run(
         self,
         in_memory_audio_stream: io.BytesIO,
-        pydantic_object: Optional[Type[BaseModel]] = None,
+        pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
-        kwargs = self._prepare_input(in_memory_audio_stream, pydantic_object)
+        kwargs = self._prepare_input(in_memory_audio_stream, pydantic_model)
         return self.get_structured_output(**kwargs)
 
     async def arun(
         self,
         in_memory_audio_stream: io.BytesIO,
-        pydantic_object: Optional[Type[BaseModel]] = None,
+        pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
-        kwargs = self._prepare_input(in_memory_audio_stream, pydantic_object)
+        kwargs = self._prepare_input(in_memory_audio_stream, pydantic_model)
         return await self.aget_structured_output(**kwargs)
 
     def get_price(
