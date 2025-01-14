@@ -1,7 +1,6 @@
 import io
 import base64
 from typing import Type, Optional, Dict
-from openai import OpenAI
 from langchain_core.pydantic_v1 import BaseModel
 
 from ..base_model_toolkit import BaseModelToolkit
