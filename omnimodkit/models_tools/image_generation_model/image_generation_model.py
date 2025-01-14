@@ -1,5 +1,9 @@
 from typing import Dict
 from langchain_core.pydantic_v1 import BaseModel
+from langchain.chains import LLMChain
+from langchain_community.utilities.dalle_image_generator import DallEAPIWrapper
+from langchain_core.prompts import PromptTemplate
+from langchain_openai import OpenAI
 from ..base_model_toolkit import BaseModelToolkit
 from ...prompt_manager import PromptManager
 from ...ai_config import Model
@@ -16,7 +20,15 @@ class ImageGenerationModel(BaseModelToolkit):
         text_description: str,
     ) -> BaseModel:
         # TODO: get URL of the image
-        return PromptManager.get_default_image()
+        pydantic_model = PromptManager.get_default_image()
+        llm = OpenAI(temperature=0.9)
+        prompt = PromptTemplate(
+            input_variables=["image_desc"],
+            template="Generate a detailed prompt to generate an image based on the following description: {image_desc}",
+        )
+        chain = LLMChain(llm=llm, prompt=prompt)
+        image_url = DallEAPIWrapper().run(chain.run(text_description))
+        return pydantic_model(image_url=image_url)
 
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.ImageGeneration.Models
