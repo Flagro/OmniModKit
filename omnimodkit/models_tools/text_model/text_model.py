@@ -1,4 +1,4 @@
-from typing import Literal, AsyncGenerator, List, Dict, Generator
+from typing import Literal, AsyncGenerator, List, Dict, Generator, Optional
 import tiktoken
 from pydantic import BaseModel
 from openai import OpenAI
@@ -6,6 +6,7 @@ from tenacity import retry, stop_after_attempt, retry_if_exception_type
 
 from ..base_model_toolkit import BaseModelToolkit
 from ...ai_config import Model
+from ...prompt_manager import PromptManager
 
 
 class YesOrNoInvalidResponse(Exception):
@@ -38,7 +39,9 @@ class TextModel(BaseModelToolkit):
             system_prompt, role="system"
         ) + TextModel.compose_message_openai(user_input, role="user")
 
-    def run(self, messages: List[Dict[str, str]]) -> BaseModel:
+    def run(
+        self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
+    ) -> BaseModel:
         response = self.llm.chat.completions.create(
             model=self.get_model().name,
             messages=messages,
@@ -48,7 +51,9 @@ class TextModel(BaseModelToolkit):
         text_response = response.choices[0].message.content
         return text_response
 
-    async def arun(self, messages: List[Dict[str, str]]) -> BaseModel:
+    async def arun(
+        self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
+    ) -> BaseModel:
         response = self.llm.chat.completions.create(
             model=self.get_model().name,
             messages=messages,
@@ -58,7 +63,9 @@ class TextModel(BaseModelToolkit):
         text_response = response.choices[0].message.content
         return text_response
 
-    def stream(self, messages: List[Dict[str, str]]) -> Generator[BaseModel]:
+    def stream(
+        self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
+    ) -> Generator[BaseModel]:
         response = self.llm.chat.completions.create(
             model=self.get_model().name,
             messages=messages,
@@ -69,7 +76,7 @@ class TextModel(BaseModelToolkit):
             yield message.choices[0].message.content
 
     async def astream(
-        self, messages: List[Dict[str, str]]
+        self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
     ) -> AsyncGenerator[BaseModel]:
         response = self.llm.chat.completions.create(
             model=self.get_model().name,
