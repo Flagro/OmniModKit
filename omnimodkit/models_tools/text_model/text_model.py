@@ -1,5 +1,6 @@
 from typing import Literal, AsyncGenerator, List, Dict, Generator
 import tiktoken
+from pydantic import BaseModel
 from openai import OpenAI
 from tenacity import retry, stop_after_attempt, retry_if_exception_type
 
@@ -37,7 +38,7 @@ class TextModel(BaseModelToolkit):
             system_prompt, role="system"
         ) + TextModel.compose_message_openai(user_input, role="user")
 
-    def run(self, messages: List[Dict[str, str]]) -> str:
+    def run(self, messages: List[Dict[str, str]]) -> BaseModel:
         response = self.llm.chat.completions.create(
             model=self.get_model().name,
             messages=messages,
@@ -47,7 +48,7 @@ class TextModel(BaseModelToolkit):
         text_response = response.choices[0].message.content
         return text_response
 
-    async def arun(self, messages: List[Dict[str, str]]) -> str:
+    async def arun(self, messages: List[Dict[str, str]]) -> BaseModel:
         response = self.llm.chat.completions.create(
             model=self.get_model().name,
             messages=messages,
@@ -57,7 +58,7 @@ class TextModel(BaseModelToolkit):
         text_response = response.choices[0].message.content
         return text_response
 
-    def stream(self, messages: List[Dict[str, str]]) -> Generator[str]:
+    def stream(self, messages: List[Dict[str, str]]) -> Generator[BaseModel]:
         response = self.llm.chat.completions.create(
             model=self.get_model().name,
             messages=messages,
@@ -67,7 +68,9 @@ class TextModel(BaseModelToolkit):
         for message in response:
             yield message.choices[0].message.content
 
-    async def astream(self, messages: List[Dict[str, str]]) -> AsyncGenerator[str]:
+    async def astream(
+        self, messages: List[Dict[str, str]]
+    ) -> AsyncGenerator[BaseModel]:
         response = self.llm.chat.completions.create(
             model=self.get_model().name,
             messages=messages,
