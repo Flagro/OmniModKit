@@ -51,7 +51,7 @@ class TextModel(BaseModelToolkit):
             temperature=self.get_default_temperature(),
         )
         text_response = response.choices[0].message.content
-        return text_response
+        return pydantic_model(text_response)
 
     async def arun(
         self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
@@ -65,7 +65,7 @@ class TextModel(BaseModelToolkit):
             temperature=self.get_default_temperature(),
         )
         text_response = response.choices[0].message.content
-        return text_response
+        return pydantic_model(text_response)
 
     def stream(
         self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
@@ -79,7 +79,7 @@ class TextModel(BaseModelToolkit):
             temperature=self.get_default_temperature(),
         )
         for message in response:
-            yield message.choices[0].message.content
+            yield pydantic_model(message.choices[0].message.content)
 
     async def astream(
         self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
@@ -93,7 +93,7 @@ class TextModel(BaseModelToolkit):
             temperature=self.get_default_temperature(),
         )
         async for message in response:
-            yield message.choices[0].message.content
+            yield pydantic_model(message.choices[0].message.content)
 
     @retry(
         stop=stop_after_attempt(3),
