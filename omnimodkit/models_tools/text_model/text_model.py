@@ -42,6 +42,8 @@ class TextModel(BaseModelToolkit):
     def run(
         self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
     ) -> BaseModel:
+        if pydantic_model is None:
+            pydantic_model = PromptManager.get_default_text()
         response = self.llm.chat.completions.create(
             model=self.get_model().name,
             messages=messages,
@@ -54,6 +56,8 @@ class TextModel(BaseModelToolkit):
     async def arun(
         self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
     ) -> BaseModel:
+        if pydantic_model is None:
+            pydantic_model = PromptManager.get_default_text()
         response = self.llm.chat.completions.create(
             model=self.get_model().name,
             messages=messages,
@@ -66,6 +70,8 @@ class TextModel(BaseModelToolkit):
     def stream(
         self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
     ) -> Generator[BaseModel]:
+        if pydantic_model is None:
+            pydantic_model = PromptManager.get_default_text()
         response = self.llm.chat.completions.create(
             model=self.get_model().name,
             messages=messages,
@@ -78,6 +84,8 @@ class TextModel(BaseModelToolkit):
     async def astream(
         self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
     ) -> AsyncGenerator[BaseModel]:
+        if pydantic_model is None:
+            pydantic_model = PromptManager.get_default_text()
         response = self.llm.chat.completions.create(
             model=self.get_model().name,
             messages=messages,
