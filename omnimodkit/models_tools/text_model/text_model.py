@@ -48,7 +48,7 @@ class TextModel(BaseModelToolkit):
         llm = ChatOpenAI(
             api_key=self.openai_api_key,
             temperature=self.get_default_temperature(),
-            model=self.get_model().name,
+            model_name=self.get_model().name,
         )
         structured_llm = llm.with_structured_output(pydantic_model)
         structured_response = structured_llm.invoke(messages)
@@ -62,7 +62,7 @@ class TextModel(BaseModelToolkit):
         llm = ChatOpenAI(
             api_key=self.openai_api_key,
             temperature=self.get_default_temperature(),
-            model=self.get_model().name,
+            model_name=self.get_model().name,
         )
         structured_llm = llm.with_structured_output(pydantic_model)
         structured_response = await structured_llm.ainvoke(messages)
