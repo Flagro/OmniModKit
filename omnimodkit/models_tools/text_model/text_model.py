@@ -51,6 +51,7 @@ class TextModel(BaseModelToolkit):
             model_name=self.get_model().name,
         )
         structured_llm = llm.with_structured_output(pydantic_model)
+        # TODO: use langchain messages instead of dict
         structured_response = structured_llm.invoke(messages)
         return structured_response
 
@@ -65,6 +66,7 @@ class TextModel(BaseModelToolkit):
             model_name=self.get_model().name,
         )
         structured_llm = llm.with_structured_output(pydantic_model)
+        # TODO: use langchain messages instead of dict
         structured_response = await structured_llm.ainvoke(messages)
         return structured_response
 
