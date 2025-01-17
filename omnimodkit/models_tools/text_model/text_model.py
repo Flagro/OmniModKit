@@ -17,7 +17,7 @@ class TextModel(BaseModelToolkit):
     model_name = "text"
 
     def __init__(self, openai_api_key):
-        self.llm = OpenAI(api_key=openai_api_key, model=self.get_model().name)
+        self.openai_api_key = openai_api_key
 
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.TextGeneration.Models
@@ -72,7 +72,8 @@ class TextModel(BaseModelToolkit):
     ) -> Generator[BaseModel]:
         if pydantic_model is None:
             pydantic_model = PromptManager.get_default_text()
-        response = self.llm.chat.completions.create(
+        llm = OpenAI(api_key=self.openai_api_key, model=self.get_model().name)
+        response = llm.chat.completions.create(
             model=self.get_model().name,
             messages=messages,
             stream=True,
@@ -86,7 +87,8 @@ class TextModel(BaseModelToolkit):
     ) -> AsyncGenerator[BaseModel]:
         if pydantic_model is None:
             pydantic_model = PromptManager.get_default_text()
-        response = self.llm.chat.completions.create(
+        llm = OpenAI(api_key=self.openai_api_key, model=self.get_model().name)
+        response = llm.chat.completions.create(
             model=self.get_model().name,
             messages=messages,
             stream=True,
