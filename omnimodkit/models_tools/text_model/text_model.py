@@ -1,6 +1,7 @@
 from typing import Literal, AsyncGenerator, List, Dict, Generator, Optional
 import tiktoken
 from pydantic import BaseModel
+from langchain_openai import ChatOpenAI
 from openai import OpenAI
 from tenacity import retry, stop_after_attempt, retry_if_exception_type
 
@@ -44,28 +45,28 @@ class TextModel(BaseModelToolkit):
     ) -> BaseModel:
         if pydantic_model is None:
             pydantic_model = PromptManager.get_default_text()
-        response = self.llm.chat.completions.create(
-            model=self.get_model().name,
-            messages=messages,
-            stream=False,
+        llm = ChatOpenAI(
+            api_key=self.openai_api_key,
             temperature=self.get_default_temperature(),
+            model=self.get_model().name,
         )
-        text_response = response.choices[0].message.content
-        return pydantic_model(text_response)
+        structured_llm = llm.with_structured_output(pydantic_model)
+        structured_response = structured_llm.invoke(messages)
+        return structured_response
 
     async def arun(
         self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
     ) -> BaseModel:
         if pydantic_model is None:
             pydantic_model = PromptManager.get_default_text()
-        response = self.llm.chat.completions.create(
-            model=self.get_model().name,
-            messages=messages,
-            stream=False,
+        llm = ChatOpenAI(
+            api_key=self.openai_api_key,
             temperature=self.get_default_temperature(),
+            model=self.get_model().name,
         )
-        text_response = response.choices[0].message.content
-        return pydantic_model(text_response)
+        structured_llm = llm.with_structured_output(pydantic_model)
+        structured_response = await structured_llm.ainvoke(messages)
+        return structured_response
 
     def stream(
         self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
