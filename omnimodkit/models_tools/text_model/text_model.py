@@ -2,6 +2,7 @@ from typing import Literal, AsyncGenerator, List, Dict, Generator, Optional
 import tiktoken
 from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage
 from openai import OpenAI
 from tenacity import retry, stop_after_attempt, retry_if_exception_type
 
@@ -39,6 +40,17 @@ class TextModel(BaseModelToolkit):
         return TextModel.compose_message_openai(
             system_prompt, role="system"
         ) + TextModel.compose_message_openai(user_input, role="user")
+
+    @staticmethod
+    def get_langchain_messages(messages: List[Dict[str, str]]) -> List[BaseMessage]:
+        return [
+            (
+                HumanMessage(content=message["content"])
+                if message["role"] == "user"
+                else SystemMessage(content=message["content"])
+            )
+            for message in messages
+        ]
 
     def run(
         self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
