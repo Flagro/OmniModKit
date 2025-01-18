@@ -63,8 +63,8 @@ class TextModel(BaseModelToolkit):
             model_name=self.get_model().name,
         )
         structured_llm = llm.with_structured_output(pydantic_model)
-        # TODO: use langchain messages instead of dict
-        structured_response = structured_llm.invoke(messages)
+        langchain_messages = TextModel.get_langchain_messages(messages)
+        structured_response = structured_llm.invoke(langchain_messages)
         return structured_response
 
     async def arun(
@@ -78,8 +78,8 @@ class TextModel(BaseModelToolkit):
             model_name=self.get_model().name,
         )
         structured_llm = llm.with_structured_output(pydantic_model)
-        # TODO: use langchain messages instead of dict
-        structured_response = await structured_llm.ainvoke(messages)
+        langchain_messages = TextModel.get_langchain_messages(messages)
+        structured_response = await structured_llm.ainvoke(langchain_messages)
         return structured_response
 
     def stream(
