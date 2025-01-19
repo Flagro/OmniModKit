@@ -42,15 +42,16 @@ class TextModel(BaseModelToolkit):
         ) + TextModel.compose_message_openai(user_input, role="user")
 
     @staticmethod
+    def get_langchain_message(Dist: Dict[str, str]) -> BaseMessage:
+        return (
+            HumanMessage(content=Dist["content"])
+            if Dist["role"] == "user"
+            else SystemMessage(content=Dist["content"])
+        )
+
+    @staticmethod
     def get_langchain_messages(messages: List[Dict[str, str]]) -> List[BaseMessage]:
-        return [
-            (
-                HumanMessage(content=message["content"])
-                if message["role"] == "user"
-                else SystemMessage(content=message["content"])
-            )
-            for message in messages
-        ]
+        return [TextModel.get_langchain_message(message) for message in messages]
 
     def run(
         self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
