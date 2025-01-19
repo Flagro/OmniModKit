@@ -53,8 +53,13 @@ class PromptManager:
     def get_default_image() -> Type[BaseModel]:
         return DefaultImage
 
+    @staticmethod
     def get_default_text() -> Type[BaseModel]:
         return DefaultText
+
+    @staticmethod
+    def get_default_text_chunk() -> Type[BaseModel]:
+        return DefaultTextChunk
 
     @staticmethod
     def get_current_date_prompt() -> str:
