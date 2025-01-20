@@ -1,3 +1,4 @@
+import functools
 from typing import Literal, AsyncGenerator, List, Dict, Generator, Optional
 import tiktoken
 from pydantic import BaseModel
@@ -13,6 +14,15 @@ from ...prompt_manager import PromptManager
 
 class YesOrNoInvalidResponse(Exception):
     pass
+
+
+@functools.lru_cache(maxsize=None)
+def _get_encoding_for_model(model_name: str) -> tiktoken.Encoding:
+    """
+    Returns the tiktoken encoding for the given model name,
+    leveraging LRU caching to avoid repeated calls.
+    """
+    return tiktoken.encoding_for_model(model_name)
 
 
 class TextModel(BaseModelToolkit):
@@ -127,9 +137,12 @@ class TextModel(BaseModelToolkit):
         raise YesOrNoInvalidResponse(f"Response: {text_response}")
 
     def count_tokens(self, text: str) -> int:
-        encoding_for_model = tiktoken.encoding_for_model(self.get_model().name)
-        nums_tokens = len(encoding_for_model.encode(text))
-        return nums_tokens
+        """
+        Uses LRU-cached model encoding to minimize repeated calls to tiktoken.
+        """
+        model_name = self.get_model().name
+        encoding = _get_encoding_for_model(model_name)
+        return len(encoding.encode(text))
 
     def get_price(
         self,
