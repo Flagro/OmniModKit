@@ -128,7 +128,8 @@ class TextModel(BaseModelToolkit):
         retry=retry_if_exception_type(YesOrNoInvalidResponse),
     )
     async def ask_yes_no_question(self, question: str) -> bool:
-        text_response = await self.arun(self.compose_message_openai(question))
+        response = await self.arun(self.compose_message_openai(question))
+        text_response = str(response)
         lower_response = text_response.lower()
         if "yes" in lower_response:
             return True
