@@ -137,11 +137,7 @@ class TextModel(BaseModelToolkit):
         raise YesOrNoInvalidResponse(f"Response: {text_response}")
 
     def count_tokens(self, text: str) -> int:
-        """
-        Uses LRU-cached model encoding to minimize repeated calls to tiktoken.
-        """
-        model_name = self.get_model().name
-        encoding = _get_encoding_for_model(model_name)
+        encoding = _get_encoding_for_model(self.get_model().name)
         return len(encoding.encode(text))
 
     def get_price(
