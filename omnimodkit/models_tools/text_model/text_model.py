@@ -128,6 +128,7 @@ class TextModel(BaseModelToolkit):
         retry=retry_if_exception_type(YesOrNoInvalidResponse),
     )
     async def ask_yes_no_question(self, question: str) -> bool:
+        # TODO: refactor it to use structured output
         response = await self.arun(self.compose_message_openai(question))
         text_response = str(response)
         lower_response = text_response.lower()
