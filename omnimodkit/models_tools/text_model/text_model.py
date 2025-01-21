@@ -12,10 +12,6 @@ from ...ai_config import Model
 from ...prompt_manager import PromptManager
 
 
-class YesOrNoInvalidResponse(Exception):
-    pass
-
-
 @functools.lru_cache(maxsize=None)
 def _get_encoding_for_model(model_name: str) -> tiktoken.Encoding:
     """
@@ -123,20 +119,12 @@ class TextModel(BaseModelToolkit):
         async for message in response:
             yield pydantic_model(message.choices[0].message.content)
 
-    @retry(
-        stop=stop_after_attempt(3),
-        retry=retry_if_exception_type(YesOrNoInvalidResponse),
-    )
     async def ask_yes_no_question(self, question: str) -> bool:
-        # TODO: refactor it to use structured output
-        response = await self.arun(self.compose_message_openai(question))
-        text_response = str(response)
-        lower_response = text_response.lower()
-        if "yes" in lower_response:
-            return True
-        if "no" in lower_response:
-            return False
-        raise YesOrNoInvalidResponse(f"Response: {text_response}")
+        class YesNoResponse(BaseModel):
+            answer_is_yes: bool
+
+        response = await self.arun(self.compose_message_openai(question), YesNoResponse)
+        return response.answer_is_yes
 
     def count_tokens(self, text: str) -> int:
         encoding = _get_encoding_for_model(self.get_model().name)
