@@ -5,7 +5,6 @@ from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage
 from openai import OpenAI
-from tenacity import retry, stop_after_attempt, retry_if_exception_type
 
 from ..base_model_toolkit import BaseModelToolkit
 from ...ai_config import Model
