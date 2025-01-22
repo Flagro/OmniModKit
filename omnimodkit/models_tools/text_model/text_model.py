@@ -123,7 +123,9 @@ class TextModel(BaseModelToolkit):
         class YesNoResponse(BaseModel):
             answer_is_yes: bool
 
-        response = await self.arun(self.compose_message_openai(question), YesNoResponse)
+        response: YesNoResponse = await self.arun(
+            self.compose_message_openai(question), YesNoResponse
+        )
         return response.answer_is_yes
 
     def count_tokens(self, text: str) -> int:
