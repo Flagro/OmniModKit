@@ -70,11 +70,7 @@ class TextModel(BaseModelToolkit):
     ) -> BaseModel:
         if pydantic_model is None:
             pydantic_model = PromptManager.get_default_text()
-        llm = ChatOpenAI(
-            api_key=self.openai_api_key,
-            temperature=self.get_default_temperature(),
-            model_name=self.get_model().name,
-        )
+        llm = self.get_langchain_llm()
         structured_llm = llm.with_structured_output(pydantic_model)
         langchain_messages = TextModel.get_langchain_messages(messages)
         structured_response = structured_llm.invoke(langchain_messages)
@@ -85,11 +81,7 @@ class TextModel(BaseModelToolkit):
     ) -> BaseModel:
         if pydantic_model is None:
             pydantic_model = PromptManager.get_default_text()
-        llm = ChatOpenAI(
-            api_key=self.openai_api_key,
-            temperature=self.get_default_temperature(),
-            model_name=self.get_model().name,
-        )
+        llm = self.get_langchain_llm()
         structured_llm = llm.with_structured_output(pydantic_model)
         langchain_messages = TextModel.get_langchain_messages(messages)
         structured_response = await structured_llm.ainvoke(langchain_messages)
