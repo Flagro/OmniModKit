@@ -26,6 +26,13 @@ class TextModel(BaseModelToolkit):
     def __init__(self, openai_api_key):
         self.openai_api_key = openai_api_key
 
+    def get_langchain_llm(self) -> ChatOpenAI:
+        return ChatOpenAI(
+            api_key=self.openai_api_key,
+            temperature=self.get_default_temperature(),
+            model=self.get_model().name,
+        )
+
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.TextGeneration.Models
 
