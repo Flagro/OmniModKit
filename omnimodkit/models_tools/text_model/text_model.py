@@ -54,11 +54,11 @@ class TextModel(BaseModelToolkit):
         ) + TextModel.compose_message_openai(user_input)
 
     @staticmethod
-    def get_langchain_message(Dist: Dict[str, str]) -> BaseMessage:
+    def get_langchain_message(message_dict: Dict[str, str]) -> BaseMessage:
         return (
-            HumanMessage(content=Dist["content"])
-            if Dist["role"] == "user"
-            else SystemMessage(content=Dist["content"])
+            HumanMessage(content=message_dict["content"])
+            if message_dict["role"] == "user"
+            else SystemMessage(content=message_dict["content"])
         )
 
     @staticmethod
