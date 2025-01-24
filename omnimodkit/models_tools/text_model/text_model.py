@@ -51,7 +51,7 @@ class TextModel(BaseModelToolkit):
     ) -> List[Dict[str, str]]:
         return TextModel.compose_message_openai(
             system_prompt, role="system"
-        ) + TextModel.compose_message_openai(user_input, role="user")
+        ) + TextModel.compose_message_openai(user_input)
 
     @staticmethod
     def get_langchain_message(Dist: Dict[str, str]) -> BaseMessage:
