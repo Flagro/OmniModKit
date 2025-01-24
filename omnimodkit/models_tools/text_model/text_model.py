@@ -92,6 +92,9 @@ class TextModel(BaseModelToolkit):
     ) -> Generator[BaseModel]:
         if pydantic_model is None:
             pydantic_model = PromptManager.get_default_text()
+        else:
+            # TODO: fix this
+            raise ValueError("pydantic_model is not supported for streaming")
         llm = OpenAI(api_key=self.openai_api_key, model=self.get_model().name)
         response = llm.chat.completions.create(
             model=self.get_model().name,
@@ -107,6 +110,9 @@ class TextModel(BaseModelToolkit):
     ) -> AsyncGenerator[BaseModel]:
         if pydantic_model is None:
             pydantic_model = PromptManager.get_default_text()
+        else:
+            # TODO: fix this
+            raise ValueError("pydantic_model is not supported for streaming")
         llm = OpenAI(api_key=self.openai_api_key, model=self.get_model().name)
         response = llm.chat.completions.create(
             model=self.get_model().name,
