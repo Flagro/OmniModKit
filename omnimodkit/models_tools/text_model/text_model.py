@@ -134,7 +134,8 @@ class TextModel(BaseModelToolkit):
 
     def count_tokens(self, text: str) -> int:
         encoding = _get_encoding_for_model(self.get_model().name)
-        return len(encoding.encode(text))
+        encoded_text = encoding.encode(text)
+        return len(encoded_text)
 
     def get_price(
         self,
