@@ -4,7 +4,6 @@ AIConfig:
     top_p: 1
     frequency_penalty: 0
     presence_penalty: 0
-    request_timeout: 60.0
     Models:
       gpt-4:
         name: "gpt-4"
@@ -24,7 +23,6 @@ AIConfig:
           input_pixel_price: 0.0001
 
   ImageGeneration:
-    request_timeout: 60.0
     output_image_size: "512x512"
     Models:
       dalle-3:
@@ -36,7 +34,6 @@ AIConfig:
           output_pixel_price: 10
 
   AudioRecognition:
-    request_timeout: 60.0
     Models:
       whisper:
         name: "whisper-1"
