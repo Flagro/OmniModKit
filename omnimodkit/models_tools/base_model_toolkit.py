@@ -13,10 +13,17 @@ class BaseModelToolkit(ABC):
     model_name: str
     openai_api_key: str
 
-    def __init__(self, model, ai_config: AIConfig, prompt_manager: PromptManager):
+    def __init__(
+        self,
+        model,
+        ai_config: AIConfig,
+        prompt_manager: PromptManager,
+        openai_api_key: str,
+    ):
         self.client = model
         self.ai_config = ai_config
         self.prompt_manager = prompt_manager
+        self.openai_api_key = openai_api_key
 
     def get_model_chain(self) -> ChatOpenAI:
         return ChatOpenAI(

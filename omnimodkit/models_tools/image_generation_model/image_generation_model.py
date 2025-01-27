@@ -10,9 +10,6 @@ from ...ai_config import Model
 class ImageGenerationModel(BaseModelToolkit):
     model_name = "image_generation"
 
-    def __init__(self, openai_api_key: str):
-        self.openai_api_key = openai_api_key
-
     def run(
         self,
         text_description: str,

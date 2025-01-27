@@ -23,9 +23,6 @@ def _get_encoding_for_model(model_name: str) -> tiktoken.Encoding:
 class TextModel(BaseModelToolkit):
     model_name = "text"
 
-    def __init__(self, openai_api_key):
-        self.openai_api_key = openai_api_key
-
     def get_langchain_llm(self) -> ChatOpenAI:
         return ChatOpenAI(
             api_key=self.openai_api_key,

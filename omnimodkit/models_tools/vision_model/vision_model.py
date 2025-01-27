@@ -11,9 +11,6 @@ from ...prompt_manager import PromptManager
 class VisionModel(BaseModelToolkit):
     model_name = "vision"
 
-    def __init__(self, openai_api_key: str):
-        self.openai_api_key = openai_api_key
-
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.TextGeneration.Models
 
