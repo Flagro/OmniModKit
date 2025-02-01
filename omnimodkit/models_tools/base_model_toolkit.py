@@ -1,3 +1,5 @@
+import io
+import base64
 from abc import ABC, abstractmethod
 from typing import Optional, Dict, Any, Type, Generator, AsyncGenerator
 from pydantic import BaseModel
@@ -36,6 +38,10 @@ class BaseModelToolkit(ABC):
     @property
     def default_attribute(self) -> str:
         return f"{self.model_name}_default"
+
+    @staticmethod
+    def get_b64_from_bytes(in_memory_stream: io.BytesIO) -> str:
+        return base64.b64encode(in_memory_stream.getvalue()).decode()
 
     @abstractmethod
     def run(*args, **kwargs) -> BaseModel:

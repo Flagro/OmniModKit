@@ -1,5 +1,4 @@
 import io
-import base64
 from typing import Type, Optional, Dict
 from langchain_core.pydantic_v1 import BaseModel
 
@@ -22,7 +21,7 @@ class AudioRecognitionModel(BaseModelToolkit):
         if pydantic_model is None:
             pydantic_model = PromptManager.get_default_audio_information()
         # Encode in base64:
-        audio_base64 = base64.b64encode(in_memory_audio_stream.getvalue()).decode()
+        audio_base64 = AudioRecognitionModel.get_b64_from_bytes(in_memory_audio_stream)
         return {
             "input_dict": {
                 "type": "input_audio",

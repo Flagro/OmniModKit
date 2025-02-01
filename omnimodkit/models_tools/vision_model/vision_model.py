@@ -1,5 +1,4 @@
 import io
-import base64
 from typing import Type, Optional, Dict, Any
 from langchain_core.pydantic_v1 import BaseModel
 
@@ -22,7 +21,7 @@ class VisionModel(BaseModelToolkit):
         if pydantic_model is None:
             pydantic_model = PromptManager.get_default_image_information()
         # Encode in base64:
-        image_base64 = base64.b64encode(in_memory_image_stream.getvalue()).decode()
+        image_base64 = VisionModel.get_b64_from_bytes(in_memory_image_stream)
         return {
             "input_dict": {
                 "type": "image_url",
