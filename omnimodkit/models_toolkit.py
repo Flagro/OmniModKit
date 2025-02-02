@@ -31,4 +31,6 @@ class ModelsToolkit:
         Returns the price of the AI services for the given
         input parameters
         """
-        return sum([tool.get_price(*args, **kwargs) for tool in self.tools.values()])
+        return sum(
+            map(lambda model: model.get_price(*args, **kwargs), self.tools.values())
+        )
