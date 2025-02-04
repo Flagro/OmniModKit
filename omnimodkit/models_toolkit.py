@@ -22,6 +22,9 @@ class ModelsToolkit:
         self.ai_config = ai_config
         self.tools = {model.model_name: model(openai_api_key) for model in self.models}
 
+    def get_model(self, model_name: str) -> BaseModelToolkit:
+        return self.tools[model_name]
+
     def get_price(
         self,
         *args,
