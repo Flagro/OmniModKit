@@ -36,6 +36,17 @@ class ModelsToolkit:
         """
         return self.get_model(model_name).run(*args, **kwargs)
 
+    async def arun_model(
+        self,
+        model_name: str,
+        *args,
+        **kwargs,
+    ) -> BaseModelToolkit:
+        """
+        Runs the model with the given input parameters asynchronously
+        """
+        return await self.get_model(model_name).arun(*args, **kwargs)
+
     def get_price(
         self,
         *args,
