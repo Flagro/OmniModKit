@@ -25,6 +25,17 @@ class ModelsToolkit:
     def get_model(self, model_name: str) -> BaseModelToolkit:
         return self.tools[model_name]
 
+    def run_model(
+        self,
+        model_name: str,
+        *args,
+        **kwargs,
+    ) -> BaseModelToolkit:
+        """
+        Runs the model with the given input parameters
+        """
+        return self.get_model(model_name).run(*args, **kwargs)
+
     def get_price(
         self,
         *args,
