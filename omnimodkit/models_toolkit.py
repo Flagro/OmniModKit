@@ -54,22 +54,23 @@ class ModelsToolkit:
         model_name: str,
         *args,
         **kwargs,
-    ) -> BaseModel:
+    ) -> Generator[BaseModel]:
         """
         Streams the model with the given input parameters
         """
-        return self.get_model(model_name).stream(*args, **kwargs)
+        yield from self.get_model(model_name).stream(*args, **kwargs)
 
     async def astream_model(
         self,
         model_name: str,
         *args,
         **kwargs,
-    ) -> BaseModel:
+    ) -> AsyncGenerator[BaseModel]:
         """
         Streams the model with the given input parameters asynchronously
         """
-        return await self.get_model(model_name).astream(*args, **kwargs)
+        async for model in self.get_model(model_name).astream(*args, **kwargs):
+            yield model
 
     def get_price(
         self,
