@@ -1,4 +1,6 @@
-from typing import List, Type
+from typing import List, Type, Generator, AsyncGenerator
+
+from pydantic import BaseModel
 
 from .ai_config import AIConfig
 from .models_tools.base_model_toolkit import BaseModelToolkit
@@ -30,7 +32,7 @@ class ModelsToolkit:
         model_name: str,
         *args,
         **kwargs,
-    ) -> BaseModelToolkit:
+    ) -> BaseModel:
         """
         Runs the model with the given input parameters
         """
@@ -41,7 +43,7 @@ class ModelsToolkit:
         model_name: str,
         *args,
         **kwargs,
-    ) -> BaseModelToolkit:
+    ) -> BaseModel:
         """
         Runs the model with the given input parameters asynchronously
         """
@@ -52,7 +54,7 @@ class ModelsToolkit:
         model_name: str,
         *args,
         **kwargs,
-    ) -> BaseModelToolkit:
+    ) -> BaseModel:
         """
         Streams the model with the given input parameters
         """
@@ -63,7 +65,7 @@ class ModelsToolkit:
         model_name: str,
         *args,
         **kwargs,
-    ) -> BaseModelToolkit:
+    ) -> BaseModel:
         """
         Streams the model with the given input parameters asynchronously
         """
