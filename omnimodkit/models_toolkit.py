@@ -47,6 +47,28 @@ class ModelsToolkit:
         """
         return await self.get_model(model_name).arun(*args, **kwargs)
 
+    def stream_model(
+        self,
+        model_name: str,
+        *args,
+        **kwargs,
+    ) -> BaseModelToolkit:
+        """
+        Streams the model with the given input parameters
+        """
+        return self.get_model(model_name).stream(*args, **kwargs)
+
+    async def astream_model(
+        self,
+        model_name: str,
+        *args,
+        **kwargs,
+    ) -> BaseModelToolkit:
+        """
+        Streams the model with the given input parameters asynchronously
+        """
+        return await self.get_model(model_name).astream(*args, **kwargs)
+
     def get_price(
         self,
         *args,
