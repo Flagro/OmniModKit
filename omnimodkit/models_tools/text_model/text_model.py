@@ -11,7 +11,7 @@ from ...ai_config import Model
 from ...prompt_manager import PromptManager
 
 
-@functools.lru_cache(maxsize=None)
+@functools.lru_cache()
 def _get_encoding_for_model(model_name: str) -> tiktoken.Encoding:
     """
     Returns the tiktoken encoding for the given model name,
