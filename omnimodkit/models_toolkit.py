@@ -22,10 +22,10 @@ class ModelsToolkit:
 
     def __init__(self, openai_api_key: str, ai_config: AIConfig):
         self.ai_config = ai_config
-        self.tools = {model.model_name: model(openai_api_key) for model in self.models}
+        self.models = {model.model_name: model(openai_api_key) for model in self.models}
 
     def get_model(self, model_name: str) -> BaseModelToolkit:
-        return self.tools[model_name]
+        return self.models[model_name]
 
     def run_model(
         self,
@@ -82,5 +82,5 @@ class ModelsToolkit:
         input parameters
         """
         return sum(
-            map(lambda model: model.get_price(*args, **kwargs), self.tools.values())
+            map(lambda model: model.get_price(*args, **kwargs), self.models.values())
         )
