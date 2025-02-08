@@ -4,25 +4,17 @@ from pydantic import BaseModel
 
 from .ai_config import AIConfig
 from .models_tools.base_model_toolkit import BaseModelToolkit
-from .models_tools import (
-    TextModel,
-    VisionModel,
-    ImageGenerationModel,
-    AudioRecognitionModel,
-)
 
 
 class ModelsToolkit:
-    models: List[Type[BaseModelToolkit]] = [
-        TextModel,
-        VisionModel,
-        ImageGenerationModel,
-        AudioRecognitionModel,
-    ]
-
-    def __init__(self, openai_api_key: str, ai_config: AIConfig):
+    def __init__(
+        self,
+        openai_api_key: str,
+        ai_config: AIConfig,
+        models: List[Type[BaseModelToolkit]] = None,
+    ):
         self.ai_config = ai_config
-        self.models = {model.model_name: model(openai_api_key) for model in self.models}
+        self.models = {model.model_name: model(openai_api_key) for model in models}
 
     def get_model(self, model_name: str) -> BaseModelToolkit:
         return self.models[model_name]
