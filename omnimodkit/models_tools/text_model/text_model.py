@@ -142,5 +142,4 @@ class TextModel(BaseModelToolkit):
     ) -> float:
         input_token_price = self.get_model().rate.input_token_price
         output_token_price = self.get_model().rate.output_token_price
-
         return token_len * input_token_price + token_len * output_token_price
