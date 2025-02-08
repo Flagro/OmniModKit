@@ -60,7 +60,7 @@ class TextModel(BaseModelToolkit):
 
     @staticmethod
     def get_langchain_messages(messages: List[Dict[str, str]]) -> List[BaseMessage]:
-        return [TextModel.get_langchain_message(message) for message in messages]
+        return list(map(TextModel.get_langchain_message, messages))
 
     def run(
         self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
