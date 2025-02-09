@@ -65,3 +65,7 @@ class PromptManager:
     def get_current_date_prompt() -> str:
         date_prompt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         return date_prompt
+
+    @staticmethod
+    def get_get_default_system_prompt_text() -> str:
+        return "Please provide the necessary information."
