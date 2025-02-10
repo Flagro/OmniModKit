@@ -69,3 +69,15 @@ class PromptManager:
     @staticmethod
     def get_get_default_system_prompt_text() -> str:
         return "Please provide the necessary information."
+
+    @staticmethod
+    def get_default_system_prompt_audio() -> str:
+        return "Based on the audio, fill out the provided fields."
+
+    @staticmethod
+    def get_default_system_prompt_vision() -> str:
+        return "Based on the image, fill out the provided fields."
+
+    @staticmethod
+    def get_default_system_prompt_image() -> str:
+        return "Please provide the necessary information."
