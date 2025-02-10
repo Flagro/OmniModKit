@@ -31,9 +31,15 @@ class DefaultImageInformation(BaseModel):
 class DefaultImage(BaseModel):
     image_url: str = Field(description="url of the image")
 
+    def __str__(self):
+        return self.image_url
+
 
 class DefaultText(BaseModel):
     text: str = Field(description="text to be processed")
+
+    def __str__(self):
+        return self.text
 
 
 class DefaultTextChunk(BaseModel):
