@@ -73,7 +73,7 @@ class PromptManager:
         return date_prompt
 
     @staticmethod
-    def get_get_default_system_prompt_text() -> str:
+    def get_default_system_prompt_text() -> str:
         return "Please provide the necessary information."
 
     @staticmethod
