@@ -1,3 +1,4 @@
+import io
 from typing import Optional
 from pydantic import BaseModel
 from .ai_config import AIConfig
@@ -31,3 +32,6 @@ class UniversalModelsToolkit:
             system_prompt = PromptManager.get_default_system_prompt_text()
         messages = TextModel.compose_messages_openai(user_input, system_prompt)
         return self.models_toolkit.run_model("text", messages)
+
+    def get_image_description(self, in_memory_image: io.BytesIO) -> BaseModel:
+        return self.models_toolkit.run_model("vision", in_memory_image)
