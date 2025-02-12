@@ -35,3 +35,11 @@ class UniversalModelsToolkit:
 
     def get_image_description(self, in_memory_image: io.BytesIO) -> BaseModel:
         return self.models_toolkit.run_model("vision", in_memory_image)
+
+    def generate_image(self, prompt: str) -> BaseModel:
+        return self.models_toolkit.run_model("image_generation", prompt)
+
+    def get_audio_information(self, in_memory_audio_stream: io.BytesIO) -> BaseModel:
+        return self.models_toolkit.run_model(
+            "audio_recognition", in_memory_audio_stream
+        )
