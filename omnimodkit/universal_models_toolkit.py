@@ -1,5 +1,5 @@
 import io
-from typing import Optional
+from typing import Optional, Generator
 from pydantic import BaseModel
 from .ai_config import AIConfig
 from .models_tools import (
@@ -66,3 +66,11 @@ class UniversalModelsToolkit:
         return await self.models_toolkit.arun_model(
             "audio_recognition", in_memory_audio_stream
         )
+
+    def stream_text_response(
+        self, user_input: str, system_prompt: Optional[str] = None
+    ) -> Generator[BaseModel]:
+        if system_prompt is None:
+            system_prompt = PromptManager.get_default_system_prompt_text()
+        messages = TextModel.compose_messages_openai(user_input, system_prompt)
+        return self.models_toolkit.stream_model("text", messages)
