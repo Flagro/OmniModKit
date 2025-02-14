@@ -16,6 +16,7 @@ class AudioRecognitionModel(BaseModelToolkit):
     def _prepare_input(
         self,
         in_memory_audio_stream: io.BytesIO,
+        system_prompt: str,
         pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> dict:
         if pydantic_model is None:
@@ -30,7 +31,7 @@ class AudioRecognitionModel(BaseModelToolkit):
                     "format": "mp3",
                 },
             },
-            "system_prompt": "Based on the audio, fill out the provided fields.",
+            "system_prompt": system_prompt,
             "pydantic_model": pydantic_model,
         }
 
