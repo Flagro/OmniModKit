@@ -41,7 +41,9 @@ class UniversalModelsToolkit:
 
     def get_audio_information(self, in_memory_audio_stream: io.BytesIO) -> BaseModel:
         return self.models_toolkit.run_model(
-            "audio_recognition", in_memory_audio_stream
+            "audio_recognition",
+            PromptManager.get_default_system_prompt_audio(),
+            in_memory_audio_stream,
         )
 
     async def agent_get_text_response(
