@@ -37,7 +37,11 @@ class UniversalModelsToolkit:
         return self.models_toolkit.run_model("vision", in_memory_image)
 
     def generate_image(self, prompt: str) -> BaseModel:
-        return self.models_toolkit.run_model("image_generation", prompt)
+        return self.models_toolkit.run_model(
+            "image_generation",
+            prompt,
+            system_prompt=PromptManager.get_default_system_prompt_image(),
+        )
 
     def get_audio_information(self, in_memory_audio_stream: io.BytesIO) -> BaseModel:
         return self.models_toolkit.run_model(
