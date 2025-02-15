@@ -13,12 +13,13 @@ class ImageGenerationModel(BaseModelToolkit):
     def run(
         self,
         text_description: str,
+        system_prompt: str,
     ) -> BaseModel:
         pydantic_model = PromptManager.get_default_image()
         llm = self.get_model_chain()
         prompt = PromptTemplate(
             input_variables=["image_desc"],
-            template="Generate a detailed prompt to generate an image based on the following description: {image_desc}",
+            template=system_prompt + " {image_desc}",
         )
         chain = prompt | llm
         image_url = DallEAPIWrapper(api_key=self.openai_api_key).run(
