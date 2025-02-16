@@ -36,22 +36,22 @@ class UniversalModelsToolkit:
     def get_image_description(self, in_memory_image: io.BytesIO) -> BaseModel:
         return self.models_toolkit.run_model(
             "vision",
-            in_memory_image,
+            in_memory_image=in_memory_image,
             system_prompt=PromptManager.get_default_system_prompt_vision(),
         )
 
     def generate_image(self, prompt: str) -> BaseModel:
         return self.models_toolkit.run_model(
             "image_generation",
-            prompt,
+            text_description=prompt,
             system_prompt=PromptManager.get_default_system_prompt_image(),
         )
 
     def get_audio_information(self, in_memory_audio_stream: io.BytesIO) -> BaseModel:
         return self.models_toolkit.run_model(
             "audio_recognition",
-            PromptManager.get_default_system_prompt_audio(),
-            in_memory_audio_stream,
+            in_memory_audio_stream=in_memory_audio_stream,
+            system_prompt=PromptManager.get_default_system_prompt_audio(),
         )
 
     async def agent_get_text_response(
