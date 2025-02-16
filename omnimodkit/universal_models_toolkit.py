@@ -34,7 +34,11 @@ class UniversalModelsToolkit:
         return self.models_toolkit.run_model("text", messages)
 
     def get_image_description(self, in_memory_image: io.BytesIO) -> BaseModel:
-        return self.models_toolkit.run_model("vision", in_memory_image)
+        return self.models_toolkit.run_model(
+            "vision",
+            in_memory_image,
+            system_prompt=PromptManager.get_default_system_prompt_image(),
+        )
 
     def generate_image(self, prompt: str) -> BaseModel:
         return self.models_toolkit.run_model(
