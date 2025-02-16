@@ -16,6 +16,7 @@ class VisionModel(BaseModelToolkit):
     def _prepare_input(
         self,
         in_memory_image_stream: io.BytesIO,
+        system_prompt: str,
         pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> Dict[str, Any]:
         if pydantic_model is None:
@@ -27,7 +28,7 @@ class VisionModel(BaseModelToolkit):
                 "type": "image_url",
                 "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"},
             },
-            "system_prompt": "Based on the image, fill out the provided fields.",
+            "system_prompt": system_prompt,
             "pydantic_model": pydantic_model,
         }
 
