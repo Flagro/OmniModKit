@@ -60,21 +60,31 @@ class UniversalModelsToolkit:
         if system_prompt is None:
             system_prompt = PromptManager.get_default_system_prompt_text()
         messages = TextModel.compose_messages_openai(user_input, system_prompt)
-        return await self.models_toolkit.arun_model("text", messages)
+        return await self.models_toolkit.arun_model("text", messages=messages)
 
     async def agent_get_image_description(
         self, in_memory_image: io.BytesIO
     ) -> BaseModel:
-        return await self.models_toolkit.arun_model("vision", in_memory_image)
+        return await self.models_toolkit.arun_model(
+            "vision",
+            in_memory_image=in_memory_image,
+            system_prompt=PromptManager.get_default_system_prompt_vision(),
+        )
 
     async def agent_generate_image(self, prompt: str) -> BaseModel:
-        return await self.models_toolkit.arun_model("image_generation", prompt)
+        return await self.models_toolkit.arun_model(
+            "image_generation",
+            text_description=prompt,
+            system_prompt=PromptManager.get_default_system_prompt_image(),
+        )
 
     async def agent_get_audio_information(
         self, in_memory_audio_stream: io.BytesIO
     ) -> BaseModel:
         return await self.models_toolkit.arun_model(
-            "audio_recognition", in_memory_audio_stream
+            "audio_recognition",
+            in_memory_audio_stream=in_memory_audio_stream,
+            system_prompt=PromptManager.get_default_system_prompt_audio(),
         )
 
     def stream_text_response(
@@ -83,7 +93,7 @@ class UniversalModelsToolkit:
         if system_prompt is None:
             system_prompt = PromptManager.get_default_system_prompt_text()
         messages = TextModel.compose_messages_openai(user_input, system_prompt)
-        return self.models_toolkit.stream_model("text", messages)
+        return self.models_toolkit.stream_model("text", messages=messages)
 
     async def astream_text_response(
         self, user_input: str, system_prompt: Optional[str] = None
@@ -91,5 +101,7 @@ class UniversalModelsToolkit:
         if system_prompt is None:
             system_prompt = PromptManager.get_default_system_prompt_text()
         messages = TextModel.compose_messages_openai(user_input, system_prompt)
-        async for response in self.models_toolkit.astream_model("text", messages):
+        async for response in self.models_toolkit.astream_model(
+            "text", messages=messages
+        ):
             yield response
