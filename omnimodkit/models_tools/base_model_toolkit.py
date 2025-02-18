@@ -83,6 +83,20 @@ class BaseModelToolkit(ABC):
             raise ValueError(f"Model {model_name} not found")
         return model
 
+    @staticmethod
+    def compose_messages_for_structured_output(
+        system_prompt: str, format_instructions: str, input_dict: Dict[str, Any]
+    ) -> List[HumanMessage]:
+        return [
+            HumanMessage(
+                content=[
+                    {"type": "text", "text": system_prompt},
+                    {"type": "text", "text": format_instructions},
+                    input_dict,
+                ]
+            )
+        ]
+
     def get_structured_output(
         self,
         input_dict: Dict[str, Any],
@@ -91,15 +105,9 @@ class BaseModelToolkit(ABC):
     ) -> Dict[str, Any]:
         parser = JsonOutputParser(pydantic_model=pydantic_model)
         model = self.get_model_chain()
-        messages = [
-            HumanMessage(
-                content=[
-                    {"type": "text", "text": system_prompt},
-                    {"type": "text", "text": parser.get_format_instructions()},
-                    input_dict,
-                ]
-            )
-        ]
+        messages = self.compose_messages_for_structured_output(
+            system_prompt, parser.get_format_instructions(), input_dict
+        )
         msg = model.invoke(messages)
         parsed_output = parser.invoke(msg.content)
         return pydantic_model(**parsed_output)
@@ -112,15 +120,9 @@ class BaseModelToolkit(ABC):
     ) -> Dict[str, Any]:
         parser = JsonOutputParser(pydantic_model=pydantic_model)
         model = self.get_model_chain()
-        messages = [
-            HumanMessage(
-                content=[
-                    {"type": "text", "text": system_prompt},
-                    {"type": "text", "text": parser.get_format_instructions()},
-                    input_dict,
-                ]
-            )
-        ]
+        messages = self.compose_messages_for_structured_output(
+            system_prompt, parser.get_format_instructions(), input_dict
+        )
         msg = await model.ainvoke(messages)
         parsed_output = await parser.ainvoke(msg.content)
         return pydantic_model(**parsed_output)
