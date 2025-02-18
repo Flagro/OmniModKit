@@ -1,7 +1,7 @@
 import io
 import base64
 from abc import ABC, abstractmethod
-from typing import Optional, Dict, Any, Type, Generator, AsyncGenerator
+from typing import Optional, Dict, Any, Type, Generator, AsyncGenerator, List
 from pydantic import BaseModel
 from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.output_parsers import JsonOutputParser
