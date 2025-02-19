@@ -53,13 +53,13 @@ class ImageGenerationModel(BaseModelToolkit):
             raise ValueError(
                 f"Invalid image generation dimensions: {image_generation_dimensions}"
             )
-        image_generation_dimensions_x, image_generation_dimensions_y = (
-            image_generation_dimensions.split("x")
+        image_generation_dimensions_x, image_generation_dimensions_y = map(
+            int, image_generation_dimensions.split("x")
         )
         image_generation_pixels = (
             0
             if not image_generation_needed
-            else int(image_generation_dimensions_x) * int(image_generation_dimensions_y)
+            else image_generation_dimensions_x * image_generation_dimensions_y
         )
 
         return image_generation_pixels * output_pixel_price
