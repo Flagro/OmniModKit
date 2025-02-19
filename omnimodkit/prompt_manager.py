@@ -86,4 +86,4 @@ class PromptManager:
 
     @staticmethod
     def get_default_system_prompt_image() -> str:
-        return "Please provide the necessary information."
+        return "Please provide the necessary information: {image_desc}"

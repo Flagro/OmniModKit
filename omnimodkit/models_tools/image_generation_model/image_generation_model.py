@@ -19,7 +19,7 @@ class ImageGenerationModel(BaseModelToolkit):
         llm = self.get_model_chain()
         prompt = PromptTemplate(
             input_variables=["image_desc"],
-            template=system_prompt + " {image_desc}",
+            template=system_prompt,
         )
         chain = prompt | llm
         image_url = DallEAPIWrapper(api_key=self.openai_api_key).run(
