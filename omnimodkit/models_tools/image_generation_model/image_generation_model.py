@@ -56,10 +56,5 @@ class ImageGenerationModel(BaseModelToolkit):
         image_generation_dimensions_x, image_generation_dimensions_y = map(
             int, image_generation_dimensions.split("x")
         )
-        image_generation_pixels = (
-            0
-            if not image_generation_needed
-            else image_generation_dimensions_x * image_generation_dimensions_y
-        )
-
-        return image_generation_pixels * output_pixel_price
+        total_pixels = image_generation_dimensions_x * image_generation_dimensions_y
+        return total_pixels * output_pixel_price if image_generation_needed else 0
