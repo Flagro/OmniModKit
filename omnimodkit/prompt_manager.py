@@ -86,4 +86,5 @@ class PromptManager:
 
     @staticmethod
     def get_default_system_prompt_image() -> str:
+        # TODO: this should not be a formatted string
         return "Please provide the necessary information: {image_desc}"
