@@ -15,7 +15,6 @@ tiktoken = "^0.7.0"
 PyYAML = "6.0"
 python-decouple = "*"
 tenacity = "8.2.2"
-pydub = "^0.25.1"
 pydantic = "^2.7.4"
 
 [build-system]
