@@ -8,6 +8,8 @@ class Rate(BaseModel):
     output_token_price: Optional[float]
     input_pixel_price: Optional[float]
     output_pixel_price: Optional[float]
+    input_audio_second_price: Optional[float]
+    output_audio_second_price: Optional[float]
 
 
 class Model(BaseModel):
