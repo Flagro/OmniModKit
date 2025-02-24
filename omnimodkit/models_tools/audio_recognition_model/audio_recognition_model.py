@@ -16,11 +16,13 @@ class AudioRecognitionModel(BaseModelToolkit):
     def _prepare_input(
         self,
         in_memory_audio_stream: io.BytesIO,
-        system_prompt: str,
+        system_prompt: Optional[str] = None,
         pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> dict:
         if pydantic_model is None:
             pydantic_model = PromptManager.get_default_audio_information()
+        if system_prompt is None:
+            system_prompt = PromptManager.get_default_system_prompt_audio()
         # Encode in base64:
         audio_base64 = AudioRecognitionModel.get_b64_from_bytes(in_memory_audio_stream)
         return {
