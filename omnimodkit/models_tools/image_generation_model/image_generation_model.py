@@ -13,7 +13,7 @@ class ImageGenerationModel(BaseModelToolkit):
     def run(
         self,
         text_description: str,
-        system_prompt: Optional[str],
+        system_prompt: Optional[str] = None,
     ) -> BaseModel:
         pydantic_model = PromptManager.get_default_image()
         if system_prompt is None:
