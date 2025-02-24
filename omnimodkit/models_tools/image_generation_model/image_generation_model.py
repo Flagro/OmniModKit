@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 from langchain_core.pydantic_v1 import BaseModel
 from langchain_community.utilities.dalle_image_generator import DallEAPIWrapper
 from langchain_core.prompts import PromptTemplate
@@ -13,9 +13,11 @@ class ImageGenerationModel(BaseModelToolkit):
     def run(
         self,
         text_description: str,
-        system_prompt: str,
+        system_prompt: Optional[str],
     ) -> BaseModel:
         pydantic_model = PromptManager.get_default_image()
+        if system_prompt is None:
+            system_prompt = PromptManager.get_default_system_prompt_image()
         llm = self.get_model_chain()
         prompt = PromptTemplate(
             input_variables=["image_desc"],
