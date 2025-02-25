@@ -2,12 +2,12 @@ import io
 from typing import Optional, Generator, AsyncGenerator
 from pydantic import BaseModel
 from .ai_config import AIConfig
-from .models_tools import (
-    TextModel,
-    VisionModel,
-    ImageGenerationModel,
+from .audio_recognition_model.audio_recognition_model import (
     AudioRecognitionModel,
 )
+from .image_generation_model.image_generation_model import ImageGenerationModel
+from .text_model.text_model import TextModel
+from .vision_model.vision_model import VisionModel
 from .models_toolkit import ModelsToolkit
 from .prompt_manager import PromptManager
 
