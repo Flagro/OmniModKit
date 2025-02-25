@@ -3,8 +3,8 @@ from typing import Type, Optional, Dict, Any
 from langchain_core.pydantic_v1 import BaseModel
 
 from ..base_model_toolkit import BaseModelToolkit
-from ...ai_config import Model
-from ...prompt_manager import PromptManager
+from ..ai_config import Model
+from ..prompt_manager import PromptManager
 
 
 class VisionModel(BaseModelToolkit):

@@ -7,8 +7,8 @@ from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage
 from openai import OpenAI
 
 from ..base_model_toolkit import BaseModelToolkit
-from ...ai_config import Model
-from ...prompt_manager import PromptManager
+from ..ai_config import Model
+from ..prompt_manager import PromptManager
 
 
 @functools.lru_cache()

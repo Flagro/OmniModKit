@@ -3,8 +3,8 @@ from langchain_core.pydantic_v1 import BaseModel
 from langchain_community.utilities.dalle_image_generator import DallEAPIWrapper
 from langchain_core.prompts import PromptTemplate
 from ..base_model_toolkit import BaseModelToolkit
-from ...prompt_manager import PromptManager
-from ...ai_config import Model
+from ..prompt_manager import PromptManager
+from ..ai_config import Model
 
 
 class ImageGenerationModel(BaseModelToolkit):
