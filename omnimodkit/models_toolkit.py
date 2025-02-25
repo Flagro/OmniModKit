@@ -3,7 +3,7 @@ from typing import List, Type, Generator, AsyncGenerator
 from pydantic import BaseModel
 
 from .ai_config import AIConfig
-from .models_tools.base_model_toolkit import BaseModelToolkit
+from .base_model_toolkit import BaseModelToolkit
 
 
 class ModelsToolkit:

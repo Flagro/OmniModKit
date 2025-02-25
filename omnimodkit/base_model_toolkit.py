@@ -7,8 +7,8 @@ from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
-from ..prompt_manager import PromptManager
-from ..ai_config import AIConfig, Model
+from .prompt_manager import PromptManager
+from .ai_config import AIConfig, Model
 
 
 class BaseModelToolkit(ABC):
