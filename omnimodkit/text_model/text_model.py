@@ -20,6 +20,10 @@ def _get_encoding_for_model(model_name: str) -> tiktoken.Encoding:
     return tiktoken.encoding_for_model(model_name)
 
 
+class YesNoResponse(BaseModel):
+    answer_is_yes: bool
+
+
 class TextModel(BaseModelToolkit):
     model_name = "text"
 
@@ -121,9 +125,6 @@ class TextModel(BaseModelToolkit):
             yield pydantic_model(message.choices[0].message.content)
 
     async def ask_yes_no_question(self, question: str) -> bool:
-        class YesNoResponse(BaseModel):
-            answer_is_yes: bool
-
         response: YesNoResponse = await self.arun(
             self.compose_message_openai(question), YesNoResponse
         )
