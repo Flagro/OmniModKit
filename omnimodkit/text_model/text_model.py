@@ -1,5 +1,5 @@
 import functools
-from typing import Literal, AsyncGenerator, List, Dict, Generator, Optional
+from typing import Literal, AsyncGenerator, List, Dict, Generator, Optional, TypedDict
 import tiktoken
 from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
@@ -24,6 +24,11 @@ class YesNoResponse(BaseModel):
     answer_is_yes: bool
 
 
+class OpenAIMessage(TypedDict):
+    role: str
+    content: str
+
+
 class TextModel(BaseModelToolkit):
     model_name = "text"
 
@@ -40,8 +45,8 @@ class TextModel(BaseModelToolkit):
     @staticmethod
     def compose_message_openai(
         message_text: str, role: Literal["user", "system"] = "user"
-    ) -> List[Dict[str, str]]:
-        return [{"role": role, "content": message_text}]
+    ) -> List[OpenAIMessage]:
+        return [OpenAIMessage({"role": role, "content": message_text})]
 
     def get_default_temperature(self) -> float:
         return self.get_model().temperature
@@ -49,13 +54,13 @@ class TextModel(BaseModelToolkit):
     @staticmethod
     def compose_messages_openai(
         user_input: str, system_prompt: str
-    ) -> List[Dict[str, str]]:
+    ) -> List[OpenAIMessage]:
         return TextModel.compose_message_openai(
             system_prompt, role="system"
         ) + TextModel.compose_message_openai(user_input)
 
     @staticmethod
-    def get_langchain_message(message_dict: Dict[str, str]) -> BaseMessage:
+    def get_langchain_message(message_dict: OpenAIMessage) -> BaseMessage:
         return (
             HumanMessage(content=message_dict["content"])
             if message_dict["role"] == "user"
@@ -63,11 +68,11 @@ class TextModel(BaseModelToolkit):
         )
 
     @staticmethod
-    def get_langchain_messages(messages: List[Dict[str, str]]) -> List[BaseMessage]:
+    def get_langchain_messages(messages: List[OpenAIMessage]) -> List[BaseMessage]:
         return list(map(TextModel.get_langchain_message, messages))
 
     def run(
-        self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
+        self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> BaseModel:
         if pydantic_model is None:
             pydantic_model = PromptManager.get_default_text()
@@ -78,7 +83,7 @@ class TextModel(BaseModelToolkit):
         return structured_response
 
     async def arun(
-        self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
+        self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> BaseModel:
         if pydantic_model is None:
             pydantic_model = PromptManager.get_default_text()
@@ -89,7 +94,7 @@ class TextModel(BaseModelToolkit):
         return structured_response
 
     def stream(
-        self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
+        self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> Generator[BaseModel]:
         if pydantic_model is None:
             pydantic_model = PromptManager.get_default_text()
@@ -107,7 +112,7 @@ class TextModel(BaseModelToolkit):
             yield pydantic_model(message.choices[0].message.content)
 
     async def astream(
-        self, messages: List[Dict[str, str]], pydantic_model: Optional[BaseModel] = None
+        self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> AsyncGenerator[BaseModel]:
         if pydantic_model is None:
             pydantic_model = PromptManager.get_default_text()
