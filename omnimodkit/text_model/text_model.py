@@ -45,8 +45,8 @@ class TextModel(BaseModelToolkit):
     @staticmethod
     def compose_message_openai(
         message_text: str, role: Literal["user", "system"] = "user"
-    ) -> List[OpenAIMessage]:
-        return [OpenAIMessage({"role": role, "content": message_text})]
+    ) -> OpenAIMessage:
+        return OpenAIMessage({"role": role, "content": message_text})
 
     def get_default_temperature(self) -> float:
         return self.get_model().temperature
@@ -55,9 +55,10 @@ class TextModel(BaseModelToolkit):
     def compose_messages_openai(
         user_input: str, system_prompt: str
     ) -> List[OpenAIMessage]:
-        return TextModel.compose_message_openai(
-            system_prompt, role="system"
-        ) + TextModel.compose_message_openai(user_input)
+        return [
+            TextModel.compose_message_openai(system_prompt, role="system"),
+            TextModel.compose_message_openai(user_input),
+        ]
 
     @staticmethod
     def get_langchain_message(message_dict: OpenAIMessage) -> BaseMessage:
