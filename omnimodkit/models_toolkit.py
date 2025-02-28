@@ -1,78 +1,100 @@
-from typing import List, Type, Generator, AsyncGenerator
-
+import io
+from typing import Optional, Generator, AsyncGenerator
 from pydantic import BaseModel
-
 from .ai_config import AIConfig
-from .base_model_toolkit import BaseModelToolkit
+from .audio_recognition_model.audio_recognition_model import (
+    AudioRecognitionModel,
+)
+from .image_generation_model.image_generation_model import ImageGenerationModel
+from .text_model.text_model import TextModel
+from .vision_model.vision_model import VisionModel
+from .prompt_manager import PromptManager
 
 
-class ModelsToolkit:
-    def __init__(
-        self,
-        openai_api_key: str,
-        ai_config: AIConfig,
-        models: List[Type[BaseModelToolkit]] = None,
-    ):
-        self.ai_config = ai_config
-        self.models = {model.model_name: model(openai_api_key) for model in models}
+class UniversalModelsToolkit:
+    def __init__(self, openai_api_key: str, ai_config: AIConfig):
+        self.text_model = TextModel(openai_api_key, ai_config)
+        self.vision_model = VisionModel(openai_api_key, ai_config)
+        self.image_generation_model = ImageGenerationModel(openai_api_key, ai_config)
+        self.audio_recognition_model = AudioRecognitionModel(openai_api_key, ai_config)
 
-    def get_model(self, model_name: str) -> BaseModelToolkit:
-        return self.models[model_name]
-
-    def run_model(
-        self,
-        model_name: str,
-        *args,
-        **kwargs,
+    def get_text_response(
+        self, user_input: str, system_prompt: Optional[str] = None
     ) -> BaseModel:
-        """
-        Runs the model with the given input parameters
-        """
-        return self.get_model(model_name).run(*args, **kwargs)
+        if system_prompt is None:
+            system_prompt = PromptManager.get_default_system_prompt_text()
+        messages = TextModel.compose_messages_openai(user_input, system_prompt)
+        return self.models_toolkit.run_model("text", messages)
 
-    async def arun_model(
-        self,
-        model_name: str,
-        *args,
-        **kwargs,
-    ) -> BaseModel:
-        """
-        Runs the model with the given input parameters asynchronously
-        """
-        return await self.get_model(model_name).arun(*args, **kwargs)
-
-    def stream_model(
-        self,
-        model_name: str,
-        *args,
-        **kwargs,
-    ) -> Generator[BaseModel]:
-        """
-        Streams the model with the given input parameters
-        """
-        yield from self.get_model(model_name).stream(*args, **kwargs)
-
-    async def astream_model(
-        self,
-        model_name: str,
-        *args,
-        **kwargs,
-    ) -> AsyncGenerator[BaseModel]:
-        """
-        Streams the model with the given input parameters asynchronously
-        """
-        async for model in self.get_model(model_name).astream(*args, **kwargs):
-            yield model
-
-    def get_price(
-        self,
-        *args,
-        **kwargs,
-    ) -> float:
-        """
-        Returns the price of the AI services for the given
-        input parameters
-        """
-        return sum(
-            map(lambda model: model.get_price(*args, **kwargs), self.models.values())
+    def get_image_description(self, in_memory_image: io.BytesIO) -> BaseModel:
+        return self.models_toolkit.run_model(
+            "vision",
+            in_memory_image=in_memory_image,
+            system_prompt=PromptManager.get_default_system_prompt_vision(),
         )
+
+    def generate_image(self, prompt: str) -> BaseModel:
+        return self.models_toolkit.run_model(
+            "image_generation",
+            text_description=prompt,
+            system_prompt=PromptManager.get_default_system_prompt_image(),
+        )
+
+    def get_audio_information(self, in_memory_audio_stream: io.BytesIO) -> BaseModel:
+        return self.models_toolkit.run_model(
+            "audio_recognition",
+            in_memory_audio_stream=in_memory_audio_stream,
+            system_prompt=PromptManager.get_default_system_prompt_audio(),
+        )
+
+    async def agent_get_text_response(
+        self, user_input: str, system_prompt: Optional[str] = None
+    ) -> BaseModel:
+        if system_prompt is None:
+            system_prompt = PromptManager.get_default_system_prompt_text()
+        messages = TextModel.compose_messages_openai(user_input, system_prompt)
+        return await self.models_toolkit.arun_model("text", messages=messages)
+
+    async def agent_get_image_description(
+        self, in_memory_image: io.BytesIO
+    ) -> BaseModel:
+        return await self.models_toolkit.arun_model(
+            "vision",
+            in_memory_image=in_memory_image,
+            system_prompt=PromptManager.get_default_system_prompt_vision(),
+        )
+
+    async def agent_generate_image(self, prompt: str) -> BaseModel:
+        return await self.models_toolkit.arun_model(
+            "image_generation",
+            text_description=prompt,
+            system_prompt=PromptManager.get_default_system_prompt_image(),
+        )
+
+    async def agent_get_audio_information(
+        self, in_memory_audio_stream: io.BytesIO
+    ) -> BaseModel:
+        return await self.models_toolkit.arun_model(
+            "audio_recognition",
+            in_memory_audio_stream=in_memory_audio_stream,
+            system_prompt=PromptManager.get_default_system_prompt_audio(),
+        )
+
+    def stream_text_response(
+        self, user_input: str, system_prompt: Optional[str] = None
+    ) -> Generator[BaseModel]:
+        if system_prompt is None:
+            system_prompt = PromptManager.get_default_system_prompt_text()
+        messages = TextModel.compose_messages_openai(user_input, system_prompt)
+        return self.models_toolkit.stream_model("text", messages=messages)
+
+    async def astream_text_response(
+        self, user_input: str, system_prompt: Optional[str] = None
+    ) -> AsyncGenerator[BaseModel]:
+        if system_prompt is None:
+            system_prompt = PromptManager.get_default_system_prompt_text()
+        messages = TextModel.compose_messages_openai(user_input, system_prompt)
+        async for response in self.models_toolkit.astream_model(
+            "text", messages=messages
+        ):
+            yield response
