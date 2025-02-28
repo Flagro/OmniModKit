@@ -24,25 +24,22 @@ class UniversalModelsToolkit:
         if system_prompt is None:
             system_prompt = PromptManager.get_default_system_prompt_text()
         messages = TextModel.compose_messages_openai(user_input, system_prompt)
-        return self.models_toolkit.run_model("text", messages)
+        return self.text_model.run(messages)
 
     def get_image_description(self, in_memory_image: io.BytesIO) -> BaseModel:
-        return self.models_toolkit.run_model(
-            "vision",
+        return self.vision_model.run(
             in_memory_image=in_memory_image,
             system_prompt=PromptManager.get_default_system_prompt_vision(),
         )
 
     def generate_image(self, prompt: str) -> BaseModel:
-        return self.models_toolkit.run_model(
-            "image_generation",
+        return self.image_generation_model.run(
             text_description=prompt,
             system_prompt=PromptManager.get_default_system_prompt_image(),
         )
 
     def get_audio_information(self, in_memory_audio_stream: io.BytesIO) -> BaseModel:
-        return self.models_toolkit.run_model(
-            "audio_recognition",
+        return self.audio_recognition_model.run(
             in_memory_audio_stream=in_memory_audio_stream,
             system_prompt=PromptManager.get_default_system_prompt_audio(),
         )
@@ -53,20 +50,18 @@ class UniversalModelsToolkit:
         if system_prompt is None:
             system_prompt = PromptManager.get_default_system_prompt_text()
         messages = TextModel.compose_messages_openai(user_input, system_prompt)
-        return await self.models_toolkit.arun_model("text", messages=messages)
+        return await self.text_model.arun(messages)
 
     async def agent_get_image_description(
         self, in_memory_image: io.BytesIO
     ) -> BaseModel:
-        return await self.models_toolkit.arun_model(
-            "vision",
+        return await self.vision_model.arun(
             in_memory_image=in_memory_image,
             system_prompt=PromptManager.get_default_system_prompt_vision(),
         )
 
     async def agent_generate_image(self, prompt: str) -> BaseModel:
-        return await self.models_toolkit.arun_model(
-            "image_generation",
+        return await self.image_generation_model.arun(
             text_description=prompt,
             system_prompt=PromptManager.get_default_system_prompt_image(),
         )
@@ -74,8 +69,7 @@ class UniversalModelsToolkit:
     async def agent_get_audio_information(
         self, in_memory_audio_stream: io.BytesIO
     ) -> BaseModel:
-        return await self.models_toolkit.arun_model(
-            "audio_recognition",
+        return await self.audio_recognition_model.arun(
             in_memory_audio_stream=in_memory_audio_stream,
             system_prompt=PromptManager.get_default_system_prompt_audio(),
         )
@@ -86,7 +80,7 @@ class UniversalModelsToolkit:
         if system_prompt is None:
             system_prompt = PromptManager.get_default_system_prompt_text()
         messages = TextModel.compose_messages_openai(user_input, system_prompt)
-        return self.models_toolkit.stream_model("text", messages=messages)
+        yield from self.text_model.stream(messages)
 
     async def astream_text_response(
         self, user_input: str, system_prompt: Optional[str] = None
@@ -94,7 +88,5 @@ class UniversalModelsToolkit:
         if system_prompt is None:
             system_prompt = PromptManager.get_default_system_prompt_text()
         messages = TextModel.compose_messages_openai(user_input, system_prompt)
-        async for response in self.models_toolkit.astream_model(
-            "text", messages=messages
-        ):
+        async for response in self.text_model.astream(messages=messages):
             yield response
