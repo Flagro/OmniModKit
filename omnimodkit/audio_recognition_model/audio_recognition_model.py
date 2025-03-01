@@ -40,7 +40,7 @@ class AudioRecognitionModel(BaseModelToolkit):
     def run(
         self,
         in_memory_audio_stream: io.BytesIO,
-        system_prompt: str,
+        system_prompt: Optional[str] = None,
         pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
         kwargs = self._prepare_input(
@@ -51,7 +51,7 @@ class AudioRecognitionModel(BaseModelToolkit):
     async def arun(
         self,
         in_memory_audio_stream: io.BytesIO,
-        system_prompt: str,
+        system_prompt: Optional[str] = None,
         pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
         kwargs = self._prepare_input(
