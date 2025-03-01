@@ -34,13 +34,11 @@ class UniversalModelsToolkit:
     def generate_image(self, prompt: str) -> BaseModel:
         return self.image_generation_model.run(
             text_description=prompt,
-            system_prompt=PromptManager.get_default_system_prompt_image(),
         )
 
     def get_audio_information(self, in_memory_audio_stream: io.BytesIO) -> BaseModel:
         return self.audio_recognition_model.run(
             in_memory_audio_stream=in_memory_audio_stream,
-            system_prompt=PromptManager.get_default_system_prompt_audio(),
         )
 
     async def aget_get_text_response(
@@ -56,13 +54,11 @@ class UniversalModelsToolkit:
     ) -> BaseModel:
         return await self.vision_model.arun(
             in_memory_image=in_memory_image,
-            system_prompt=PromptManager.get_default_system_prompt_vision(),
         )
 
     async def aget_generate_image(self, prompt: str) -> BaseModel:
         return await self.image_generation_model.arun(
             text_description=prompt,
-            system_prompt=PromptManager.get_default_system_prompt_image(),
         )
 
     async def aget_get_audio_information(
@@ -70,7 +66,6 @@ class UniversalModelsToolkit:
     ) -> BaseModel:
         return await self.audio_recognition_model.arun(
             in_memory_audio_stream=in_memory_audio_stream,
-            system_prompt=PromptManager.get_default_system_prompt_audio(),
         )
 
     def stream_text_response(
