@@ -21,7 +21,6 @@ class UniversalModelsToolkit:
     def get_text_response(
         self, user_input: str, system_prompt: Optional[str] = None
     ) -> BaseModel:
-        # TODO: move default system prompt logic inside the BaseModel models
         if system_prompt is None:
             system_prompt = PromptManager.get_default_system_prompt_text()
         messages = TextModel.compose_messages_openai(user_input, system_prompt)
@@ -30,7 +29,6 @@ class UniversalModelsToolkit:
     def get_image_description(self, in_memory_image: io.BytesIO) -> BaseModel:
         return self.vision_model.run(
             in_memory_image=in_memory_image,
-            system_prompt=PromptManager.get_default_system_prompt_vision(),
         )
 
     def generate_image(self, prompt: str) -> BaseModel:

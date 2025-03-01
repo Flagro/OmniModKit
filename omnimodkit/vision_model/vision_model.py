@@ -37,17 +37,23 @@ class VisionModel(BaseModelToolkit):
     def run(
         self,
         in_memory_image_stream: io.BytesIO,
+        system_prompt: Optional[str] = None,
         pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
-        kwargs = self._prepare_input(in_memory_image_stream, pydantic_model)
+        kwargs = self._prepare_input(
+            in_memory_image_stream, system_prompt, pydantic_model
+        )
         return self.get_structured_output(**kwargs)
 
     async def arun(
         self,
         in_memory_image_stream: io.BytesIO,
+        system_prompt: Optional[str] = None,
         pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
-        kwargs = self._prepare_input(in_memory_image_stream, pydantic_model)
+        kwargs = self._prepare_input(
+            in_memory_image_stream, system_prompt, pydantic_model
+        )
         return await self.aget_structured_output(**kwargs)
 
     def get_price(
