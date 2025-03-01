@@ -43,7 +43,7 @@ class UniversalModelsToolkit:
             system_prompt=PromptManager.get_default_system_prompt_audio(),
         )
 
-    async def agent_get_text_response(
+    async def aget_get_text_response(
         self, user_input: str, system_prompt: Optional[str] = None
     ) -> BaseModel:
         if system_prompt is None:
@@ -51,7 +51,7 @@ class UniversalModelsToolkit:
         messages = TextModel.compose_messages_openai(user_input, system_prompt)
         return await self.text_model.arun(messages)
 
-    async def agent_get_image_description(
+    async def aget_get_image_description(
         self, in_memory_image: io.BytesIO
     ) -> BaseModel:
         return await self.vision_model.arun(
@@ -59,13 +59,13 @@ class UniversalModelsToolkit:
             system_prompt=PromptManager.get_default_system_prompt_vision(),
         )
 
-    async def agent_generate_image(self, prompt: str) -> BaseModel:
+    async def aget_generate_image(self, prompt: str) -> BaseModel:
         return await self.image_generation_model.arun(
             text_description=prompt,
             system_prompt=PromptManager.get_default_system_prompt_image(),
         )
 
-    async def agent_get_audio_information(
+    async def aget_get_audio_information(
         self, in_memory_audio_stream: io.BytesIO
     ) -> BaseModel:
         return await self.audio_recognition_model.arun(
