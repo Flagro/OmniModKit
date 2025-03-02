@@ -1,5 +1,5 @@
 import io
-from typing import Optional, Generator, AsyncGenerator
+from typing import Generator, AsyncGenerator
 from pydantic import BaseModel
 from .ai_config import AIConfig
 from .audio_recognition_model.audio_recognition_model import (
@@ -8,7 +8,6 @@ from .audio_recognition_model.audio_recognition_model import (
 from .image_generation_model.image_generation_model import ImageGenerationModel
 from .text_model.text_model import TextModel
 from .vision_model.vision_model import VisionModel
-from .prompt_manager import PromptManager
 
 
 class UniversalModelsToolkit:
@@ -18,12 +17,8 @@ class UniversalModelsToolkit:
         self.image_generation_model = ImageGenerationModel(openai_api_key, ai_config)
         self.audio_recognition_model = AudioRecognitionModel(openai_api_key, ai_config)
 
-    def get_text_response(
-        self, user_input: str, system_prompt: Optional[str] = None
-    ) -> BaseModel:
-        if system_prompt is None:
-            system_prompt = PromptManager.get_default_system_prompt_text()
-        messages = TextModel.compose_messages_openai(user_input, system_prompt)
+    def get_text_response(self, user_input: str) -> BaseModel:
+        messages = TextModel.compose_messages_openai(user_input)
         return self.text_model.run(messages)
 
     def get_image_description(self, in_memory_image: io.BytesIO) -> BaseModel:
@@ -41,12 +36,8 @@ class UniversalModelsToolkit:
             in_memory_audio_stream=in_memory_audio_stream,
         )
 
-    async def aget_get_text_response(
-        self, user_input: str, system_prompt: Optional[str] = None
-    ) -> BaseModel:
-        if system_prompt is None:
-            system_prompt = PromptManager.get_default_system_prompt_text()
-        messages = TextModel.compose_messages_openai(user_input, system_prompt)
+    async def aget_get_text_response(self, user_input: str) -> BaseModel:
+        messages = TextModel.compose_messages_openai(user_input)
         return await self.text_model.arun(messages)
 
     async def aget_get_image_description(
@@ -68,19 +59,11 @@ class UniversalModelsToolkit:
             in_memory_audio_stream=in_memory_audio_stream,
         )
 
-    def stream_text_response(
-        self, user_input: str, system_prompt: Optional[str] = None
-    ) -> Generator[BaseModel]:
-        if system_prompt is None:
-            system_prompt = PromptManager.get_default_system_prompt_text()
-        messages = TextModel.compose_messages_openai(user_input, system_prompt)
+    def stream_text_response(self, user_input: str) -> Generator[BaseModel]:
+        messages = TextModel.compose_messages_openai(user_input)
         yield from self.text_model.stream(messages)
 
-    async def astream_text_response(
-        self, user_input: str, system_prompt: Optional[str] = None
-    ) -> AsyncGenerator[BaseModel]:
-        if system_prompt is None:
-            system_prompt = PromptManager.get_default_system_prompt_text()
-        messages = TextModel.compose_messages_openai(user_input, system_prompt)
+    async def astream_text_response(self, user_input: str) -> AsyncGenerator[BaseModel]:
+        messages = TextModel.compose_messages_openai(user_input)
         async for response in self.text_model.astream(messages=messages):
             yield response

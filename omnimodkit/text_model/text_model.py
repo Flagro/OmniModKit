@@ -53,8 +53,10 @@ class TextModel(BaseModelToolkit):
 
     @staticmethod
     def compose_messages_openai(
-        user_input: str, system_prompt: str
+        user_input: str, system_prompt: Optional[str] = None
     ) -> List[OpenAIMessage]:
+        if system_prompt is None:
+            system_prompt = PromptManager.get_default_system_prompt_text()
         return [
             TextModel.compose_message_openai(system_prompt, role="system"),
             TextModel.compose_message_openai(user_input),
