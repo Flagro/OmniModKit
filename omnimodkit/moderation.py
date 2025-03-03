@@ -8,8 +8,8 @@ class ModerationError(Exception):
 
 
 class Moderation:
-    def __init__(self, model: OpenAI):
-        self.client = model
+    def __init__(self, openai_api_key: str):
+        self.client = OpenAI(openai_api_key=openai_api_key)
 
     def moderate_image(self, in_memory_image_stream: io.BytesIO) -> bool:
         """
