@@ -5,6 +5,7 @@ from langchain_core.prompts import PromptTemplate
 from ..base_model_toolkit import BaseModelToolkit
 from ..prompt_manager import PromptManager
 from ..ai_config import Model
+from ..moderation import ModerationError
 
 
 class ImageGenerationModel(BaseModelToolkit):
@@ -15,6 +16,13 @@ class ImageGenerationModel(BaseModelToolkit):
         text_description: str,
         system_prompt: Optional[str] = None,
     ) -> BaseModel:
+        if (
+            self.ai_config.ImageGeneration.moderation_needed
+            and not self.moderation.moderate_text(text_description)
+        ):
+            raise ModerationError(
+                f"Text description '{text_description}' was rejected by the moderation system"
+            )
         pydantic_model = PromptManager.get_default_image()
         if system_prompt is None:
             system_prompt = PromptManager.get_default_system_prompt_image()
