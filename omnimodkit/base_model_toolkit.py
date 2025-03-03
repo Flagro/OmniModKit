@@ -9,6 +9,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
 from .prompt_manager import PromptManager
 from .ai_config import AIConfig, Model
+from .moderation import Moderation
 
 
 class BaseModelToolkit(ABC):
@@ -26,6 +27,7 @@ class BaseModelToolkit(ABC):
         self.ai_config = ai_config
         self.prompt_manager = prompt_manager
         self.openai_api_key = openai_api_key
+        self.moderation = Moderation(openai_api_key)
 
     def get_model_chain(self) -> ChatOpenAI:
         return ChatOpenAI(
