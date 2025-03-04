@@ -43,10 +43,16 @@ class AudioRecognition(BaseModel):
     Models: Dict[str, Model]
 
 
+class Vision(BaseModel):
+    moderation_needed: bool = True
+    Models: Dict[str, Model]
+
+
 class AIConfig(BaseModel):
     TextGeneration: TextGeneration
     ImageGeneration: ImageGeneration
     AudioRecognition: AudioRecognition
+    Vision: Vision
 
     @classmethod
     def load(cls, file_path: str):
