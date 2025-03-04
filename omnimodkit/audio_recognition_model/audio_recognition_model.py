@@ -5,6 +5,7 @@ from langchain_core.pydantic_v1 import BaseModel
 from ..base_model_toolkit import BaseModelToolkit
 from ..ai_config import Model
 from ..prompt_manager import PromptManager
+from ..moderation import ModerationError
 
 
 class AudioRecognitionModel(BaseModelToolkit):
@@ -46,7 +47,16 @@ class AudioRecognitionModel(BaseModelToolkit):
         kwargs = self._prepare_input(
             in_memory_audio_stream, system_prompt, pydantic_model
         )
-        return self.get_structured_output(**kwargs)
+        result = self.get_structured_output(**kwargs)
+        # TODO: check moderation before running the model
+        if (
+            self.ai_config.AudioRecognition.moderation_needed
+            and not self.moderation.moderate_text(str(result))
+        ):
+            raise ModerationError(
+                f"Audio description '{result}' was rejected by the moderation system"
+            )
+        return
 
     async def arun(
         self,
@@ -57,7 +67,16 @@ class AudioRecognitionModel(BaseModelToolkit):
         kwargs = self._prepare_input(
             in_memory_audio_stream, system_prompt, pydantic_model
         )
-        return await self.aget_structured_output(**kwargs)
+        result = await self.aget_structured_output(**kwargs)
+        # TODO: check moderation before running the model
+        if (
+            self.ai_config.AudioRecognition.moderation_needed
+            and not self.moderation.moderate_text(str(result))
+        ):
+            raise ModerationError(
+                f"Audio description '{result}' was rejected by the moderation system"
+            )
+        return
 
     def get_price(
         self,
