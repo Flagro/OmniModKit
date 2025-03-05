@@ -12,7 +12,7 @@ class VisionModel(BaseModelToolkit):
     model_name = "vision"
 
     def get_models_dict(self) -> Dict[str, Model]:
-        return self.ai_config.TextGeneration.Models
+        return self.ai_config.Vision.Models
 
     def _prepare_input(
         self,
