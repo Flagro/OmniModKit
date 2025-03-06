@@ -98,3 +98,17 @@ class PromptManager:
         if model_name == "image_generation":
             return PromptManager.get_default_system_prompt_image()
         return PromptManager.get_default_system_prompt_text()
+
+    @staticmethod
+    def get_default_pydantic_model(
+        model_name: str, streamable: bool
+    ) -> Type[BaseModel]:
+        if model_name == "audio_recognition":
+            return PromptManager.get_default_audio_information()
+        if model_name == "vision":
+            return PromptManager.get_default_image_information()
+        if model_name == "image_generation":
+            return PromptManager.get_default_image()
+        if streamable:
+            return PromptManager.get_default_text_chunk()
+        return PromptManager.get_default_text()
