@@ -88,3 +88,13 @@ class PromptManager:
     def get_default_system_prompt_image() -> str:
         # TODO: this should not be a formatted string
         return "Please provide the necessary information: {image_desc}"
+
+    @staticmethod
+    def get_default_system_prompt(model_name: str) -> str:
+        if model_name == "audio_recognition":
+            return PromptManager.get_default_system_prompt_audio()
+        if model_name == "vision":
+            return PromptManager.get_default_system_prompt_vision()
+        if model_name == "image_generation":
+            return PromptManager.get_default_system_prompt_image()
+        return PromptManager.get_default_system_prompt_text()
