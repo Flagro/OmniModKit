@@ -131,3 +131,6 @@ class BaseModelToolkit(ABC):
 
     def get_default_system_prompt(self) -> str:
         return self.prompt_manager.get_default_system_prompt(self.model_name)
+
+    def get_default_pydantic_model(self) -> Type[BaseModel]:
+        return self.prompt_manager.get_default_pydantic_model(self.model_name)
