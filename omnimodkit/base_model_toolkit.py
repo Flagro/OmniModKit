@@ -128,3 +128,6 @@ class BaseModelToolkit(ABC):
         msg = await model.ainvoke(messages)
         parsed_output = await parser.ainvoke(msg.content)
         return pydantic_model(**parsed_output)
+
+    def get_default_system_prompt(self) -> str:
+        return self.prompt_manager.get_default_system_prompt(self.model_name)
