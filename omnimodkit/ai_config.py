@@ -17,10 +17,7 @@ class Model(BaseModel):
     temperature: float
     structured_output_max_tokens: int = 1024
     request_timeout: float = 60
-    text_default: Optional[bool] = False
-    vision_default: Optional[bool] = False
-    audio_recognition_default: Optional[bool] = False
-    image_generation_default: Optional[bool] = False
+    default: Optional[bool] = False
     rate: Rate
 
 
