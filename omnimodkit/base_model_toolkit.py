@@ -37,10 +37,6 @@ class BaseModelToolkit(ABC):
             max_tokens=self.get_model().structured_output_max_tokens,
         )
 
-    @property
-    def default_attribute(self) -> str:
-        return f"{self.model_name}_default"
-
     @staticmethod
     def get_b64_from_bytes(in_memory_stream: io.BytesIO) -> str:
         return base64.b64encode(in_memory_stream.getvalue()).decode()
@@ -66,7 +62,7 @@ class BaseModelToolkit(ABC):
         return next(
             iter(
                 filter(
-                    lambda model: getattr(model, self.default_attribute, False),
+                    lambda model: getattr(model, "default", False),
                     self.get_models_dict().values(),
                 )
             ),
