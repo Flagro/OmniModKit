@@ -23,7 +23,7 @@ class ImageGenerationModel(BaseModelToolkit):
             raise ModerationError(
                 f"Text description '{text_description}' was rejected by the moderation system"
             )
-        pydantic_model = PromptManager.get_default_image()
+        pydantic_model = self.get_default_pydantic_model()
         if system_prompt is None:
             system_prompt = PromptManager.get_default_system_prompt_image()
         llm = self.get_model_chain()
