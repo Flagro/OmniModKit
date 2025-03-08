@@ -87,7 +87,7 @@ class TextModel(BaseModelToolkit):
                 f"Text description '{messages[-1]['content']}' was rejected by the moderation system"
             )
         if pydantic_model is None:
-            pydantic_model = PromptManager.get_default_text()
+            pydantic_model = self.get_default_pydantic_model()
         llm = self.get_langchain_llm()
         structured_llm = llm.with_structured_output(pydantic_model)
         langchain_messages = TextModel.get_langchain_messages(messages)
@@ -106,7 +106,7 @@ class TextModel(BaseModelToolkit):
                 f"Text description '{messages[-1]['content']}' was rejected by the moderation system"
             )
         if pydantic_model is None:
-            pydantic_model = PromptManager.get_default_text()
+            pydantic_model = self.get_default_pydantic_model()
         llm = self.get_langchain_llm()
         structured_llm = llm.with_structured_output(pydantic_model)
         langchain_messages = TextModel.get_langchain_messages(messages)
@@ -125,7 +125,7 @@ class TextModel(BaseModelToolkit):
                 f"Text description '{messages[-1]['content']}' was rejected by the moderation system"
             )
         if pydantic_model is None:
-            pydantic_model = PromptManager.get_default_text()
+            pydantic_model = self.get_default_pydantic_model(streamable=True)
         else:
             # TODO: fix this
             raise ValueError("pydantic_model is not supported for streaming")
@@ -151,7 +151,7 @@ class TextModel(BaseModelToolkit):
                 f"Text description '{messages[-1]['content']}' was rejected by the moderation system"
             )
         if pydantic_model is None:
-            pydantic_model = PromptManager.get_default_text()
+            pydantic_model = self.get_default_pydantic_model(streamable=True)
         else:
             # TODO: fix this
             raise ValueError("pydantic_model is not supported for streaming")
