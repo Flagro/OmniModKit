@@ -21,7 +21,7 @@ class AudioRecognitionModel(BaseModelToolkit):
         pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> dict:
         if pydantic_model is None:
-            pydantic_model = PromptManager.get_default_audio_information()
+            pydantic_model = self.get_default_pydantic_model()
         if system_prompt is None:
             system_prompt = PromptManager.get_default_system_prompt_audio()
         # Encode in base64:
@@ -56,7 +56,7 @@ class AudioRecognitionModel(BaseModelToolkit):
             raise ModerationError(
                 f"Audio description '{result}' was rejected by the moderation system"
             )
-        return
+        return result
 
     async def arun(
         self,
@@ -76,7 +76,7 @@ class AudioRecognitionModel(BaseModelToolkit):
             raise ModerationError(
                 f"Audio description '{result}' was rejected by the moderation system"
             )
-        return
+        return result
 
     def get_price(
         self,
