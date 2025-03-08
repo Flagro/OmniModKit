@@ -100,7 +100,7 @@ class BaseModelToolkit(ABC):
         input_dict: Dict[str, Any],
         system_prompt: str,
         pydantic_model: Type[BaseModel],
-    ) -> Dict[str, Any]:
+    ) -> BaseModel:
         parser = JsonOutputParser(pydantic_model=pydantic_model)
         model = self.get_model_chain()
         messages = self.compose_messages_for_structured_output(
@@ -115,7 +115,7 @@ class BaseModelToolkit(ABC):
         input_dict: Dict[str, Any],
         system_prompt: str,
         pydantic_model: Type[BaseModel],
-    ) -> Dict[str, Any]:
+    ) -> BaseModel:
         parser = JsonOutputParser(pydantic_model=pydantic_model)
         model = self.get_model_chain()
         messages = self.compose_messages_for_structured_output(
