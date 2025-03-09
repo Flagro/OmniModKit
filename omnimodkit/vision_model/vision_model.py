@@ -23,7 +23,7 @@ class VisionModel(BaseModelToolkit):
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
         if system_prompt is None:
-            system_prompt = PromptManager.get_default_system_prompt_vision()
+            system_prompt = self.get_default_system_prompt()
         # Encode in base64:
         image_base64 = VisionModel.get_b64_from_bytes(in_memory_image_stream)
         return {
