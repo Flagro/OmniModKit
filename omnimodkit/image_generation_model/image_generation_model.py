@@ -3,7 +3,6 @@ from langchain_core.pydantic_v1 import BaseModel
 from langchain_community.utilities.dalle_image_generator import DallEAPIWrapper
 from langchain_core.prompts import PromptTemplate
 from ..base_model_toolkit import BaseModelToolkit
-from ..prompt_manager import PromptManager
 from ..ai_config import Model
 from ..moderation import ModerationError
 
@@ -25,7 +24,7 @@ class ImageGenerationModel(BaseModelToolkit):
             )
         pydantic_model = self.get_default_pydantic_model()
         if system_prompt is None:
-            system_prompt = PromptManager.get_default_system_prompt_image()
+            system_prompt = self.get_default_system_prompt()
         llm = self.get_model_chain()
         prompt = PromptTemplate(
             input_variables=["image_desc"],
