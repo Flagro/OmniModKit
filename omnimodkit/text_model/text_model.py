@@ -52,12 +52,12 @@ class TextModel(BaseModelToolkit):
     def get_default_temperature(self) -> float:
         return self.get_model().temperature
 
-    @staticmethod
     def compose_messages_openai(
-        user_input: str, system_prompt: Optional[str] = None
+        self, user_input: str, system_prompt: Optional[str] = None
     ) -> List[OpenAIMessage]:
+        # TODO: if system prompt is not provided, just don't include it
         if system_prompt is None:
-            system_prompt = PromptManager.get_default_system_prompt_text()
+            system_prompt = self.get_default_system_prompt()
         return [
             TextModel.compose_message_openai(system_prompt, role="system"),
             TextModel.compose_message_openai(user_input),
