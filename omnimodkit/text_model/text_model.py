@@ -8,7 +8,6 @@ from openai import OpenAI
 
 from ..base_model_toolkit import BaseModelToolkit
 from ..ai_config import Model
-from ..prompt_manager import PromptManager
 from ..moderation import ModerationError
 
 
