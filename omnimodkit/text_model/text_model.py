@@ -71,6 +71,10 @@ class TextModel(BaseModelToolkit):
         )
 
     @staticmethod
+    def check_system_prompt_in_messages(messages: List[OpenAIMessage]) -> bool:
+        return any(message["role"] == "system" for message in messages)
+
+    @staticmethod
     def get_langchain_messages(messages: List[OpenAIMessage]) -> List[BaseMessage]:
         return list(map(TextModel.get_langchain_message, messages))
 
