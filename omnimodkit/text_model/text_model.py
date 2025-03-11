@@ -54,13 +54,13 @@ class TextModel(BaseModelToolkit):
     def compose_messages_openai(
         self, user_input: str, system_prompt: Optional[str] = None
     ) -> List[OpenAIMessage]:
-        # TODO: if system prompt is not provided, just don't include it
-        if system_prompt is None:
-            system_prompt = self.get_default_system_prompt()
-        return [
-            TextModel.compose_message_openai(system_prompt, role="system"),
-            TextModel.compose_message_openai(user_input),
-        ]
+        result = []
+        if system_prompt is not None:
+            result.append(
+                TextModel.compose_message_openai(system_prompt, role="system")
+            )
+        result.append(TextModel.compose_message_openai(user_input))
+        return result
 
     @staticmethod
     def get_langchain_message(message_dict: OpenAIMessage) -> BaseMessage:
