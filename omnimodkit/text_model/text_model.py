@@ -91,6 +91,12 @@ class TextModel(BaseModelToolkit):
             )
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
+        if not TextModel.check_system_prompt_in_messages(messages):
+            messages = [
+                TextModel.compose_message_openai(
+                    self.get_default_system_prompt, role="system"
+                )
+            ] + messages
         llm = self.get_langchain_llm()
         structured_llm = llm.with_structured_output(pydantic_model)
         langchain_messages = TextModel.get_langchain_messages(messages)
@@ -110,6 +116,12 @@ class TextModel(BaseModelToolkit):
             )
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
+        if not TextModel.check_system_prompt_in_messages(messages):
+            messages = [
+                TextModel.compose_message_openai(
+                    self.get_default_system_prompt, role="system"
+                )
+            ] + messages
         llm = self.get_langchain_llm()
         structured_llm = llm.with_structured_output(pydantic_model)
         langchain_messages = TextModel.get_langchain_messages(messages)
@@ -132,6 +144,12 @@ class TextModel(BaseModelToolkit):
         else:
             # TODO: fix this
             raise ValueError("pydantic_model is not supported for streaming")
+        if not TextModel.check_system_prompt_in_messages(messages):
+            messages = [
+                TextModel.compose_message_openai(
+                    self.get_default_system_prompt, role="system"
+                )
+            ] + messages
         llm = OpenAI(api_key=self.openai_api_key, model=self.get_model().name)
         response = llm.chat.completions.create(
             model=self.get_model().name,
@@ -158,6 +176,12 @@ class TextModel(BaseModelToolkit):
         else:
             # TODO: fix this
             raise ValueError("pydantic_model is not supported for streaming")
+        if not TextModel.check_system_prompt_in_messages(messages):
+            messages = [
+                TextModel.compose_message_openai(
+                    self.get_default_system_prompt, role="system"
+                )
+            ] + messages
         llm = OpenAI(api_key=self.openai_api_key, model=self.get_model().name)
         response = llm.chat.completions.create(
             model=self.get_model().name,
