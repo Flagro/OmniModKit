@@ -83,6 +83,9 @@ class TextModel(BaseModelToolkit):
     ) -> BaseModel:
         if self.ai_config.TextGeneration.moderation_needed:
             for message in messages:
+                # System messages are not moderated
+                if message["role"] == "system":
+                    continue
                 if not self.moderation.moderate_text(message["content"]):
                     raise ModerationError(
                         f"Text description '{message['content']}' was rejected by the moderation system"
