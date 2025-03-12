@@ -81,14 +81,13 @@ class TextModel(BaseModelToolkit):
     def run(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> BaseModel:
-        # TODO: run moderation for each message
         if (
-            self.ai_config.TextGeneration.moderation_needed
-            and not self.moderation.moderate_text(messages[-1]["content"])
-        ):
-            raise ModerationError(
-                f"Text description '{messages[-1]['content']}' was rejected by the moderation system"
-            )
+            self.ai_config.TextGeneration.moderation_needed):
+            for message in messages:
+                if not self.moderation.moderate_text(message["content"])
+                    raise ModerationError(
+                        f"Text description '{message['content']}' was rejected by the moderation system"
+                    )
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
         if not TextModel.check_system_prompt_in_messages(messages):
