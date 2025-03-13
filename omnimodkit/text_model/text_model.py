@@ -78,9 +78,7 @@ class TextModel(BaseModelToolkit):
     def get_langchain_messages(messages: List[OpenAIMessage]) -> List[BaseMessage]:
         return list(map(TextModel.get_langchain_message, messages))
 
-    def run(
-        self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
-    ) -> BaseModel:
+    def moderate_messages(self, messages: List[OpenAIMessage]) -> None:
         if self.ai_config.TextGeneration.moderation_needed:
             for message in messages:
                 # System messages are not moderated
@@ -90,6 +88,11 @@ class TextModel(BaseModelToolkit):
                     raise ModerationError(
                         f"Text description '{message['content']}' was rejected by the moderation system"
                     )
+
+    def run(
+        self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
+    ) -> BaseModel:
+        self.moderate_messages(messages)
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
         if not TextModel.check_system_prompt_in_messages(messages):
@@ -107,14 +110,8 @@ class TextModel(BaseModelToolkit):
     async def arun(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> BaseModel:
-        # TODO: run moderation for each message
-        if (
-            self.ai_config.TextGeneration.moderation_needed
-            and not self.moderation.moderate_text(messages[-1]["content"])
-        ):
-            raise ModerationError(
-                f"Text description '{messages[-1]['content']}' was rejected by the moderation system"
-            )
+        # TODO: this is a blocking task
+        self.moderate_messages(messages)
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
         if not TextModel.check_system_prompt_in_messages(messages):
@@ -132,14 +129,7 @@ class TextModel(BaseModelToolkit):
     def stream(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> Generator[BaseModel]:
-        # TODO: run moderation for each message
-        if (
-            self.ai_config.TextGeneration.moderation_needed
-            and not self.moderation.moderate_text(messages[-1]["content"])
-        ):
-            raise ModerationError(
-                f"Text description '{messages[-1]['content']}' was rejected by the moderation system"
-            )
+        self.moderate_messages(messages)
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model(streamable=True)
         else:
@@ -164,14 +154,8 @@ class TextModel(BaseModelToolkit):
     async def astream(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> AsyncGenerator[BaseModel]:
-        # TODO: run moderation for each message
-        if (
-            self.ai_config.TextGeneration.moderation_needed
-            and not self.moderation.moderate_text(messages[-1]["content"])
-        ):
-            raise ModerationError(
-                f"Text description '{messages[-1]['content']}' was rejected by the moderation system"
-            )
+        # TODO: this is a blocking task
+        self.moderate_messages(messages)
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model(streamable=True)
         else:
