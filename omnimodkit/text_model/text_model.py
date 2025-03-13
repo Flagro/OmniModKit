@@ -78,16 +78,21 @@ class TextModel(BaseModelToolkit):
     def get_langchain_messages(messages: List[OpenAIMessage]) -> List[BaseMessage]:
         return list(map(TextModel.get_langchain_message, messages))
 
-    def moderate_messages(self, messages: List[OpenAIMessage]) -> None:
+    def moderate_messages(
+        self, messages: List[OpenAIMessage], raise_error: bool = True
+    ) -> bool:
         if self.ai_config.TextGeneration.moderation_needed:
             for message in messages:
                 # System messages are not moderated
                 if message["role"] == "system":
                     continue
                 if not self.moderation.moderate_text(message["content"]):
-                    raise ModerationError(
-                        f"Text description '{message['content']}' was rejected by the moderation system"
-                    )
+                    if raise_error:
+                        raise ModerationError(
+                            f"Text description '{message['content']}' was rejected by the moderation system"
+                        )
+                    return False
+        return True
 
     def run(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
