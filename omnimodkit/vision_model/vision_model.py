@@ -24,7 +24,7 @@ class VisionModel(BaseModelToolkit):
         if system_prompt is None:
             system_prompt = self.get_default_system_prompt()
         # Encode in base64:
-        image_base64 = VisionModel.get_b64_from_bytes(in_memory_image_stream)
+        image_base64 = self.get_b64_from_bytes(in_memory_image_stream)
         return {
             "input_dict": {
                 "type": "image_url",
