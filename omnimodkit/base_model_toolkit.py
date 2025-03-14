@@ -95,7 +95,7 @@ class BaseModelToolkit(ABC):
             )
         ]
 
-    def get_structured_output(
+    def _get_structured_output(
         self,
         input_dict: Dict[str, Any],
         system_prompt: str,
@@ -110,7 +110,7 @@ class BaseModelToolkit(ABC):
         parsed_output = parser.invoke(msg.content)
         return pydantic_model(**parsed_output)
 
-    async def aget_structured_output(
+    async def _aget_structured_output(
         self,
         input_dict: Dict[str, Any],
         system_prompt: str,

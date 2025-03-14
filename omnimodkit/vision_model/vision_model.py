@@ -43,7 +43,7 @@ class VisionModel(BaseModelToolkit):
         kwargs = self._prepare_input(
             in_memory_image_stream, system_prompt, pydantic_model
         )
-        result = self.get_structured_output(**kwargs)
+        result = self._get_structured_output(**kwargs)
         # TODO: check moderation before running the model
         if (
             self.ai_config.Vision.moderation_needed
@@ -63,7 +63,7 @@ class VisionModel(BaseModelToolkit):
         kwargs = self._prepare_input(
             in_memory_image_stream, system_prompt, pydantic_model
         )
-        result = await self.aget_structured_output(**kwargs)
+        result = await self._aget_structured_output(**kwargs)
         # TODO: check moderation before running the model
         if (
             self.ai_config.Vision.moderation_needed
