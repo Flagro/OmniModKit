@@ -79,12 +79,15 @@ class TextModel(BaseModelToolkit):
         return list(map(TextModel.get_langchain_message, messages))
 
     def moderate_messages(
-        self, messages: List[OpenAIMessage], raise_error: bool = True
+        self,
+        messages: List[OpenAIMessage],
+        raise_error: bool = True,
+        moderate_system_messages: bool = False,
     ) -> bool:
         if self.ai_config.TextGeneration.moderation_needed:
             for message in messages:
                 # System messages are not moderated
-                if message["role"] == "system":
+                if not moderate_system_messages and message["role"] == "system":
                     continue
                 if not self.moderation.moderate_text(message["content"]):
                     if raise_error:
