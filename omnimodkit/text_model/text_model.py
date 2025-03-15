@@ -97,6 +97,25 @@ class TextModel(BaseModelToolkit):
                     return False
         return True
 
+    async def amoderate_messages(
+        self,
+        messages: List[OpenAIMessage],
+        raise_error: bool = True,
+        moderate_system_messages: bool = False,
+    ) -> bool:
+        if self.ai_config.TextGeneration.moderation_needed:
+            for message in messages:
+                # System messages are not moderated if moderate_system_messages is False
+                if not moderate_system_messages and message["role"] == "system":
+                    continue
+                if not await self.moderation.amoderate_text(message["content"]):
+                    if raise_error:
+                        raise ModerationError(
+                            f"Text description '{message['content']}' was rejected by the moderation system"
+                        )
+                    return False
+        return True
+
     def run(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> BaseModel:
