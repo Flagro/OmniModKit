@@ -86,7 +86,7 @@ class TextModel(BaseModelToolkit):
     ) -> bool:
         if self.ai_config.TextGeneration.moderation_needed:
             for message in messages:
-                # System messages are not moderated
+                # System messages are not moderated if moderate_system_messages is False
                 if not moderate_system_messages and message["role"] == "system":
                     continue
                 if not self.moderation.moderate_text(message["content"]):
