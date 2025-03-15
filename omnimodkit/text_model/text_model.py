@@ -137,8 +137,7 @@ class TextModel(BaseModelToolkit):
     async def arun(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> BaseModel:
-        # TODO: this is a blocking task
-        self.moderate_messages(messages)
+        await self.amoderate_messages(messages)
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
         if not TextModel.check_system_prompt_in_messages(messages):
@@ -181,8 +180,7 @@ class TextModel(BaseModelToolkit):
     async def astream(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> AsyncGenerator[BaseModel]:
-        # TODO: this is a blocking task
-        self.moderate_messages(messages)
+        await self.amoderate_messages(messages)
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model(streamable=True)
         else:
