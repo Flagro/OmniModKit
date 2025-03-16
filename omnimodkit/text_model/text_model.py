@@ -130,10 +130,10 @@ class TextModel(BaseModelToolkit):
     def run(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> BaseModel:
-        self.moderate_messages(messages)
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
         messages = self.append_default_system_message_if_not_present(messages)
+        self.moderate_messages(messages)
         llm = self.get_langchain_llm()
         structured_llm = llm.with_structured_output(pydantic_model)
         langchain_messages = TextModel.get_langchain_messages(messages)
@@ -143,10 +143,10 @@ class TextModel(BaseModelToolkit):
     async def arun(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> BaseModel:
-        await self.amoderate_messages(messages)
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
         messages = self.append_default_system_message_if_not_present(messages)
+        await self.amoderate_messages(messages)
         llm = self.get_langchain_llm()
         structured_llm = llm.with_structured_output(pydantic_model)
         langchain_messages = TextModel.get_langchain_messages(messages)
@@ -156,13 +156,13 @@ class TextModel(BaseModelToolkit):
     def stream(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> Generator[BaseModel]:
-        self.moderate_messages(messages)
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model(streamable=True)
         else:
             # TODO: fix this
             raise ValueError("pydantic_model is not supported for streaming")
         messages = self.append_default_system_message_if_not_present(messages)
+        self.moderate_messages(messages)
         llm = OpenAI(api_key=self.openai_api_key, model=self.get_model().name)
         response = llm.chat.completions.create(
             model=self.get_model().name,
@@ -176,13 +176,13 @@ class TextModel(BaseModelToolkit):
     async def astream(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> AsyncGenerator[BaseModel]:
-        await self.amoderate_messages(messages)
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model(streamable=True)
         else:
             # TODO: fix this
             raise ValueError("pydantic_model is not supported for streaming")
         messages = self.append_default_system_message_if_not_present(messages)
+        await self.amoderate_messages(messages)
         llm = OpenAI(api_key=self.openai_api_key, model=self.get_model().name)
         response = llm.chat.completions.create(
             model=self.get_model().name,
