@@ -1,6 +1,6 @@
 import io
 from typing import Type, Optional, Dict, Any
-from langchain_core.pydantic_v1 import BaseModel
+from pydantic import BaseModel
 
 from ..base_model_toolkit import BaseModelToolkit
 from ..ai_config import Model
