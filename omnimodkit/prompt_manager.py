@@ -32,7 +32,7 @@ class DefaultImage(BaseModel):
     image_url: str = Field(description="url of the image")
 
     def __str__(self):
-        return self.image_url
+        return f"Image url: {self.image_url}"
 
 
 class DefaultText(BaseModel):
@@ -44,6 +44,9 @@ class DefaultText(BaseModel):
 
 class DefaultTextChunk(BaseModel):
     text_chunk: str = Field(description="text chunk to be processed")
+
+    def __str__(self):
+        return self.text_chunk
 
 
 class PromptManager:
