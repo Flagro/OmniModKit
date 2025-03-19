@@ -40,17 +40,46 @@ class BaseModelToolkit(ABC):
     def get_b64_from_bytes(in_memory_stream: io.BytesIO) -> str:
         return base64.b64encode(in_memory_stream.getvalue()).decode()
 
+    def run(
+        self,
+        *args,
+        **kwargs,
+    ) -> BaseModel:
+        return self.run_impl(*args, **kwargs)
+
     @abstractmethod
-    def run(*args, **kwargs) -> BaseModel:
+    def run_impl(*args, **kwargs) -> BaseModel:
         raise NotImplementedError
 
-    async def arun(*args, **kwargs) -> BaseModel:
+    async def arun(
+        self,
+        *args,
+        **kwargs,
+    ) -> BaseModel:
+        return await self.arun_impl(*args, **kwargs)
+
+    async def arun_impl(*args, **kwargs) -> BaseModel:
         raise NotImplementedError
 
-    def stream(*args, **kwargs) -> Generator[BaseModel]:
+    def stream(
+        self,
+        *args,
+        **kwargs,
+    ) -> Generator[BaseModel]:
+        yield from self.stream_impl(*args, **kwargs)
+
+    def stream_impl(*args, **kwargs) -> Generator[BaseModel]:
         raise NotImplementedError
 
-    async def astream(*args, **kwargs) -> AsyncGenerator[BaseModel]:
+    async def astream(
+        self,
+        *args,
+        **kwargs,
+    ) -> AsyncGenerator[BaseModel]:
+        async for model in self.astream_impl(*args, **kwargs):
+            yield model
+
+    async def astream_impl(*args, **kwargs) -> AsyncGenerator[BaseModel]:
         raise NotImplementedError
 
     @abstractmethod
