@@ -10,7 +10,7 @@ from ..moderation import ModerationError
 class ImageGenerationModel(BaseModelToolkit):
     model_name = "image_generation"
 
-    def run(
+    def run_impl(
         self,
         text_description: str,
         system_prompt: Optional[str] = None,

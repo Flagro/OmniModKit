@@ -34,7 +34,7 @@ class VisionModel(BaseModelToolkit):
             "pydantic_model": pydantic_model,
         }
 
-    def run(
+    def run_impl(
         self,
         in_memory_image_stream: io.BytesIO,
         system_prompt: Optional[str] = None,
@@ -54,7 +54,7 @@ class VisionModel(BaseModelToolkit):
             )
         return result
 
-    async def arun(
+    async def arun_impl(
         self,
         in_memory_image_stream: io.BytesIO,
         system_prompt: Optional[str] = None,

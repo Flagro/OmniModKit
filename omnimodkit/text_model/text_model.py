@@ -127,7 +127,7 @@ class TextModel(BaseModelToolkit):
                     return False
         return True
 
-    def run(
+    def run_impl(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> BaseModel:
         if pydantic_model is None:
@@ -140,7 +140,7 @@ class TextModel(BaseModelToolkit):
         structured_response = structured_llm.invoke(langchain_messages)
         return structured_response
 
-    async def arun(
+    async def arun_impl(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> BaseModel:
         if pydantic_model is None:
@@ -153,7 +153,7 @@ class TextModel(BaseModelToolkit):
         structured_response = await structured_llm.ainvoke(langchain_messages)
         return structured_response
 
-    def stream(
+    def stream_impl(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> Generator[BaseModel]:
         if pydantic_model is None:
@@ -173,7 +173,7 @@ class TextModel(BaseModelToolkit):
         for message in response:
             yield pydantic_model(message.choices[0].message.content)
 
-    async def astream(
+    async def astream_impl(
         self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
     ) -> AsyncGenerator[BaseModel]:
         if pydantic_model is None:

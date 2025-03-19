@@ -37,7 +37,7 @@ class AudioRecognitionModel(BaseModelToolkit):
             "pydantic_model": pydantic_model,
         }
 
-    def run(
+    def run_impl(
         self,
         in_memory_audio_stream: io.BytesIO,
         system_prompt: Optional[str] = None,
@@ -57,7 +57,7 @@ class AudioRecognitionModel(BaseModelToolkit):
             )
         return result
 
-    async def arun(
+    async def arun_impl(
         self,
         in_memory_audio_stream: io.BytesIO,
         system_prompt: Optional[str] = None,
