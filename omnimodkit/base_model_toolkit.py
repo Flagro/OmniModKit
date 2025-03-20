@@ -42,6 +42,8 @@ class BaseModelToolkit(ABC):
 
     def run(
         self,
+        system_prompt: Optional[str] = None,
+        pydantic_model: Optional[Type[BaseModel]] = None,
         *args,
         **kwargs,
     ) -> BaseModel:
@@ -53,6 +55,8 @@ class BaseModelToolkit(ABC):
 
     async def arun(
         self,
+        system_prompt: Optional[str] = None,
+        pydantic_model: Optional[Type[BaseModel]] = None,
         *args,
         **kwargs,
     ) -> BaseModel:
@@ -63,6 +67,8 @@ class BaseModelToolkit(ABC):
 
     def stream(
         self,
+        system_prompt: Optional[str] = None,
+        pydantic_model: Optional[Type[BaseModel]] = None,
         *args,
         **kwargs,
     ) -> Generator[BaseModel]:
@@ -73,6 +79,8 @@ class BaseModelToolkit(ABC):
 
     async def astream(
         self,
+        system_prompt: Optional[str] = None,
+        pydantic_model: Optional[Type[BaseModel]] = None,
         *args,
         **kwargs,
     ) -> AsyncGenerator[BaseModel]:
