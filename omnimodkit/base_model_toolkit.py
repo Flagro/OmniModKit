@@ -47,7 +47,13 @@ class BaseModelToolkit(ABC):
         *args,
         **kwargs,
     ) -> BaseModel:
-        return self.run_impl(*args, **kwargs)
+        if system_prompt is None:
+            system_prompt = self.get_default_system_prompt()
+        if pydantic_model is None:
+            pydantic_model = self.get_default_pydantic_model()
+        return self.run_impl(
+            system_prompt=system_prompt, pydantic_model=pydantic_model, *args, **kwargs
+        )
 
     @abstractmethod
     def run_impl(*args, **kwargs) -> BaseModel:
@@ -60,7 +66,13 @@ class BaseModelToolkit(ABC):
         *args,
         **kwargs,
     ) -> BaseModel:
-        return await self.arun_impl(*args, **kwargs)
+        if system_prompt is None:
+            system_prompt = self.get_default_system_prompt()
+        if pydantic_model is None:
+            pydantic_model = self.get_default_pydantic_model()
+        return await self.arun_impl(
+            system_prompt=system_prompt, pydantic_model=pydantic_model, *args, **kwargs
+        )
 
     async def arun_impl(*args, **kwargs) -> BaseModel:
         raise NotImplementedError
@@ -72,7 +84,13 @@ class BaseModelToolkit(ABC):
         *args,
         **kwargs,
     ) -> Generator[BaseModel]:
-        yield from self.stream_impl(*args, **kwargs)
+        if system_prompt is None:
+            system_prompt = self.get_default_system_prompt()
+        if pydantic_model is None:
+            pydantic_model = self.get_default_pydantic_model()
+        yield from self.stream_impl(
+            system_prompt=system_prompt, pydantic_model=pydantic_model, *args, **kwargs
+        )
 
     def stream_impl(*args, **kwargs) -> Generator[BaseModel]:
         raise NotImplementedError
@@ -84,7 +102,13 @@ class BaseModelToolkit(ABC):
         *args,
         **kwargs,
     ) -> AsyncGenerator[BaseModel]:
-        async for model in self.astream_impl(*args, **kwargs):
+        if system_prompt is None:
+            system_prompt = self.get_default_system_prompt()
+        if pydantic_model is None:
+            pydantic_model = self.get_default_pydantic_model()
+        async for model in self.astream_impl(
+            system_prompt=system_prompt, pydantic_model=pydantic_model, *args, **kwargs
+        ):
             yield model
 
     async def astream_impl(*args, **kwargs) -> AsyncGenerator[BaseModel]:
