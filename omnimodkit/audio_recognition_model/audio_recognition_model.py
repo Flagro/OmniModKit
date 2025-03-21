@@ -59,9 +59,9 @@ class AudioRecognitionModel(BaseModelToolkit):
 
     async def arun_impl(
         self,
+        system_prompt: str,
+        pydantic_model: Type[BaseModel],
         in_memory_audio_stream: io.BytesIO,
-        system_prompt: Optional[str] = None,
-        pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> BaseModel:
         kwargs = self._prepare_input(
             in_memory_audio_stream, system_prompt, pydantic_model
