@@ -54,7 +54,9 @@ class BaseModelToolkit(ABC):
         )
 
     @abstractmethod
-    def run_impl(*args, **kwargs) -> BaseModel:
+    def run_impl(
+        self, system_prompt: str, pydantic_model: str, *args, **kwargs
+    ) -> BaseModel:
         raise NotImplementedError
 
     async def arun(
@@ -70,7 +72,9 @@ class BaseModelToolkit(ABC):
             system_prompt=system_prompt, pydantic_model=pydantic_model, *args, **kwargs
         )
 
-    async def arun_impl(*args, **kwargs) -> BaseModel:
+    async def arun_impl(
+        self, system_prompt: str, pydantic_model: str, *args, **kwargs
+    ) -> BaseModel:
         raise NotImplementedError
 
     def stream(
@@ -86,7 +90,9 @@ class BaseModelToolkit(ABC):
             system_prompt=system_prompt, pydantic_model=pydantic_model, *args, **kwargs
         )
 
-    def stream_impl(*args, **kwargs) -> Generator[BaseModel]:
+    def stream_impl(
+        self, system_prompt: str, pydantic_model: str, *args, **kwargs
+    ) -> Generator[BaseModel]:
         raise NotImplementedError
 
     async def astream(
@@ -103,7 +109,9 @@ class BaseModelToolkit(ABC):
         ):
             yield model
 
-    async def astream_impl(*args, **kwargs) -> AsyncGenerator[BaseModel]:
+    async def astream_impl(
+        self, system_prompt: str, pydantic_model: str, *args, **kwargs
+    ) -> AsyncGenerator[BaseModel]:
         raise NotImplementedError
 
     @abstractmethod
