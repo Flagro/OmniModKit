@@ -47,10 +47,8 @@ class BaseModelToolkit(ABC):
         *args,
         **kwargs,
     ) -> BaseModel:
-        if system_prompt is None:
-            system_prompt = self.get_default_system_prompt()
-        if pydantic_model is None:
-            pydantic_model = self.get_default_pydantic_model()
+        system_prompt = system_prompt or self.get_default_system_prompt()
+        pydantic_model = pydantic_model or self.get_default_pydantic_model()
         return self.run_impl(
             system_prompt=system_prompt, pydantic_model=pydantic_model, *args, **kwargs
         )
@@ -66,10 +64,8 @@ class BaseModelToolkit(ABC):
         *args,
         **kwargs,
     ) -> BaseModel:
-        if system_prompt is None:
-            system_prompt = self.get_default_system_prompt()
-        if pydantic_model is None:
-            pydantic_model = self.get_default_pydantic_model()
+        system_prompt = system_prompt or self.get_default_system_prompt()
+        pydantic_model = pydantic_model or self.get_default_pydantic_model()
         return await self.arun_impl(
             system_prompt=system_prompt, pydantic_model=pydantic_model, *args, **kwargs
         )
@@ -84,10 +80,8 @@ class BaseModelToolkit(ABC):
         *args,
         **kwargs,
     ) -> Generator[BaseModel]:
-        if system_prompt is None:
-            system_prompt = self.get_default_system_prompt()
-        if pydantic_model is None:
-            pydantic_model = self.get_default_pydantic_model()
+        system_prompt = system_prompt or self.get_default_system_prompt()
+        pydantic_model = pydantic_model or self.get_default_pydantic_model()
         yield from self.stream_impl(
             system_prompt=system_prompt, pydantic_model=pydantic_model, *args, **kwargs
         )
@@ -102,10 +96,8 @@ class BaseModelToolkit(ABC):
         *args,
         **kwargs,
     ) -> AsyncGenerator[BaseModel]:
-        if system_prompt is None:
-            system_prompt = self.get_default_system_prompt()
-        if pydantic_model is None:
-            pydantic_model = self.get_default_pydantic_model()
+        system_prompt = system_prompt or self.get_default_system_prompt()
+        pydantic_model = pydantic_model or self.get_default_pydantic_model()
         async for model in self.astream_impl(
             system_prompt=system_prompt, pydantic_model=pydantic_model, *args, **kwargs
         ):
