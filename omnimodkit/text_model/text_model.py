@@ -1,5 +1,14 @@
 import functools
-from typing import Literal, AsyncGenerator, List, Dict, Generator, Optional, TypedDict
+from typing import (
+    Literal,
+    AsyncGenerator,
+    List,
+    Dict,
+    Generator,
+    Optional,
+    TypedDict,
+    Type,
+)
 import tiktoken
 from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
@@ -128,7 +137,10 @@ class TextModel(BaseModelToolkit):
         return True
 
     def run_impl(
-        self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
+        self,
+        system_message: str,
+        pydantic_model: Type[BaseModel],
+        messages: List[OpenAIMessage],
     ) -> BaseModel:
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
@@ -141,7 +153,10 @@ class TextModel(BaseModelToolkit):
         return structured_response
 
     async def arun_impl(
-        self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
+        self,
+        system_message: str,
+        pydantic_model: Type[BaseModel],
+        messages: List[OpenAIMessage],
     ) -> BaseModel:
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
@@ -154,7 +169,10 @@ class TextModel(BaseModelToolkit):
         return structured_response
 
     def stream_impl(
-        self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
+        self,
+        system_message: str,
+        pydantic_model: Type[BaseModel],
+        messages: List[OpenAIMessage],
     ) -> Generator[BaseModel]:
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model(streamable=True)
@@ -174,7 +192,10 @@ class TextModel(BaseModelToolkit):
             yield pydantic_model(message.choices[0].message.content)
 
     async def astream_impl(
-        self, messages: List[OpenAIMessage], pydantic_model: Optional[BaseModel] = None
+        self,
+        system_message: str,
+        pydantic_model: Type[BaseModel],
+        messages: List[OpenAIMessage],
     ) -> AsyncGenerator[BaseModel]:
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model(streamable=True)
