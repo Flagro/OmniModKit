@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Type
 from pydantic import BaseModel
 from langchain_community.utilities.dalle_image_generator import DallEAPIWrapper
 from langchain_core.prompts import PromptTemplate
@@ -12,8 +12,9 @@ class ImageGenerationModel(BaseModelToolkit):
 
     def run_impl(
         self,
+        system_prompt: str,
+        pydantic_model: Type[BaseModel],
         text_description: str,
-        system_prompt: Optional[str] = None,
     ) -> BaseModel:
         if (
             self.ai_config.ImageGeneration.moderation_needed
