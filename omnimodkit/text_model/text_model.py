@@ -83,16 +83,15 @@ class TextModel(BaseModelToolkit):
     def check_system_prompt_in_messages(messages: List[OpenAIMessage]) -> bool:
         return any(message["role"] == "system" for message in messages)
 
-    def append_default_system_message_if_not_present(
-        self, messages: List[OpenAIMessage]
+    def _compose_messages_list(
+        self,
+        user_input: str,
+        system_message: str,
+        communication_history: List[OpenAIMessage],
     ) -> List[OpenAIMessage]:
-        if not TextModel.check_system_prompt_in_messages(messages):
-            messages = [
-                TextModel.compose_message_openai(
-                    self.get_default_system_prompt, role="system"
-                )
-            ] + messages
-        return messages
+        user_message = TextModel.compose_message_openai(user_input)
+        system_message = TextModel.compose_message_openai(system_message, role="system")
+        return [system_message, user_message] + communication_history
 
     @staticmethod
     def get_langchain_messages(messages: List[OpenAIMessage]) -> List[BaseMessage]:
@@ -145,7 +144,9 @@ class TextModel(BaseModelToolkit):
     ) -> BaseModel:
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
-        messages = self.append_default_system_message_if_not_present(messages)
+        messages = self._compose_messages_list(
+            user_input, system_message, communication_history
+        )
         self.moderate_messages(messages)
         llm = self.get_langchain_llm()
         structured_llm = llm.with_structured_output(pydantic_model)
@@ -162,7 +163,9 @@ class TextModel(BaseModelToolkit):
     ) -> BaseModel:
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
-        messages = self.append_default_system_message_if_not_present(messages)
+        messages = self._compose_messages_list(
+            user_input, system_message, communication_history
+        )
         await self.amoderate_messages(messages)
         llm = self.get_langchain_llm()
         structured_llm = llm.with_structured_output(pydantic_model)
@@ -182,7 +185,9 @@ class TextModel(BaseModelToolkit):
         else:
             # TODO: fix this
             raise ValueError("pydantic_model is not supported for streaming")
-        messages = self.append_default_system_message_if_not_present(messages)
+        messages = self._compose_messages_list(
+            user_input, system_message, communication_history
+        )
         self.moderate_messages(messages)
         llm = OpenAI(api_key=self.openai_api_key, model=self.get_model().name)
         response = llm.chat.completions.create(
@@ -206,7 +211,9 @@ class TextModel(BaseModelToolkit):
         else:
             # TODO: fix this
             raise ValueError("pydantic_model is not supported for streaming")
-        messages = self.append_default_system_message_if_not_present(messages)
+        messages = self._compose_messages_list(
+            user_input, system_message, communication_history
+        )
         await self.amoderate_messages(messages)
         llm = OpenAI(api_key=self.openai_api_key, model=self.get_model().name)
         response = llm.chat.completions.create(
