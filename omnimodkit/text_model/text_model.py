@@ -79,10 +79,6 @@ class TextModel(BaseModelToolkit):
             else SystemMessage(content=message_dict["content"])
         )
 
-    @staticmethod
-    def check_system_prompt_in_messages(messages: List[OpenAIMessage]) -> bool:
-        return any(message["role"] == "system" for message in messages)
-
     def _compose_messages_list(
         self,
         user_input: str,
