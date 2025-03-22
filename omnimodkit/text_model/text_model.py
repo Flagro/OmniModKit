@@ -138,6 +138,7 @@ class TextModel(BaseModelToolkit):
 
     def run_impl(
         self,
+        user_input: str,
         system_message: str,
         pydantic_model: Type[BaseModel],
         messages: List[OpenAIMessage],
@@ -154,6 +155,7 @@ class TextModel(BaseModelToolkit):
 
     async def arun_impl(
         self,
+        user_input: str,
         system_message: str,
         pydantic_model: Type[BaseModel],
         messages: List[OpenAIMessage],
@@ -170,6 +172,7 @@ class TextModel(BaseModelToolkit):
 
     def stream_impl(
         self,
+        user_input: str,
         system_message: str,
         pydantic_model: Type[BaseModel],
         messages: List[OpenAIMessage],
@@ -193,6 +196,7 @@ class TextModel(BaseModelToolkit):
 
     async def astream_impl(
         self,
+        user_input: str,
         system_message: str,
         pydantic_model: Type[BaseModel],
         messages: List[OpenAIMessage],
