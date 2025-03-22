@@ -141,7 +141,7 @@ class TextModel(BaseModelToolkit):
         user_input: str,
         system_message: str,
         pydantic_model: Type[BaseModel],
-        messages: List[OpenAIMessage],
+        communication_history: List[OpenAIMessage],
     ) -> BaseModel:
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
@@ -158,7 +158,7 @@ class TextModel(BaseModelToolkit):
         user_input: str,
         system_message: str,
         pydantic_model: Type[BaseModel],
-        messages: List[OpenAIMessage],
+        communication_history: List[OpenAIMessage],
     ) -> BaseModel:
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
@@ -175,7 +175,7 @@ class TextModel(BaseModelToolkit):
         user_input: str,
         system_message: str,
         pydantic_model: Type[BaseModel],
-        messages: List[OpenAIMessage],
+        communication_history: List[OpenAIMessage],
     ) -> Generator[BaseModel]:
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model(streamable=True)
@@ -199,7 +199,7 @@ class TextModel(BaseModelToolkit):
         user_input: str,
         system_message: str,
         pydantic_model: Type[BaseModel],
-        messages: List[OpenAIMessage],
+        communication_history: List[OpenAIMessage],
     ) -> AsyncGenerator[BaseModel]:
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model(streamable=True)
