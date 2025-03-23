@@ -80,37 +80,29 @@ class BaseModelToolkit(ABC):
     def stream(
         self,
         system_prompt: Optional[str] = None,
-        pydantic_model: Optional[Type[BaseModel]] = None,
         *args,
         **kwargs,
     ) -> Generator[BaseModel]:
         system_prompt = system_prompt or self.get_default_system_prompt()
-        pydantic_model = pydantic_model or self.get_default_pydantic_model()
-        yield from self.stream_impl(
-            system_prompt=system_prompt, pydantic_model=pydantic_model, *args, **kwargs
-        )
+        yield from self.stream_impl(system_prompt=system_prompt, *args, **kwargs)
 
-    def stream_impl(
-        self, system_prompt: str, pydantic_model: str, *args, **kwargs
-    ) -> Generator[BaseModel]:
+    def stream_impl(self, system_prompt: str, *args, **kwargs) -> Generator[BaseModel]:
         raise NotImplementedError
 
     async def astream(
         self,
         system_prompt: Optional[str] = None,
-        pydantic_model: Optional[Type[BaseModel]] = None,
         *args,
         **kwargs,
     ) -> AsyncGenerator[BaseModel]:
         system_prompt = system_prompt or self.get_default_system_prompt()
-        pydantic_model = pydantic_model or self.get_default_pydantic_model()
         async for model in self.astream_impl(
-            system_prompt=system_prompt, pydantic_model=pydantic_model, *args, **kwargs
+            system_prompt=system_prompt, *args, **kwargs
         ):
             yield model
 
     async def astream_impl(
-        self, system_prompt: str, pydantic_model: str, *args, **kwargs
+        self, system_prompt: str, *args, **kwargs
     ) -> AsyncGenerator[BaseModel]:
         raise NotImplementedError
 
