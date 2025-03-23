@@ -173,14 +173,9 @@ class TextModel(BaseModelToolkit):
         self,
         user_input: str,
         system_message: str,
-        pydantic_model: Type[BaseModel],
         communication_history: List[OpenAIMessage],
     ) -> Generator[BaseModel]:
-        if pydantic_model is None:
-            pydantic_model = self.get_default_pydantic_model(streamable=True)
-        else:
-            # TODO: fix this
-            raise ValueError("pydantic_model is not supported for streaming")
+        pydantic_model = self.get_default_pydantic_model(streamable=True)
         messages = self._compose_messages_list(
             user_input, system_message, communication_history
         )
@@ -199,14 +194,9 @@ class TextModel(BaseModelToolkit):
         self,
         user_input: str,
         system_message: str,
-        pydantic_model: Type[BaseModel],
         communication_history: List[OpenAIMessage],
     ) -> AsyncGenerator[BaseModel]:
-        if pydantic_model is None:
-            pydantic_model = self.get_default_pydantic_model(streamable=True)
-        else:
-            # TODO: fix this
-            raise ValueError("pydantic_model is not supported for streaming")
+        pydantic_model = self.get_default_pydantic_model(streamable=True)
         messages = self._compose_messages_list(
             user_input, system_message, communication_history
         )
