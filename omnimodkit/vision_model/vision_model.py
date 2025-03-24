@@ -1,5 +1,5 @@
 import io
-from typing import Type, Optional, Dict, Any
+from typing import Type, Dict, Any
 from pydantic import BaseModel
 
 from ..base_model_toolkit import BaseModelToolkit
@@ -15,14 +15,10 @@ class VisionModel(BaseModelToolkit):
 
     def _prepare_input(
         self,
+        system_prompt: str,
+        pydantic_model: Type[BaseModel],
         in_memory_image_stream: io.BytesIO,
-        system_prompt: Optional[str] = None,
-        pydantic_model: Optional[Type[BaseModel]] = None,
     ) -> Dict[str, Any]:
-        if pydantic_model is None:
-            pydantic_model = self.get_default_pydantic_model()
-        if system_prompt is None:
-            system_prompt = self.get_default_system_prompt()
         # Encode in base64:
         image_base64 = self.get_b64_from_bytes(in_memory_image_stream)
         return {

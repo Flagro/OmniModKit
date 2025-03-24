@@ -1,5 +1,5 @@
 import io
-from typing import Type, Optional, Dict
+from typing import Type, Dict
 from pydantic import BaseModel
 
 from ..base_model_toolkit import BaseModelToolkit
