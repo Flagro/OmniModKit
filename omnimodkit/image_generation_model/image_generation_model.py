@@ -24,8 +24,6 @@ class ImageGenerationModel(BaseModelToolkit):
                 f"Text description '{text_description}' was rejected by the moderation system"
             )
         pydantic_model = self.get_default_pydantic_model()
-        if system_prompt is None:
-            system_prompt = self.get_default_system_prompt()
         llm = self.get_model_chain()
         prompt = PromptTemplate(
             input_variables=["image_desc"],
