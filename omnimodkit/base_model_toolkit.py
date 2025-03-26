@@ -36,6 +36,12 @@ class BaseModelToolkit(ABC):
             max_tokens=self.get_model().structured_output_max_tokens,
         )
 
+    def moderate_text(self, text: str) -> bool:
+        return self.moderation.moderate_text(text)
+
+    async def amoderate_text(self, text: str) -> bool:
+        return await self.moderation.amoderate_text(text)
+
     @staticmethod
     def get_b64_from_bytes(in_memory_stream: io.BytesIO) -> str:
         return base64.b64encode(in_memory_stream.getvalue()).decode()
