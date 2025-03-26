@@ -46,7 +46,7 @@ class AudioRecognitionModel(BaseModelToolkit):
         # TODO: check moderation before running the model
         if (
             self.ai_config.AudioRecognition.moderation_needed
-            and not self.moderation.moderate_text(result.model_dump_json())
+            and not self.moderate_text(result.model_dump_json())
         ):
             raise ModerationError(
                 f"Audio description '{result}' was rejected by the moderation system"
@@ -66,7 +66,7 @@ class AudioRecognitionModel(BaseModelToolkit):
         # TODO: check moderation before running the model
         if (
             self.ai_config.AudioRecognition.moderation_needed
-            and not self.moderation.moderate_text(result.model_dump_json())
+            and not self.moderate_text(result.model_dump_json())
         ):
             raise ModerationError(
                 f"Audio description '{result}' was rejected by the moderation system"

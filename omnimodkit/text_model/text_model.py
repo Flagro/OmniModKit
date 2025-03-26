@@ -104,7 +104,7 @@ class TextModel(BaseModelToolkit):
                 # System messages are not moderated if moderate_system_messages is False
                 if not moderate_system_messages and message["role"] == "system":
                     continue
-                if not self.moderation.moderate_text(message["content"]):
+                if not self.moderate_text(message["content"]):
                     if raise_error:
                         raise ModerationError(
                             f"Text description '{message['content']}' was rejected by the moderation system"
@@ -123,7 +123,7 @@ class TextModel(BaseModelToolkit):
                 # System messages are not moderated if moderate_system_messages is False
                 if not moderate_system_messages and message["role"] == "system":
                     continue
-                if not await self.moderation.amoderate_text(message["content"]):
+                if not await self.amoderate_text(message["content"]):
                     if raise_error:
                         raise ModerationError(
                             f"Text description '{message['content']}' was rejected by the moderation system"
