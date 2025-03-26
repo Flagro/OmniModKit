@@ -13,20 +13,6 @@ class Moderation:
         self.async_client = AsyncOpenAI(openai_api_key=openai_api_key)
         self.moderation_model = "omni-moderation-latest"
 
-    def moderate_image(self, in_memory_image_stream: io.BytesIO) -> bool:
-        """
-        Moderates the image and returns True if the image is safe
-        """
-        # TODO: implement this
-        return True
-
-    def moderate_audio(self, in_memory_audio_stream: io.BytesIO) -> bool:
-        """
-        Moderates the audio and returns True if the audio is safe
-        """
-        # TODO: implement this
-        return True
-
     def moderate_text(self, text: str, input_description: Optional[str] = None) -> bool:
         """
         Moderates the text and returns True if the text is safe
