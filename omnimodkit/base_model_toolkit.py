@@ -7,7 +7,7 @@ from langchain_core.output_parsers import JsonOutputParser
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
 from .prompt_manager import PromptManager
-from .ai_config import AIConfig, Model
+from .ai_config import AIConfig, Model, GenerationType
 from .moderation import Moderation
 
 
@@ -128,11 +128,10 @@ class BaseModelToolkit(ABC):
         )
 
     @abstractmethod
-    def get_model_config(self) -> BaseModel:
+    def get_model_config(self) -> GenerationType:
         raise NotImplementedError
 
     def get_models_dict(self) -> Dict[str, Model]:
-        # TODO: improve type hints for get_model_config
         return self.get_model_config().Models
 
     def get_model(self, model_name: Optional[str] = None) -> Model:
@@ -144,7 +143,6 @@ class BaseModelToolkit(ABC):
         return model
 
     def moderation_needed(self) -> bool:
-        # TODO: improve type hints for get_model_config
         return self.get_model_config().moderation_needed
 
     @staticmethod

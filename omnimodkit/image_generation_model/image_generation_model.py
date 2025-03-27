@@ -1,9 +1,9 @@
-from typing import Dict, Type
+from typing import Type
 from pydantic import BaseModel
 from langchain_community.utilities.dalle_image_generator import DallEAPIWrapper
 from langchain_core.prompts import PromptTemplate
 from ..base_model_toolkit import BaseModelToolkit
-from ..ai_config import Model
+from ..ai_config import GenerationType
 from ..moderation import ModerationError
 
 
@@ -37,7 +37,7 @@ class ImageGenerationModel(BaseModelToolkit):
         )
         return pydantic_model(image_url=image_url)
 
-    def get_model_config(self) -> BaseModel:
+    def get_model_config(self) -> GenerationType:
         return self.ai_config.AudioRecognition
 
     def get_price(

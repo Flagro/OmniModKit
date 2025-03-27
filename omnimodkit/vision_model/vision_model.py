@@ -3,14 +3,14 @@ from typing import Type, Dict, Any
 from pydantic import BaseModel
 
 from ..base_model_toolkit import BaseModelToolkit
-from ..ai_config import Model
+from ..ai_config import GenerationType
 from ..moderation import ModerationError
 
 
 class VisionModel(BaseModelToolkit):
     model_name = "vision"
 
-    def get_model_config(self) -> BaseModel:
+    def get_model_config(self) -> GenerationType:
         return self.ai_config.AudioRecognition
 
     def _prepare_input(

@@ -3,7 +3,6 @@ from typing import (
     Literal,
     AsyncGenerator,
     List,
-    Dict,
     Generator,
     Optional,
     TypedDict,
@@ -16,7 +15,7 @@ from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage
 from openai import OpenAI
 
 from ..base_model_toolkit import BaseModelToolkit
-from ..ai_config import Model
+from ..ai_config import GenerationType
 from ..moderation import ModerationError
 
 
@@ -48,7 +47,7 @@ class TextModel(BaseModelToolkit):
             model=self.get_model().name,
         )
 
-    def get_model_config(self) -> BaseModel:
+    def get_model_config(self) -> GenerationType:
         return self.ai_config.AudioRecognition
 
     @staticmethod

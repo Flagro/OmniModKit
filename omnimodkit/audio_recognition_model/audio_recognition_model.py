@@ -1,16 +1,16 @@
 import io
-from typing import Type, Dict
+from typing import Type
 from pydantic import BaseModel
 
 from ..base_model_toolkit import BaseModelToolkit
-from ..ai_config import Model
+from ..ai_config import GenerationType
 from ..moderation import ModerationError
 
 
 class AudioRecognitionModel(BaseModelToolkit):
     model_name = "audio_recognition"
 
-    def get_model_config(self) -> BaseModel:
+    def get_model_config(self) -> GenerationType:
         return self.ai_config.AudioRecognition
 
     def _prepare_input(
