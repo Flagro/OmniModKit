@@ -40,9 +40,6 @@ class ImageGenerationModel(BaseModelToolkit):
     def get_model_config(self) -> BaseModel:
         return self.ai_config.AudioRecognition
 
-    def get_models_dict(self) -> Dict[str, Model]:
-        return self.ai_config.ImageGeneration.Models
-
     def get_price(
         self,
         image_generation_needed: bool,

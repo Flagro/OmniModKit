@@ -13,9 +13,6 @@ class VisionModel(BaseModelToolkit):
     def get_model_config(self) -> BaseModel:
         return self.ai_config.AudioRecognition
 
-    def get_models_dict(self) -> Dict[str, Model]:
-        return self.ai_config.Vision.Models
-
     def _prepare_input(
         self,
         system_prompt: str,

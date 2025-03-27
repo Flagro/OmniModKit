@@ -51,9 +51,6 @@ class TextModel(BaseModelToolkit):
     def get_model_config(self) -> BaseModel:
         return self.ai_config.AudioRecognition
 
-    def get_models_dict(self) -> Dict[str, Model]:
-        return self.ai_config.TextGeneration.Models
-
     @staticmethod
     def compose_message_openai(
         message_text: str, role: Literal["user", "system"] = "user"
