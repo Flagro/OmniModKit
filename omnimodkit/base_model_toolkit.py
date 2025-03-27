@@ -128,8 +128,12 @@ class BaseModelToolkit(ABC):
         )
 
     @abstractmethod
-    def get_models_dict(self) -> Dict[str, Model]:
+    def get_model_config(self) -> BaseModel:
         raise NotImplementedError
+
+    def get_models_dict(self) -> Dict[str, Model]:
+        # TODO: improve type hints for get_model_config
+        return self.get_model_config().Models
 
     def get_model(self, model_name: Optional[str] = None) -> Model:
         if model_name is None:
@@ -140,7 +144,8 @@ class BaseModelToolkit(ABC):
         return model
 
     def moderation_needed(self) -> bool:
-        return self.get_model().moderation_needed
+        # TODO: improve type hints for get_model_config
+        return self.get_model_config().moderation_needed
 
     @staticmethod
     def compose_messages_for_structured_output(
