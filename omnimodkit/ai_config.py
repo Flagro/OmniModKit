@@ -21,29 +21,28 @@ class Model(BaseModel):
     rate: Rate
 
 
-class TextGeneration(BaseModel):
+class GenerationType(BaseModel):
     moderation_needed: bool = True
+    Models: Dict[str, Model]
+
+
+class TextGeneration(GenerationType):
     max_tokens: int
     top_p: int
     frequency_penalty: int
     presence_penalty: int
-    Models: Dict[str, Model]
 
 
-class ImageGeneration(BaseModel):
-    moderation_needed: bool = True
+class ImageGeneration(GenerationType):
     output_image_size: str
-    Models: Dict[str, Model]
 
 
-class AudioRecognition(BaseModel):
-    moderation_needed: bool = True
-    Models: Dict[str, Model]
+class AudioRecognition(GenerationType):
+    pass
 
 
-class Vision(BaseModel):
-    moderation_needed: bool = True
-    Models: Dict[str, Model]
+class Vision(GenerationType):
+    pass
 
 
 class AIConfig(BaseModel):
