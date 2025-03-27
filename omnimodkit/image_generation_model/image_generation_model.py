@@ -16,9 +16,8 @@ class ImageGenerationModel(BaseModelToolkit):
         pydantic_model: Type[BaseModel],
         text_description: str,
     ) -> BaseModel:
-        if (
-            self.ai_config.ImageGeneration.moderation_needed
-            and not self.moderate_text(text_description)
+        if self.ai_config.ImageGeneration.moderation_needed and not self.moderate_text(
+            text_description
         ):
             raise ModerationError(
                 f"Text description '{text_description}' was rejected by the moderation system"
@@ -37,6 +36,9 @@ class ImageGenerationModel(BaseModelToolkit):
             chain.invoke(text_description)
         )
         return pydantic_model(image_url=image_url)
+
+    def get_model_config(self) -> BaseModel:
+        return self.ai_config.AudioRecognition
 
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.ImageGeneration.Models

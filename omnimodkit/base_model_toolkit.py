@@ -139,6 +139,9 @@ class BaseModelToolkit(ABC):
             raise ValueError(f"Model {model_name} not found")
         return model
 
+    def moderation_needed(self) -> bool:
+        return self.get_model().moderation_needed
+
     @staticmethod
     def compose_messages_for_structured_output(
         system_prompt: str, format_instructions: str, input_dict: Dict[str, Any]

@@ -10,6 +10,9 @@ from ..moderation import ModerationError
 class AudioRecognitionModel(BaseModelToolkit):
     model_name = "audio_recognition"
 
+    def get_model_config(self) -> BaseModel:
+        return self.ai_config.AudioRecognition
+
     def get_models_dict(self) -> Dict[str, Model]:
         return self.ai_config.AudioRecognition.Models
 
