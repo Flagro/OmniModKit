@@ -142,6 +142,7 @@ class BaseModelToolkit(ABC):
             raise ValueError(f"Model {model_name} not found")
         return model
 
+    @property
     def moderation_needed(self) -> bool:
         return self.get_model_config().moderation_needed
 
