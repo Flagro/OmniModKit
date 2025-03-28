@@ -16,9 +16,7 @@ class ImageGenerationModel(BaseModelToolkit):
         pydantic_model: Type[BaseModel],
         text_description: str,
     ) -> BaseModel:
-        if self.ai_config.ImageGeneration.moderation_needed and not self.moderate_text(
-            text_description
-        ):
+        if self.moderation_needed and not self.moderate_text(text_description):
             raise ModerationError(
                 f"Text description '{text_description}' was rejected by the moderation system"
             )

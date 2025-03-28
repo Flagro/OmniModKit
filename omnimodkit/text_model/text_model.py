@@ -98,7 +98,7 @@ class TextModel(BaseModelToolkit):
         raise_error: bool = True,
         moderate_system_messages: bool = False,
     ) -> bool:
-        if self.ai_config.TextGeneration.moderation_needed:
+        if self.moderation_needed:
             for message in messages:
                 # System messages are not moderated if moderate_system_messages is False
                 if not moderate_system_messages and message["role"] == "system":
@@ -117,7 +117,7 @@ class TextModel(BaseModelToolkit):
         raise_error: bool = True,
         moderate_system_messages: bool = False,
     ) -> bool:
-        if self.ai_config.TextGeneration.moderation_needed:
+        if self.moderation_needed:
             for message in messages:
                 # System messages are not moderated if moderate_system_messages is False
                 if not moderate_system_messages and message["role"] == "system":
