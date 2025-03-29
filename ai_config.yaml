@@ -8,7 +8,7 @@ AIConfig:
       gpt-4o:
         name: "gpt-4o"
         temperature: 0.7
-        default: true
+        is_default: true
         rate:
           input_token_price: 1
           output_token_price: 10
@@ -20,7 +20,7 @@ AIConfig:
       dalle-3:
         name: "dalle-3"
         temperature: 0.7
-        default: true
+        is_default: true
         rate:
           input_token_price: 0.0001
           output_pixel_price: 10
@@ -30,7 +30,7 @@ AIConfig:
       whisper:
         name: "whisper-1"
         temperature: 0.7
-        default: true
+        is_default: true
         rate:
           input_audio_price_per_second: 0.0001
           output_token_price: 1
@@ -39,7 +39,7 @@ AIConfig:
     Models:
       gpt-4o:
         name: "gpt-4o"
-        default: true
+        is_default: true
         rate:
           input_pixel_price: 0.0001
           output_token_price: 1

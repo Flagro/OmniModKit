@@ -17,7 +17,7 @@ class Model(BaseModel):
     temperature: float
     structured_output_max_tokens: int = 1024
     request_timeout: float = 60
-    default: Optional[bool] = False
+    is_default: Optional[bool] = False
     rate: Rate
 
 

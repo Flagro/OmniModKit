@@ -120,7 +120,7 @@ class BaseModelToolkit(ABC):
         return next(
             iter(
                 filter(
-                    lambda model: getattr(model, "default", False),
+                    lambda model: getattr(model, "is_default", False),
                     self.get_models_dict().values(),
                 )
             ),
