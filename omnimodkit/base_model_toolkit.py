@@ -143,8 +143,8 @@ class BaseModelToolkit(ABC):
         return model
 
     @property
-    def model(self) -> Model:
-        return self.get_model()
+    def default_model(self) -> Model:
+        return self._get_default_model()
 
     @property
     def moderation_needed(self) -> bool:
