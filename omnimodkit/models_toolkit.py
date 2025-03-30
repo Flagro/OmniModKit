@@ -10,7 +10,7 @@ from .text_model.text_model import TextModel
 from .vision_model.vision_model import VisionModel
 
 
-class UniversalModelsToolkit:
+class ModelsToolkit:
     def __init__(self, openai_api_key: str, ai_config: AIConfig):
         self.text_model = TextModel(openai_api_key, ai_config)
         self.vision_model = VisionModel(openai_api_key, ai_config)
