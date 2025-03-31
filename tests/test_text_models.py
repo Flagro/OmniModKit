@@ -37,7 +37,7 @@ def toolkit(mock_ai_config):
 
 
 def test_get_text_response(toolkit):
-    response = toolkit.get_text_response("Hello world")
+    response = toolkit.get_text_response("Hello world. Reply only with 'Hello'")
     assert isinstance(response, DummyResponseModel)
     assert response.message == "Hello"
 
@@ -47,7 +47,9 @@ async def test_aget_get_text_response(mock_ai_config):
     with patch.object(TextModel, "arun", new_callable=AsyncMock) as mock_arun:
         mock_arun.return_value = DummyResponseModel(message="Hi async")
         toolkit = ModelsToolkit(openai_api_key="fake-key", ai_config=mock_ai_config)
-        response = await toolkit.aget_get_text_response("Hello async")
+        response = await toolkit.aget_get_text_response(
+            "Hello async. Reply only with 'Hi async'"
+        )
         assert isinstance(response, DummyResponseModel)
         assert response.message == "Hi async"
 
@@ -56,7 +58,9 @@ def test_stream_text_response(toolkit):
     with patch.object(
         TextModel, "stream", return_value=iter([DummyResponseModel(message="Streamed")])
     ):
-        responses = list(toolkit.stream_text_response("Stream it"))
+        responses = list(
+            toolkit.stream_text_response("Stream it. Reply only with 'Streamed'")
+        )
         assert all(isinstance(resp, DummyResponseModel) for resp in responses)
         assert responses[0].message == "Streamed"
 
@@ -69,7 +73,9 @@ async def test_astream_text_response(mock_ai_config):
     with patch.object(TextModel, "astream", return_value=async_gen()):
         toolkit = ModelsToolkit(openai_api_key="fake-key", ai_config=mock_ai_config)
         responses = []
-        async for res in toolkit.astream_text_response("Async stream test"):
+        async for res in toolkit.astream_text_response(
+            "Async stream test. Reply only with 'Async stream'"
+        ):
             responses.append(res)
         assert responses
         assert isinstance(responses[0], DummyResponseModel)
