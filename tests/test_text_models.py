@@ -30,7 +30,7 @@ def mock_ai_config():
 @pytest.fixture
 def toolkit(mock_ai_config):
     with patch(
-        "your_module.text_model.text_model.TextModel.run",
+        "omnimodkit.text_model.text_model.TextModel.run",
         return_value=DummyResponseModel(message="Hello"),
     ):
         return ModelsToolkit(openai_api_key="fake-key", ai_config=mock_ai_config)
