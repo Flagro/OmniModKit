@@ -1,9 +1,9 @@
+import os
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock
 from pydantic import BaseModel
 
 from omnimodkit.models_toolkit import ModelsToolkit
-from omnimodkit.text_model.text_model import TextModel
 
 
 # Dummy Pydantic model to simulate structured output
@@ -13,7 +13,6 @@ class DummyResponseModel(BaseModel):
 
 @pytest.fixture
 def mock_ai_config():
-    # Minimal config mock with required interface
     mock_config = MagicMock()
     mock_config.TextGeneration.Models = {
         "gpt-test": MagicMock(
@@ -28,55 +27,56 @@ def mock_ai_config():
 
 
 @pytest.fixture
-def toolkit(mock_ai_config):
-    with patch(
-        "omnimodkit.text_model.text_model.TextModel.run",
-        return_value=DummyResponseModel(message="Hello"),
-    ):
-        return ModelsToolkit(openai_api_key="fake-key", ai_config=mock_ai_config)
+def real_toolkit(mock_ai_config):
+    openai_key = os.getenv("OPENAI_API_KEY")
+    if not openai_key:
+        raise ValueError(
+            "OPENAI_API_KEY is not set in the environment! "
+            "Set it for these integration tests."
+        )
+    return ModelsToolkit(openai_api_key=openai_key, ai_config=mock_ai_config)
 
 
-def test_get_text_response(toolkit):
-    response = toolkit.get_text_response("Hello world. Reply only with 'Hello'")
+@pytest.mark.integration
+def test_get_text_response_integration(real_toolkit):
+    prompt = "Provide a short JSON object with a single key 'message' saying Hello"
+    response = real_toolkit.get_text_response(prompt)
     assert isinstance(response, DummyResponseModel)
-    assert response.message == "Hello"
+    # The model might not respond exactly with "Hello", so be flexible
+    # or test the shape, e.g.:
+    assert hasattr(response, "message")
+    assert len(response.message) > 0
 
 
 @pytest.mark.asyncio
-async def test_aget_get_text_response(mock_ai_config):
-    with patch.object(TextModel, "arun", new_callable=AsyncMock) as mock_arun:
-        mock_arun.return_value = DummyResponseModel(message="Hi async")
-        toolkit = ModelsToolkit(openai_api_key="fake-key", ai_config=mock_ai_config)
-        response = await toolkit.aget_get_text_response(
-            "Hello async. Reply only with 'Hi async'"
-        )
-        assert isinstance(response, DummyResponseModel)
-        assert response.message == "Hi async"
+@pytest.mark.integration
+async def test_aget_get_text_response_integration(real_toolkit):
+    prompt = (
+        "Provide a short JSON object with a single key 'message' saying Hi from async"
+    )
+    response = await real_toolkit.aget_get_text_response(prompt)
+    assert isinstance(response, DummyResponseModel)
+    assert len(response.message) > 0
 
 
-def test_stream_text_response(toolkit):
-    with patch.object(
-        TextModel, "stream", return_value=iter([DummyResponseModel(message="Streamed")])
-    ):
-        responses = list(
-            toolkit.stream_text_response("Stream it. Reply only with 'Streamed'")
-        )
-        assert all(isinstance(resp, DummyResponseModel) for resp in responses)
-        assert responses[0].message == "Streamed"
+@pytest.mark.integration
+def test_stream_text_response_integration(real_toolkit):
+    prompt = "Stream a short JSON object with a single key 'message'"
+    # We expect the streaming generator to return multiple tokens or chunked responses.
+    responses = list(real_toolkit.stream_text_response(prompt))
+    assert all(isinstance(resp, DummyResponseModel) for resp in responses)
+    # At least one chunk:
+    assert len(responses) > 0
+    assert hasattr(responses[0], "message")
 
 
 @pytest.mark.asyncio
-async def test_astream_text_response(mock_ai_config):
-    async def async_gen():
-        yield DummyResponseModel(message="Async stream")
-
-    with patch.object(TextModel, "astream", return_value=async_gen()):
-        toolkit = ModelsToolkit(openai_api_key="fake-key", ai_config=mock_ai_config)
-        responses = []
-        async for res in toolkit.astream_text_response(
-            "Async stream test. Reply only with 'Async stream'"
-        ):
-            responses.append(res)
-        assert responses
-        assert isinstance(responses[0], DummyResponseModel)
-        assert responses[0].message == "Async stream"
+@pytest.mark.integration
+async def test_astream_text_response_integration(real_toolkit):
+    prompt = "Stream (async) a short JSON object with a single key 'message'"
+    responses = []
+    async for res in real_toolkit.astream_text_response(prompt):
+        responses.append(res)
+    assert len(responses) > 0
+    assert isinstance(responses[0], DummyResponseModel)
+    assert hasattr(responses[0], "message")
