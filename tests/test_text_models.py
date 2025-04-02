@@ -1,8 +1,15 @@
 import os
 import pytest
-from unittest.mock import MagicMock
 from pydantic import BaseModel
-
+from omnimodkit.ai_config import (
+    AIConfig,
+    Rate,
+    TextGeneration,
+    ImageGeneration,
+    AudioRecognition,
+    Vision,
+    Model,
+)
 from omnimodkit.models_toolkit import ModelsToolkit
 
 
@@ -12,29 +19,58 @@ class DummyResponseModel(BaseModel):
 
 
 @pytest.fixture
-def mock_ai_config():
-    mock_config = MagicMock()
-    mock_config.TextGeneration.Models = {
-        "gpt-test": MagicMock(
-            name="gpt-test",
-            temperature=0.7,
-            default=True,
-            structured_output_max_tokens=100,
-        )
-    }
-    mock_config.TextGeneration.moderation_needed = False
-    return mock_config
+def ai_config():
+    # Create a Rate instance with dummy pricing values.
+    rate = Rate(
+        input_token_price=0.0,
+        output_token_price=0.0,
+        input_pixel_price=0.0,
+        output_pixel_price=0.0,
+        input_audio_second_price=0.0,
+        output_audio_second_price=0.0,
+    )
+    # Set up the TextGeneration config with gpt-4o as the default text model.
+    text_generation = TextGeneration(
+        moderation_needed=False,
+        Models={
+            "gpt-4o": Model(
+                name="gpt-4o",
+                temperature=0.7,
+                structured_output_max_tokens=100,
+                request_timeout=60,
+                is_default=True,
+                rate=rate,
+            )
+        },
+        max_tokens=256,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0,
+    )
+    # Create minimal configurations for other generation types.
+    image_generation = ImageGeneration(
+        moderation_needed=False, Models={}, output_image_size="1024x1024"
+    )
+    audio_recognition = AudioRecognition(moderation_needed=False, Models={})
+    vision = Vision(moderation_needed=False, Models={})
+    # TODO: the image, audio and vision models should be None
+    return AIConfig(
+        TextGeneration=text_generation,
+        ImageGeneration=image_generation,
+        AudioRecognition=audio_recognition,
+        Vision=vision,
+    )
 
 
 @pytest.fixture
-def real_toolkit(mock_ai_config):
+def real_toolkit(ai_config):
     openai_key = os.getenv("OPENAI_API_KEY")
     if not openai_key:
         raise ValueError(
             "OPENAI_API_KEY is not set in the environment! "
             "Set it for these integration tests."
         )
-    return ModelsToolkit(openai_api_key=openai_key, ai_config=mock_ai_config)
+    return ModelsToolkit(openai_api_key=openai_key, ai_config=ai_config)
 
 
 @pytest.mark.integration
