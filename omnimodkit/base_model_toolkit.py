@@ -132,7 +132,7 @@ class BaseModelToolkit(ABC):
         raise NotImplementedError
 
     def get_models_dict(self) -> Dict[str, Model]:
-        return self.get_model_config().Models
+        return self.get_model_config().models
 
     def get_model(self, model_name: Optional[str] = None) -> Model:
         if model_name is None:

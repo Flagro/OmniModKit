@@ -4,7 +4,7 @@ AIConfig:
     top_p: 1
     frequency_penalty: 0
     presence_penalty: 0
-    Models:
+    models:
       gpt-4o:
         name: "gpt-4o"
         temperature: 0.7
@@ -16,7 +16,7 @@ AIConfig:
 
   image_generation:
     output_image_size: "512x512"
-    Models:
+    models:
       dalle-3:
         name: "dalle-3"
         temperature: 0.7
@@ -26,7 +26,7 @@ AIConfig:
           output_pixel_price: 10
 
   audio_recognition:
-    Models:
+    models:
       whisper:
         name: "whisper-1"
         temperature: 0.7
@@ -36,7 +36,7 @@ AIConfig:
           output_token_price: 1
 
   vision:
-    Models:
+    models:
       gpt-4o:
         name: "gpt-4o"
         is_default: true

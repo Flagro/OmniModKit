@@ -32,7 +32,7 @@ def ai_config():
     # Set up the TextGeneration config with gpt-4o as the default text model.
     text_generation = TextGeneration(
         moderation_needed=False,
-        Models={
+        models={
             "gpt-4o": Model(
                 name="gpt-4o",
                 temperature=0.7,
@@ -49,10 +49,10 @@ def ai_config():
     )
     # Create minimal configurations for other generation types.
     image_generation = ImageGeneration(
-        moderation_needed=False, Models={}, output_image_size="1024x1024"
+        moderation_needed=False, models={}, output_image_size="1024x1024"
     )
-    audio_recognition = AudioRecognition(moderation_needed=False, Models={})
-    vision = Vision(moderation_needed=False, Models={})
+    audio_recognition = AudioRecognition(moderation_needed=False, models={})
+    vision = Vision(moderation_needed=False, models={})
     # TODO: the image, audio and vision models should be None
     return AIConfig(
         TextGeneration=text_generation,

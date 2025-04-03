@@ -23,7 +23,7 @@ class Model(BaseModel):
 
 class GenerationType(BaseModel):
     moderation_needed: bool = True
-    Models: Dict[str, Model]
+    models: Dict[str, Model]
 
 
 class TextGeneration(GenerationType):
