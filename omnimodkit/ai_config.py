@@ -46,10 +46,10 @@ class Vision(GenerationType):
 
 
 class AIConfig(BaseModel):
-    TextGeneration: TextGeneration
-    ImageGeneration: ImageGeneration
-    AudioRecognition: AudioRecognition
-    Vision: Vision
+    text_generation: Optional[TextGeneration] = None
+    image_generation: Optional[ImageGeneration] = None
+    audio_recognition: Optional[AudioRecognition] = None
+    vision: Optional[Vision] = None
 
     @classmethod
     def load(cls, file_path: str):

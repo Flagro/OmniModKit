@@ -1,5 +1,5 @@
 AIConfig:
-  TextGeneration:
+  text_generation:
     max_tokens: 2048
     top_p: 1
     frequency_penalty: 0
@@ -14,7 +14,7 @@ AIConfig:
           output_token_price: 10
           input_pixel_price: 0.0001
 
-  ImageGeneration:
+  image_generation:
     output_image_size: "512x512"
     Models:
       dalle-3:
@@ -25,7 +25,7 @@ AIConfig:
           input_token_price: 0.0001
           output_pixel_price: 10
 
-  AudioRecognition:
+  audio_recognition:
     Models:
       whisper:
         name: "whisper-1"
@@ -35,7 +35,7 @@ AIConfig:
           input_audio_price_per_second: 0.0001
           output_token_price: 1
 
-  Vision:
+  vision:
     Models:
       gpt-4o:
         name: "gpt-4o"
