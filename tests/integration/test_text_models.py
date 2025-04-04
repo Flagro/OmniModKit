@@ -47,18 +47,8 @@ def ai_config():
         frequency_penalty=0,
         presence_penalty=0,
     )
-    # Create minimal configurations for other generation types.
-    image_generation = ImageGeneration(
-        moderation_needed=False, models={}, output_image_size="1024x1024"
-    )
-    audio_recognition = AudioRecognition(moderation_needed=False, models={})
-    vision = Vision(moderation_needed=False, models={})
-    # TODO: the image, audio and vision models should be None
     return AIConfig(
         TextGeneration=text_generation,
-        ImageGeneration=image_generation,
-        AudioRecognition=audio_recognition,
-        Vision=vision,
     )
 
 
