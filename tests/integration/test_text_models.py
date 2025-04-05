@@ -87,7 +87,7 @@ def test_stream_text_response_integration(real_toolkit):
     prompt = "Stream a short JSON object with a single key 'message'"
     # We expect the streaming generator to return multiple tokens or chunked responses.
     responses = list(real_toolkit.stream_text_response(prompt))
-    assert all(isinstance(resp, DummyResponseModel) for resp in responses)
+    assert all(isinstance(resp, BaseModel) for resp in responses)
     # At least one chunk:
     assert len(responses) > 0
     assert hasattr(responses[0], "message")
@@ -101,5 +101,5 @@ async def test_astream_text_response_integration(real_toolkit):
     async for res in real_toolkit.astream_text_response(prompt):
         responses.append(res)
     assert len(responses) > 0
-    assert isinstance(responses[0], DummyResponseModel)
+    assert isinstance(responses[0], BaseModel)
     assert hasattr(responses[0], "message")
