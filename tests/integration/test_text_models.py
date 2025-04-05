@@ -5,9 +5,6 @@ from omnimodkit.ai_config import (
     AIConfig,
     Rate,
     TextGeneration,
-    ImageGeneration,
-    AudioRecognition,
-    Vision,
     Model,
 )
 from omnimodkit.models_toolkit import ModelsToolkit
