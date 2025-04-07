@@ -50,7 +50,7 @@ def ai_config():
 
 
 @pytest.fixture
-def real_toolkit(ai_config):
+def real_toolkit(ai_config) -> ModelsToolkit:
     openai_key = os.getenv("OPENAI_API_KEY")
     if not openai_key:
         raise ValueError(
@@ -61,7 +61,7 @@ def real_toolkit(ai_config):
 
 
 @pytest.mark.integration
-def test_get_text_response_integration(real_toolkit):
+def test_get_text_response_integration(real_toolkit: ModelsToolkit):
     prompt = "Provide a short JSON object with a single key 'message' saying Hello"
     response = real_toolkit.get_text_response(prompt)
     assert isinstance(response, DummyResponseModel)
@@ -73,7 +73,7 @@ def test_get_text_response_integration(real_toolkit):
 
 @pytest.mark.asyncio
 @pytest.mark.integration
-async def test_aget_get_text_response_integration(real_toolkit):
+async def test_aget_get_text_response_integration(real_toolkit: ModelsToolkit):
     prompt = (
         "Provide a short JSON object with a single key 'message' saying Hi from async"
     )
@@ -83,7 +83,7 @@ async def test_aget_get_text_response_integration(real_toolkit):
 
 
 @pytest.mark.integration
-def test_stream_text_response_integration(real_toolkit):
+def test_stream_text_response_integration(real_toolkit: ModelsToolkit):
     prompt = "Stream a short JSON object with a single key 'message'"
     # We expect the streaming generator to return multiple tokens or chunked responses.
     responses = list(real_toolkit.stream_text_response(prompt))
@@ -95,7 +95,7 @@ def test_stream_text_response_integration(real_toolkit):
 
 @pytest.mark.asyncio
 @pytest.mark.integration
-async def test_astream_text_response_integration(real_toolkit):
+async def test_astream_text_response_integration(real_toolkit: ModelsToolkit):
     prompt = "Stream (async) a short JSON object with a single key 'message'"
     responses = []
     async for res in real_toolkit.astream_text_response(prompt):
