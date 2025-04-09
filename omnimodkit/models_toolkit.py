@@ -1,4 +1,5 @@
 import io
+import os
 from typing import Generator, AsyncGenerator, Optional
 from pydantic import BaseModel
 from .ai_config import AIConfig
@@ -14,6 +15,21 @@ class ModelsToolkit:
     def __init__(
         self, openai_api_key: Optional[str] = None, ai_config: Optional[AIConfig] = None
     ):
+        if openai_api_key is None:
+            openai_api_key = os.getenv("OPENAI_API_KEY")
+            if not openai_api_key:
+                raise ValueError(
+                    "OPENAI_API_KEY is not set in the environment! "
+                    "Set it for these integration tests."
+                )
+        if ai_config is None:
+            try:
+                ai_config = AIConfig.load("ai_config.yaml")
+            except FileNotFoundError:
+                raise ValueError(
+                    "ai_config.yaml file not found! "
+                    "Set it for these integration tests."
+                )
         self.text_model = TextModel(openai_api_key, ai_config)
         self.vision_model = VisionModel(openai_api_key, ai_config)
         self.image_generation_model = ImageGenerationModel(openai_api_key, ai_config)
