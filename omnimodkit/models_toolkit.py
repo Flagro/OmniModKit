@@ -1,5 +1,5 @@
 import io
-from typing import Generator, AsyncGenerator
+from typing import Generator, AsyncGenerator, Optional
 from pydantic import BaseModel
 from .ai_config import AIConfig
 from .audio_recognition_model.audio_recognition_model import (
@@ -11,7 +11,9 @@ from .vision_model.vision_model import VisionModel
 
 
 class ModelsToolkit:
-    def __init__(self, openai_api_key: str, ai_config: AIConfig):
+    def __init__(
+        self, openai_api_key: Optional[str] = None, ai_config: Optional[AIConfig] = None
+    ):
         self.text_model = TextModel(openai_api_key, ai_config)
         self.vision_model = VisionModel(openai_api_key, ai_config)
         self.image_generation_model = ImageGenerationModel(openai_api_key, ai_config)
