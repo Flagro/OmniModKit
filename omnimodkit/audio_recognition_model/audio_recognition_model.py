@@ -11,7 +11,7 @@ class AudioRecognitionModel(BaseModelToolkit):
     model_name = "audio_recognition"
 
     def get_model_config(self) -> GenerationType:
-        return self.ai_config.AudioRecognition
+        return self.ai_config.audio_recognition
 
     def _prepare_input(
         self,

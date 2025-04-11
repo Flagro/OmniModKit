@@ -11,7 +11,7 @@ class VisionModel(BaseModelToolkit):
     model_name = "vision"
 
     def get_model_config(self) -> GenerationType:
-        return self.ai_config.AudioRecognition
+        return self.ai_config.vision
 
     def _prepare_input(
         self,
