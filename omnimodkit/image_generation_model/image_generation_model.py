@@ -36,7 +36,7 @@ class ImageGenerationModel(BaseModelToolkit):
         return pydantic_model(image_url=image_url)
 
     def get_model_config(self) -> GenerationType:
-        return self.ai_config.AudioRecognition
+        return self.ai_config.image_generation
 
     def get_price(
         self,

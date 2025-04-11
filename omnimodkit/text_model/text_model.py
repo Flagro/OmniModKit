@@ -48,7 +48,7 @@ class TextModel(BaseModelToolkit):
         )
 
     def get_model_config(self) -> GenerationType:
-        return self.ai_config.AudioRecognition
+        return self.ai_config.text_generation
 
     @staticmethod
     def compose_message_openai(
