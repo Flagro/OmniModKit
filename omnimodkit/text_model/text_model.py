@@ -173,7 +173,7 @@ class TextModel(BaseModelToolkit):
         user_input: str,
         system_message: str,
         communication_history: List[OpenAIMessage],
-    ) -> Generator[BaseModel]:
+    ) -> Generator[BaseModel, None, None]:
         pydantic_model = self.get_default_pydantic_model(streamable=True)
         messages = self._compose_messages_list(
             user_input, system_message, communication_history
@@ -194,7 +194,7 @@ class TextModel(BaseModelToolkit):
         user_input: str,
         system_message: str,
         communication_history: List[OpenAIMessage],
-    ) -> AsyncGenerator[BaseModel]:
+    ) -> AsyncGenerator[BaseModel, None]:
         pydantic_model = self.get_default_pydantic_model(streamable=True)
         messages = self._compose_messages_list(
             user_input, system_message, communication_history

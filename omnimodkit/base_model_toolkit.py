@@ -88,11 +88,13 @@ class BaseModelToolkit(ABC):
         system_prompt: Optional[str] = None,
         *args,
         **kwargs,
-    ) -> Generator[BaseModel]:
+    ) -> Generator[BaseModel, None, None]:
         system_prompt = system_prompt or self.get_default_system_prompt()
         yield from self.stream_impl(system_prompt=system_prompt, *args, **kwargs)
 
-    def stream_impl(self, system_prompt: str, *args, **kwargs) -> Generator[BaseModel]:
+    def stream_impl(
+        self, system_prompt: str, *args, **kwargs
+    ) -> Generator[BaseModel, None, None]:
         raise NotImplementedError
 
     async def astream(
@@ -100,7 +102,7 @@ class BaseModelToolkit(ABC):
         system_prompt: Optional[str] = None,
         *args,
         **kwargs,
-    ) -> AsyncGenerator[BaseModel]:
+    ) -> AsyncGenerator[BaseModel, None]:
         system_prompt = system_prompt or self.get_default_system_prompt()
         async for model in self.astream_impl(
             system_prompt=system_prompt, *args, **kwargs
@@ -109,7 +111,7 @@ class BaseModelToolkit(ABC):
 
     async def astream_impl(
         self, system_prompt: str, *args, **kwargs
-    ) -> AsyncGenerator[BaseModel]:
+    ) -> AsyncGenerator[BaseModel, None]:
         raise NotImplementedError
 
     @abstractmethod

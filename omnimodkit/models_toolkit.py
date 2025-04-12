@@ -77,11 +77,13 @@ class ModelsToolkit:
             in_memory_audio_stream=in_memory_audio_stream,
         )
 
-    def stream_text_response(self, user_input: str) -> Generator[BaseModel]:
+    def stream_text_response(self, user_input: str) -> Generator[BaseModel, None, None]:
         messages = TextModel.compose_messages_openai(user_input)
         yield from self.text_model.stream(messages)
 
-    async def astream_text_response(self, user_input: str) -> AsyncGenerator[BaseModel]:
+    async def astream_text_response(
+        self, user_input: str
+    ) -> AsyncGenerator[BaseModel, None]:
         messages = TextModel.compose_messages_openai(user_input)
         async for response in self.text_model.astream(messages=messages):
             yield response
