@@ -8,8 +8,8 @@ class ModerationError(Exception):
 
 class Moderation:
     def __init__(self, openai_api_key: str):
-        self.client = OpenAI(openai_api_key=openai_api_key)
-        self.async_client = AsyncOpenAI(openai_api_key=openai_api_key)
+        self.client = OpenAI(api_key=openai_api_key)
+        self.async_client = AsyncOpenAI(api_key=openai_api_key)
         self.moderation_model = "omni-moderation-latest"
 
     def moderate_text(self, text: str, input_description: Optional[str] = None) -> bool:
