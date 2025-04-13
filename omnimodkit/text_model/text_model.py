@@ -186,15 +186,10 @@ class TextModel(BaseModelToolkit):
             user_input, system_prompt, communication_history
         )
         self.moderate_messages(messages)
-        llm = OpenAI(api_key=self.openai_api_key, model=self.get_model().name)
-        response = llm.chat.completions.create(
-            model=self.get_model().name,
-            messages=messages,
-            stream=True,
-            temperature=self.get_default_temperature(),
-        )
-        for message in response:
-            yield pydantic_model(message.choices[0].message.content)
+        llm = self.get_langchain_llm()
+        langchain_messages = TextModel.get_langchain_messages(messages)
+        for message in llm.stream(langchain_messages):
+            yield pydantic_model(text_chunk=message.content)
 
     async def astream_impl(
         self,
@@ -209,15 +204,10 @@ class TextModel(BaseModelToolkit):
             user_input, system_prompt, communication_history
         )
         await self.amoderate_messages(messages)
-        llm = OpenAI(api_key=self.openai_api_key, model=self.get_model().name)
-        response = llm.chat.completions.create(
-            model=self.get_model().name,
-            messages=messages,
-            stream=True,
-            temperature=self.get_default_temperature(),
-        )
-        async for message in response:
-            yield pydantic_model(message.choices[0].message.content)
+        llm = self.get_langchain_llm()
+        langchain_messages = TextModel.get_langchain_messages(messages)
+        async for message in llm.astream(langchain_messages):
+            yield pydantic_model(text_chunk=message.content)
 
     async def ask_yes_no_question(self, question: str) -> bool:
         response: YesNoResponse = await self.arun(
