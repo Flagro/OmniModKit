@@ -18,11 +18,9 @@ class BaseModelToolkit(ABC):
     def __init__(
         self,
         ai_config: AIConfig,
-        prompt_manager: PromptManager,
         openai_api_key: str,
     ):
         self.ai_config = ai_config
-        self.prompt_manager = prompt_manager
         self.openai_api_key = openai_api_key
         self.moderation = Moderation(openai_api_key)
 
@@ -195,9 +193,9 @@ class BaseModelToolkit(ABC):
         return pydantic_model(**parsed_output)
 
     def get_default_system_prompt(self) -> str:
-        return self.prompt_manager.get_default_system_prompt(self.model_name)
+        return PromptManager.get_default_system_prompt(self.model_name)
 
     def get_default_pydantic_model(self, *args, **kwargs) -> Type[BaseModel]:
-        return self.prompt_manager.get_default_pydantic_model(
+        return PromptManager.get_default_pydantic_model(
             self.model_name, *args, **kwargs
         )
