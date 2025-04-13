@@ -30,10 +30,16 @@ class ModelsToolkit:
                     "ai_config.yaml file not found! "
                     "Set it for these integration tests."
                 )
-        self.text_model = TextModel(openai_api_key, ai_config)
-        self.vision_model = VisionModel(openai_api_key, ai_config)
-        self.image_generation_model = ImageGenerationModel(openai_api_key, ai_config)
-        self.audio_recognition_model = AudioRecognitionModel(openai_api_key, ai_config)
+        self.text_model = TextModel(ai_config=ai_config, openai_api_key=openai_api_key)
+        self.vision_model = VisionModel(
+            ai_config=ai_config, openai_api_key=openai_api_key
+        )
+        self.image_generation_model = ImageGenerationModel(
+            ai_config=ai_config, openai_api_key=openai_api_key
+        )
+        self.audio_recognition_model = AudioRecognitionModel(
+            ai_config=ai_config, openai_api_key=openai_api_key
+        )
 
     def get_text_response(self, user_input: str) -> BaseModel:
         messages = TextModel.compose_messages_openai(user_input)
