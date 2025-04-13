@@ -136,8 +136,10 @@ class TextModel(BaseModelToolkit):
         user_input: str,
         system_prompt: str,
         pydantic_model: Type[BaseModel],
-        communication_history: List[OpenAIMessage],
+        communication_history: Optional[List[OpenAIMessage]] = None,
     ) -> BaseModel:
+        if communication_history is None:
+            communication_history = []
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
         messages = self._compose_messages_list(
@@ -155,8 +157,10 @@ class TextModel(BaseModelToolkit):
         user_input: str,
         system_prompt: str,
         pydantic_model: Type[BaseModel],
-        communication_history: List[OpenAIMessage],
+        communication_history: Optional[List[OpenAIMessage]] = None,
     ) -> BaseModel:
+        if communication_history is None:
+            communication_history = []
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
         messages = self._compose_messages_list(
@@ -173,8 +177,10 @@ class TextModel(BaseModelToolkit):
         self,
         user_input: str,
         system_prompt: str,
-        communication_history: List[OpenAIMessage],
+        communication_history: Optional[List[OpenAIMessage]] = None,
     ) -> Generator[BaseModel, None, None]:
+        if communication_history is None:
+            communication_history = []
         pydantic_model = self.get_default_pydantic_model(streamable=True)
         messages = self._compose_messages_list(
             user_input, system_prompt, communication_history
@@ -194,8 +200,10 @@ class TextModel(BaseModelToolkit):
         self,
         user_input: str,
         system_prompt: str,
-        communication_history: List[OpenAIMessage],
+        communication_history: Optional[List[OpenAIMessage]] = None,
     ) -> AsyncGenerator[BaseModel, None]:
+        if communication_history is None:
+            communication_history = []
         pydantic_model = self.get_default_pydantic_model(streamable=True)
         messages = self._compose_messages_list(
             user_input, system_prompt, communication_history
