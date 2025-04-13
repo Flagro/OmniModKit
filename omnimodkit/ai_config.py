@@ -4,17 +4,17 @@ from pydantic import BaseModel
 
 
 class Rate(BaseModel):
-    input_token_price: Optional[float]
-    output_token_price: Optional[float]
-    input_pixel_price: Optional[float]
-    output_pixel_price: Optional[float]
-    input_audio_second_price: Optional[float]
-    output_audio_second_price: Optional[float]
+    input_token_price: Optional[float] = 0.0
+    output_token_price: Optional[float] = 0.0
+    input_pixel_price: Optional[float] = 0.0
+    output_pixel_price: Optional[float] = 0.0
+    input_audio_second_price: Optional[float] = 0.0
+    output_audio_second_price: Optional[float] = 0.0
 
 
 class Model(BaseModel):
     name: str
-    temperature: float
+    temperature: Optional[float] = 1.0
     structured_output_max_tokens: int = 1024
     request_timeout: float = 60
     is_default: Optional[bool] = False
