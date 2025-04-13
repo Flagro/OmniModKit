@@ -17,12 +17,10 @@ class BaseModelToolkit(ABC):
 
     def __init__(
         self,
-        model,
         ai_config: AIConfig,
         prompt_manager: PromptManager,
         openai_api_key: str,
     ):
-        self.client = model
         self.ai_config = ai_config
         self.prompt_manager = prompt_manager
         self.openai_api_key = openai_api_key
