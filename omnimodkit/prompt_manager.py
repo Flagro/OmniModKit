@@ -104,7 +104,7 @@ class PromptManager:
 
     @staticmethod
     def get_default_pydantic_model(
-        model_name: str, streamable: bool
+        model_name: str, streamable: bool = False
     ) -> Type[BaseModel]:
         if model_name == "audio_recognition":
             return PromptManager.get_default_audio_information()

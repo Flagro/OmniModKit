@@ -134,14 +134,14 @@ class TextModel(BaseModelToolkit):
     def run_impl(
         self,
         user_input: str,
-        system_message: str,
+        system_prompt: str,
         pydantic_model: Type[BaseModel],
         communication_history: List[OpenAIMessage],
     ) -> BaseModel:
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
         messages = self._compose_messages_list(
-            user_input, system_message, communication_history
+            user_input, system_prompt, communication_history
         )
         self.moderate_messages(messages)
         llm = self.get_langchain_llm()
@@ -153,14 +153,14 @@ class TextModel(BaseModelToolkit):
     async def arun_impl(
         self,
         user_input: str,
-        system_message: str,
+        system_prompt: str,
         pydantic_model: Type[BaseModel],
         communication_history: List[OpenAIMessage],
     ) -> BaseModel:
         if pydantic_model is None:
             pydantic_model = self.get_default_pydantic_model()
         messages = self._compose_messages_list(
-            user_input, system_message, communication_history
+            user_input, system_prompt, communication_history
         )
         await self.amoderate_messages(messages)
         llm = self.get_langchain_llm()
@@ -172,12 +172,12 @@ class TextModel(BaseModelToolkit):
     def stream_impl(
         self,
         user_input: str,
-        system_message: str,
+        system_prompt: str,
         communication_history: List[OpenAIMessage],
     ) -> Generator[BaseModel, None, None]:
         pydantic_model = self.get_default_pydantic_model(streamable=True)
         messages = self._compose_messages_list(
-            user_input, system_message, communication_history
+            user_input, system_prompt, communication_history
         )
         self.moderate_messages(messages)
         llm = OpenAI(api_key=self.openai_api_key, model=self.get_model().name)
@@ -193,12 +193,12 @@ class TextModel(BaseModelToolkit):
     async def astream_impl(
         self,
         user_input: str,
-        system_message: str,
+        system_prompt: str,
         communication_history: List[OpenAIMessage],
     ) -> AsyncGenerator[BaseModel, None]:
         pydantic_model = self.get_default_pydantic_model(streamable=True)
         messages = self._compose_messages_list(
-            user_input, system_message, communication_history
+            user_input, system_prompt, communication_history
         )
         await self.amoderate_messages(messages)
         llm = OpenAI(api_key=self.openai_api_key, model=self.get_model().name)
