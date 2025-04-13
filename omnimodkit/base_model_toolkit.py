@@ -52,7 +52,7 @@ class BaseModelToolkit(ABC):
         system_prompt = system_prompt or self.get_default_system_prompt()
         pydantic_model = pydantic_model or self.get_default_pydantic_model()
         return self.run_impl(
-            system_prompt=system_prompt, pydantic_model=pydantic_model, *args, **kwargs
+            *args, system_prompt=system_prompt, pydantic_model=pydantic_model, **kwargs
         )
 
     @abstractmethod
@@ -71,7 +71,7 @@ class BaseModelToolkit(ABC):
         system_prompt = system_prompt or self.get_default_system_prompt()
         pydantic_model = pydantic_model or self.get_default_pydantic_model()
         return await self.arun_impl(
-            system_prompt=system_prompt, pydantic_model=pydantic_model, *args, **kwargs
+            *args, system_prompt=system_prompt, pydantic_model=pydantic_model, **kwargs
         )
 
     async def arun_impl(
@@ -86,7 +86,7 @@ class BaseModelToolkit(ABC):
         **kwargs,
     ) -> Generator[BaseModel, None, None]:
         system_prompt = system_prompt or self.get_default_system_prompt()
-        yield from self.stream_impl(system_prompt=system_prompt, *args, **kwargs)
+        yield from self.stream_impl(*args, system_prompt=system_prompt, **kwargs)
 
     def stream_impl(
         self, system_prompt: str, *args, **kwargs
@@ -101,7 +101,7 @@ class BaseModelToolkit(ABC):
     ) -> AsyncGenerator[BaseModel, None]:
         system_prompt = system_prompt or self.get_default_system_prompt()
         async for model in self.astream_impl(
-            system_prompt=system_prompt, *args, **kwargs
+            *args, system_prompt=system_prompt, **kwargs
         ):
             yield model
 

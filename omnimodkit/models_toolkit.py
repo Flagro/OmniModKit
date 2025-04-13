@@ -42,8 +42,7 @@ class ModelsToolkit:
         )
 
     def get_text_response(self, user_input: str) -> BaseModel:
-        messages = TextModel.compose_messages_openai(user_input)
-        return self.text_model.run(messages)
+        return self.text_model.run(user_input=user_input)
 
     def get_image_description(self, in_memory_image: io.BytesIO) -> BaseModel:
         return self.vision_model.run(
@@ -61,8 +60,7 @@ class ModelsToolkit:
         )
 
     async def aget_get_text_response(self, user_input: str) -> BaseModel:
-        messages = TextModel.compose_messages_openai(user_input)
-        return await self.text_model.arun(messages)
+        return await self.text_model.arun(user_input=user_input)
 
     async def aget_get_image_description(
         self, in_memory_image: io.BytesIO
@@ -84,12 +82,10 @@ class ModelsToolkit:
         )
 
     def stream_text_response(self, user_input: str) -> Generator[BaseModel, None, None]:
-        messages = TextModel.compose_messages_openai(user_input)
-        yield from self.text_model.stream(messages)
+        yield from self.text_model.stream(user_input=user_input)
 
     async def astream_text_response(
         self, user_input: str
     ) -> AsyncGenerator[BaseModel, None]:
-        messages = TextModel.compose_messages_openai(user_input)
-        async for response in self.text_model.astream(messages=messages):
+        async for response in self.text_model.astream(user_input=user_input):
             yield response

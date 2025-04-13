@@ -21,7 +21,7 @@ class Moderation:
             model=self.moderation_model,
             input=input_formatted,
         )
-        flagged = response["results"][0]["flagged"]
+        flagged = response.results[0].flagged
         if flagged:
             return False
         return True
@@ -37,7 +37,7 @@ class Moderation:
             model=self.moderation_model,
             input=input_formatted,
         )
-        flagged = response["results"][0]["flagged"]
+        flagged = response.results[0].flagged
         if flagged:
             return False
         return True
