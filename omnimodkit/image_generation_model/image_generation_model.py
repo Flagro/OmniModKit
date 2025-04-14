@@ -56,7 +56,7 @@ class ImageGenerationModel(BaseModelToolkit):
         """
         output_pixel_price = self.get_model().rate.output_pixel_price
 
-        image_generation_dimensions = self.ai_config.image_generation.output_image_size
+        image_generation_dimensions = self.get_model_config().output_image_size
         if "x" not in image_generation_dimensions:
             raise ValueError(
                 f"Invalid image generation dimensions: {image_generation_dimensions}"
