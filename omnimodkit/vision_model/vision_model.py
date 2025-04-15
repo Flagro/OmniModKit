@@ -2,12 +2,12 @@ import io
 from typing import Type, Dict, Any
 from pydantic import BaseModel
 
-from ..base_model_toolkit import BaseModelToolkit
+from ..base_model import BaseModel
 from ..ai_config import GenerationType
 from ..moderation import ModerationError
 
 
-class VisionModel(BaseModelToolkit):
+class VisionModel(BaseModel):
     model_name = "vision"
 
     def get_model_config(self) -> GenerationType:

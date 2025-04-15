@@ -14,7 +14,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage
 from openai import OpenAI
 
-from ..base_model_toolkit import BaseModelToolkit
+from ..base_model import BaseModel
 from ..ai_config import GenerationType
 from ..moderation import ModerationError
 
@@ -37,7 +37,7 @@ class OpenAIMessage(TypedDict):
     content: str
 
 
-class TextModel(BaseModelToolkit):
+class TextModel(BaseModel):
     model_name = "text"
 
     def get_langchain_llm(self) -> ChatOpenAI:

@@ -2,12 +2,12 @@ from typing import Type
 from pydantic import BaseModel
 from langchain_community.utilities.dalle_image_generator import DallEAPIWrapper
 from langchain_core.prompts import PromptTemplate
-from ..base_model_toolkit import BaseModelToolkit
+from ..base_model import BaseModel
 from ..ai_config import GenerationType
 from ..moderation import ModerationError
 
 
-class ImageGenerationModel(BaseModelToolkit):
+class ImageGenerationModel(BaseModel):
     model_name = "image_generation"
 
     def run_impl(

@@ -11,7 +11,7 @@ from .ai_config import AIConfig, Model, GenerationType
 from .moderation import Moderation
 
 
-class BaseModelToolkit(ABC):
+class BaseModel(ABC):
     model_name: str
     openai_api_key: str
 
