@@ -14,11 +14,11 @@ class ImageGenerationModel(BaseModel):
         self,
         system_prompt: str,
         pydantic_model: Type[BaseModel],
-        text_description: str,
+        user_input: str,
     ) -> BaseModel:
-        if self.moderation_needed and not self.moderate_text(text_description):
+        if self.moderation_needed and not self.moderate_text(user_input):
             raise ModerationError(
-                f"Text description '{text_description}' was rejected by the moderation system"
+                f"Text description '{user_input}' was rejected by the moderation system"
             )
         if pydantic_model is not self.get_default_pydantic_model():
             raise ValueError(
@@ -31,7 +31,7 @@ class ImageGenerationModel(BaseModel):
         )
         chain = prompt | llm
         image_url = DallEAPIWrapper(api_key=self.openai_api_key).run(
-            chain.invoke(text_description)
+            chain.invoke(user_input)
         )
         return pydantic_model(image_url=image_url)
 
