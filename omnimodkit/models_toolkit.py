@@ -1,7 +1,5 @@
-import io
 import os
-from typing import Generator, AsyncGenerator, Optional
-from pydantic import BaseModel
+from typing import Optional
 from .ai_config import AIConfig
 from .audio_recognition_model.audio_recognition_model import (
     AudioRecognitionModel,
@@ -30,62 +28,41 @@ class ModelsToolkit:
                     "ai_config.yaml file not found! "
                     "Set it for these integration tests."
                 )
-        self.text_model = TextModel(ai_config=ai_config, openai_api_key=openai_api_key)
-        self.vision_model = VisionModel(
-            ai_config=ai_config, openai_api_key=openai_api_key
-        )
-        self.image_generation_model = ImageGenerationModel(
-            ai_config=ai_config, openai_api_key=openai_api_key
-        )
-        self.audio_recognition_model = AudioRecognitionModel(
-            ai_config=ai_config, openai_api_key=openai_api_key
-        )
+        self.openai_api_key = openai_api_key
+        self.ai_config = ai_config
+        self._text_model: Optional[TextModel] = None
+        self._vision_model: Optional[VisionModel] = None
+        self._image_generation_model: Optional[ImageGenerationModel] = None
+        self._audio_recognition_model: Optional[AudioRecognitionModel] = None
 
-    def get_text_response(self, user_input: str) -> BaseModel:
-        return self.text_model.run(user_input=user_input)
+    @property
+    def text_model(self) -> TextModel:
+        if self._text_model is None:
+            self._text_model = TextModel(
+                ai_config=self.ai_config, openai_api_key=self.openai_api_key
+            )
+        return self._text_model
 
-    def get_image_description(self, in_memory_image: io.BytesIO) -> BaseModel:
-        return self.vision_model.run(
-            in_memory_image=in_memory_image,
-        )
+    @property
+    def vision_model(self) -> VisionModel:
+        if self._vision_model is None:
+            self._vision_model = VisionModel(
+                ai_config=self.ai_config, openai_api_key=self.openai_api_key
+            )
+        return self._vision_model
 
-    def generate_image(self, prompt: str) -> BaseModel:
-        return self.image_generation_model.run(
-            text_description=prompt,
-        )
+    @property
+    def image_generation_model(self) -> ImageGenerationModel:
+        if self._image_generation_model is None:
+            self._image_generation_model = ImageGenerationModel(
+                ai_config=self.ai_config, openai_api_key=self.openai_api_key
+            )
+        return self._image_generation_model
 
-    def get_audio_information(self, in_memory_audio_stream: io.BytesIO) -> BaseModel:
-        return self.audio_recognition_model.run(
-            in_memory_audio_stream=in_memory_audio_stream,
-        )
-
-    async def aget_get_text_response(self, user_input: str) -> BaseModel:
-        return await self.text_model.arun(user_input=user_input)
-
-    async def aget_get_image_description(
-        self, in_memory_image: io.BytesIO
-    ) -> BaseModel:
-        return await self.vision_model.arun(
-            in_memory_image=in_memory_image,
-        )
-
-    async def aget_generate_image(self, prompt: str) -> BaseModel:
-        return await self.image_generation_model.arun(
-            text_description=prompt,
-        )
-
-    async def aget_get_audio_information(
-        self, in_memory_audio_stream: io.BytesIO
-    ) -> BaseModel:
-        return await self.audio_recognition_model.arun(
-            in_memory_audio_stream=in_memory_audio_stream,
-        )
-
-    def stream_text_response(self, user_input: str) -> Generator[BaseModel, None, None]:
-        yield from self.text_model.stream(user_input=user_input)
-
-    async def astream_text_response(
-        self, user_input: str
-    ) -> AsyncGenerator[BaseModel, None]:
-        async for response in self.text_model.astream(user_input=user_input):
-            yield response
+    @property
+    def audio_recognition_model(self) -> AudioRecognitionModel:
+        if self._audio_recognition_model is None:
+            self._audio_recognition_model = AudioRecognitionModel(
+                ai_config=self.ai_config, openai_api_key=self.openai_api_key
+            )
+        return self._audio_recognition_model
