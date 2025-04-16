@@ -30,6 +30,7 @@ class ImageGenerationModel(BaseModel):
             template=system_prompt,
         )
         chain = prompt | llm
+        # TODO: pass models parameters in here
         image_url = DallEAPIWrapper(api_key=self.openai_api_key).run(
             chain.invoke(user_input)
         )
