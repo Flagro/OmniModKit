@@ -1,7 +1,6 @@
 from typing import Type
 from pydantic import BaseModel
-from langchain_community.utilities.dalle_image_generator import DallEAPIWrapper
-from langchain_core.prompts import PromptTemplate
+from openai import OpenAI
 from ..base_model import BaseModel
 from ..ai_config import GenerationType
 from ..moderation import ModerationError
@@ -24,16 +23,16 @@ class ImageGenerationModel(BaseModel):
             raise ValueError(
                 f"Image generation requires pydantic_model must be {self.get_default_pydantic_model()}"
             )
-        llm = self.get_model_chain()
-        prompt = PromptTemplate(
-            input_variables=["image_desc"],
-            template=system_prompt,
+
+        client = OpenAI(api_key=self.openai_api_key)
+        generation_response = client.images.generate(
+            model="dall-e-3",
+            prompt=f"{system_prompt}\n{user_input}",
+            n=1,
+            size="1024x1024",
+            response_format="url",
         )
-        chain = prompt | llm
-        # TODO: pass models parameters in here
-        image_url = DallEAPIWrapper(api_key=self.openai_api_key).run(
-            chain.invoke(user_input)
-        )
+        image_url = generation_response.data[0].url
         return pydantic_model(image_url=image_url)
 
     def get_model_config(self) -> GenerationType:
