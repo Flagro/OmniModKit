@@ -26,7 +26,7 @@ class ImageGenerationModel(BaseModel):
 
         client = OpenAI(api_key=self.openai_api_key)
         generation_response = client.images.generate(
-            model="dall-e-3",
+            model=self.get_model().name,
             prompt=f"{system_prompt}\n{user_input}",
             n=1,
             size="1024x1024",
