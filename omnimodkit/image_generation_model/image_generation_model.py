@@ -29,7 +29,7 @@ class ImageGenerationModel(BaseModel):
             model=self.get_model().name,
             prompt=f"{system_prompt}\n{user_input}",
             n=1,
-            size="1024x1024",
+            size=self.get_model_config().output_image_size,
             response_format="url",
         )
         image_url = generation_response.data[0].url
