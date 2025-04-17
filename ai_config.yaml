@@ -17,8 +17,8 @@ AIConfig:
   image_generation:
     output_image_size: "512x512"
     models:
-      dalle-3:
-        name: "dalle-3"
+      dall-e-3:
+        name: "dall-e-3"
         temperature: 0.7
         is_default: true
         rate:
