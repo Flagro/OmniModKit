@@ -40,7 +40,9 @@ class AudioRecognitionModel(BaseModel):
         in_memory_audio_stream: io.BytesIO,
     ) -> BaseModel:
         kwargs = self._prepare_input(
-            in_memory_audio_stream, system_prompt, pydantic_model
+            system_prompt=system_prompt,
+            pydantic_model=pydantic_model,
+            in_memory_audio_stream=in_memory_audio_stream,
         )
         result = self._get_structured_output(**kwargs)
         # TODO: check moderation before running the model
