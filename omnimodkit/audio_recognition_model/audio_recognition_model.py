@@ -1,6 +1,8 @@
 import io
 from typing import Type
 from pydantic import BaseModel
+from openai import OpenAI
+from openai import AsyncOpenAI
 
 from ..base_model import BaseModel
 from ..ai_config import GenerationType
@@ -39,12 +41,18 @@ class AudioRecognitionModel(BaseModel):
         pydantic_model: Type[BaseModel],
         in_memory_audio_stream: io.BytesIO,
     ) -> BaseModel:
-        kwargs = self._prepare_input(
-            system_prompt=system_prompt,
-            pydantic_model=pydantic_model,
-            in_memory_audio_stream=in_memory_audio_stream,
+        if pydantic_model is not self.get_default_pydantic_model():
+            raise ValueError(
+                f"Image generation requires pydantic_model must be {self.get_default_pydantic_model()}"
+            )
+        client = OpenAI(api_key=self.openai_api_key)
+        transcript = client.audio.transcriptions.create(
+            file=in_memory_audio_stream,
+            model="whisper-1",
         )
-        result = self._get_structured_output(**kwargs)
+        result = self.get_default_pydantic_model()(
+            audio_description=transcript.text,
+        )
         # TODO: check moderation before running the model
         if self.moderation_needed and not self.moderate_text(result.model_dump_json()):
             raise ModerationError(
