@@ -26,6 +26,7 @@ class AudioRecognitionModel(BaseModel):
                 f"Image generation requires pydantic_model must be {self.get_default_pydantic_model()}"
             )
         client = OpenAI(api_key=self.openai_api_key)
+        in_memory_audio_stream.seek(0)
         transcript = client.audio.transcriptions.create(
             file=in_memory_audio_stream,
             model="whisper-1",
@@ -51,6 +52,7 @@ class AudioRecognitionModel(BaseModel):
                 f"Image generation requires pydantic_model must be {self.get_default_pydantic_model()}"
             )
         client = AsyncOpenAI(api_key=self.openai_api_key)
+        in_memory_audio_stream.seek(0)
         transcript = await client.audio.transcriptions.create(
             file=in_memory_audio_stream,
             model="whisper-1",
