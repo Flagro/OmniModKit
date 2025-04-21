@@ -1,3 +1,4 @@
+import os
 import io
 from typing import Type, Dict, Any
 from pydantic import BaseModel
@@ -20,11 +21,16 @@ class VisionModel(BaseModel):
         in_memory_image_stream: io.BytesIO,
     ) -> Dict[str, Any]:
         # Encode in base64:
+        image_extension = (
+            os.path.splitext(in_memory_image_stream.name)[-1].lower().lstrip(".")
+        )
         image_base64 = self.get_b64_from_bytes(in_memory_image_stream)
         return {
             "input_dict": {
                 "type": "image_url",
-                "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"},
+                "image_url": {
+                    "url": f"data:image/{image_extension};base64,{image_base64}"
+                },
             },
             "system_prompt": system_prompt,
             "pydantic_model": pydantic_model,
