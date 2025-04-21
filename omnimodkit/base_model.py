@@ -3,7 +3,6 @@ import base64
 from abc import ABC, abstractmethod
 from typing import Optional, Dict, Any, Type, Generator, AsyncGenerator, List
 from pydantic import BaseModel
-from langchain_core.output_parsers import JsonOutputParser
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
 from .prompt_manager import PromptManager
