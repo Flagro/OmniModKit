@@ -40,7 +40,8 @@ class BaseModel(ABC):
 
     @staticmethod
     def get_b64_from_bytes(in_memory_stream: io.BytesIO) -> str:
-        return base64.b64encode(in_memory_stream.getvalue()).decode()
+        in_memory_stream.seek(0)
+        return base64.b64encode(in_memory_stream.read()).decode("utf-8")
 
     def run(
         self,
