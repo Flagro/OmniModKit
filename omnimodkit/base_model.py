@@ -151,13 +151,12 @@ class BaseModel(ABC):
 
     @staticmethod
     def compose_messages_for_structured_output(
-        system_prompt: str, format_instructions: str, input_dict: Dict[str, Any]
+        system_prompt: str, input_dict: Dict[str, Any]
     ) -> List[HumanMessage]:
         return [
             HumanMessage(
                 content=[
                     {"type": "text", "text": system_prompt},
-                    {"type": "text", "text": format_instructions},
                     input_dict,
                 ]
             )
@@ -169,14 +168,13 @@ class BaseModel(ABC):
         system_prompt: str,
         pydantic_model: Type[BaseModel],
     ) -> BaseModel:
-        parser = JsonOutputParser(pydantic_model=pydantic_model)
-        model = self.get_model_chain()
         messages = self.compose_messages_for_structured_output(
-            system_prompt, parser.get_format_instructions(), input_dict
+            system_prompt, input_dict
         )
-        msg = model.invoke(messages)
-        parsed_output = parser.invoke(msg.content)
-        return pydantic_model(**parsed_output)
+        model = self.get_model_chain()
+        structured_model = model.with_structured_output(pydantic_model)
+        result = structured_model.invoke(messages)
+        return result
 
     async def _aget_structured_output(
         self,
@@ -184,14 +182,13 @@ class BaseModel(ABC):
         system_prompt: str,
         pydantic_model: Type[BaseModel],
     ) -> BaseModel:
-        parser = JsonOutputParser(pydantic_model=pydantic_model)
-        model = self.get_model_chain()
         messages = self.compose_messages_for_structured_output(
-            system_prompt, parser.get_format_instructions(), input_dict
+            system_prompt, input_dict
         )
-        msg = await model.ainvoke(messages)
-        parsed_output = await parser.ainvoke(msg.content)
-        return pydantic_model(**parsed_output)
+        model = self.get_model_chain()
+        structured_model = model.with_structured_output(pydantic_model)
+        result = await structured_model.ainvoke(messages)
+        return result
 
     def get_default_system_prompt(self) -> str:
         return PromptManager.get_default_system_prompt(self.model_name)
