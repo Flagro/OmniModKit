@@ -14,6 +14,10 @@ class VisionModel(BaseModel):
     def get_model_config(self) -> GenerationType:
         return self.ai_config.vision
 
+    def _get_file_extension(self, in_memory_image_stream: io.BytesIO) -> str:
+        # Get the file extension from the in-memory stream name
+        return os.path.splitext(in_memory_image_stream.name)[-1].lower().lstrip(".")
+
     def _prepare_input(
         self,
         system_prompt: str,
@@ -21,9 +25,7 @@ class VisionModel(BaseModel):
         in_memory_image_stream: io.BytesIO,
     ) -> Dict[str, Any]:
         # Encode in base64:
-        image_extension = (
-            os.path.splitext(in_memory_image_stream.name)[-1].lower().lstrip(".")
-        )
+        image_extension = self._get_file_extension(in_memory_image_stream)
         image_base64 = self.get_b64_from_bytes(in_memory_image_stream)
         return {
             "input_dict": {
