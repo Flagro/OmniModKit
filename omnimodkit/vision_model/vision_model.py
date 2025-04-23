@@ -20,6 +20,10 @@ class VisionModel(BaseModel):
             raise ValueError(
                 "The in-memory image stream does not have a name attribute."
             )
+        if not os.path.splitext(in_memory_image_stream.name)[-1]:
+            raise ValueError(
+                "The in-memory image stream does not have a valid file extension."
+            )
         return os.path.splitext(in_memory_image_stream.name)[-1].lower().lstrip(".")
 
     def _prepare_input(
