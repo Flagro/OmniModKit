@@ -16,6 +16,10 @@ class VisionModel(BaseModel):
 
     def _get_file_extension(self, in_memory_image_stream: io.BytesIO) -> str:
         # Get the file extension from the in-memory stream name
+        if not hasattr(in_memory_image_stream, "name"):
+            raise ValueError(
+                "The in-memory image stream does not have a name attribute."
+            )
         return os.path.splitext(in_memory_image_stream.name)[-1].lower().lstrip(".")
 
     def _prepare_input(
