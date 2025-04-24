@@ -1,7 +1,7 @@
 import io
 import base64
 from abc import ABC, abstractmethod
-from typing import Optional, Dict, Any, Type, Generator, AsyncGenerator, List
+from typing import Optional, Dict, Any, Type, Generator, AsyncGenerator
 from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
