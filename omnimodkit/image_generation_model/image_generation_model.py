@@ -19,9 +19,10 @@ class ImageGenerationModel(BaseModel):
             raise ModerationError(
                 f"Text description '{user_input}' was rejected by the moderation system"
             )
-        if pydantic_model is not self.get_default_pydantic_model():
+        default_pydantic_model = self.get_default_pydantic_model()
+        if pydantic_model is not default_pydantic_model:
             raise ValueError(
-                f"Image generation requires pydantic_model must be {self.get_default_pydantic_model()}"
+                f"Image generation requires pydantic_model must be {default_pydantic_model}, "
             )
 
         client = OpenAI(api_key=self.openai_api_key)
