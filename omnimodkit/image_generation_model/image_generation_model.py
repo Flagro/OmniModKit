@@ -2,7 +2,7 @@ from typing import Type
 from pydantic import BaseModel
 from openai import OpenAI
 from ..base_model import BaseModel
-from ..ai_config import GenerationType
+from ..ai_config import ImageGeneration
 from ..moderation import ModerationError
 
 
@@ -36,7 +36,7 @@ class ImageGenerationModel(BaseModel):
         image_url = generation_response.data[0].url
         return pydantic_model(image_url=image_url)
 
-    def get_model_config(self) -> GenerationType:
+    def get_model_config(self) -> ImageGeneration:
         return self.ai_config.image_generation
 
     def get_price(
