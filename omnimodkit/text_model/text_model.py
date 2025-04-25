@@ -12,10 +12,9 @@ import tiktoken
 from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage
-from openai import OpenAI
 
 from ..base_model import BaseModel
-from ..ai_config import GenerationType
+from ..ai_config import TextGeneration
 from ..moderation import ModerationError
 
 
@@ -47,7 +46,7 @@ class TextModel(BaseModel):
             model=self.get_model().name,
         )
 
-    def get_model_config(self) -> GenerationType:
+    def get_model_config(self) -> TextGeneration:
         return self.ai_config.text_generation
 
     @staticmethod

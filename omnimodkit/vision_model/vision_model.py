@@ -4,14 +4,14 @@ from typing import Type, Dict, Any
 from pydantic import BaseModel
 
 from ..base_model import BaseModel
-from ..ai_config import GenerationType
+from ..ai_config import Vision
 from ..moderation import ModerationError
 
 
 class VisionModel(BaseModel):
     model_name = "vision"
 
-    def get_model_config(self) -> GenerationType:
+    def get_model_config(self) -> Vision:
         return self.ai_config.vision
 
     def _get_file_extension(self, in_memory_image_stream: io.BytesIO) -> str:

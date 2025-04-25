@@ -5,14 +5,14 @@ from openai import OpenAI
 from openai import AsyncOpenAI
 
 from ..base_model import BaseModel
-from ..ai_config import GenerationType
+from ..ai_config import AudioRecognition
 from ..moderation import ModerationError
 
 
 class AudioRecognitionModel(BaseModel):
     model_name = "audio_recognition"
 
-    def get_model_config(self) -> GenerationType:
+    def get_model_config(self) -> AudioRecognition:
         return self.ai_config.audio_recognition
 
     def run_impl(
