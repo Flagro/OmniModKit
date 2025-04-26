@@ -29,7 +29,7 @@ class AudioRecognitionModel(BaseModel):
         in_memory_audio_stream.seek(0)
         transcript = client.audio.transcriptions.create(
             file=in_memory_audio_stream,
-            model="whisper-1",
+            model=self.get_model().name,
         )
         result = self.get_default_pydantic_model()(
             audio_description=transcript.text,
