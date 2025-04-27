@@ -221,11 +221,13 @@ class TextModel(BaseModel):
 
     def get_price(
         self,
-        input_token_len: int,
-        output_token_len: int,
+        input: str,
+        output: str,
         *args,
         **kwargs,
     ) -> float:
+        input_token_len = self.count_tokens(input)
+        output_token_len = self.count_tokens(output)
         input_token_price = self.get_model().rate.input_token_price
         output_token_price = self.get_model().rate.output_token_price
         return (
