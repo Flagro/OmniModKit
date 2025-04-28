@@ -39,13 +39,6 @@ class OpenAIMessage(TypedDict):
 class TextModel(BaseModel):
     model_name = "text"
 
-    def get_langchain_llm(self) -> ChatOpenAI:
-        return ChatOpenAI(
-            api_key=self.openai_api_key,
-            temperature=self.get_default_temperature(),
-            model=self.get_model().name,
-        )
-
     def get_model_config(self) -> TextGeneration:
         return self.ai_config.text_generation
 

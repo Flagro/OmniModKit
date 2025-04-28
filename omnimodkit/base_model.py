@@ -23,7 +23,7 @@ class BaseModel(ABC):
         self.openai_api_key = openai_api_key
         self.moderation = Moderation(openai_api_key)
 
-    def get_model_chain(self) -> ChatOpenAI:
+    def get_langchain_llm(self) -> ChatOpenAI:
         return ChatOpenAI(
             api_key=self.openai_api_key,
             temperature=self.get_model().temperature,
@@ -160,7 +160,7 @@ class BaseModel(ABC):
                 input_dict,
             ]
         )
-        model = self.get_model_chain()
+        model = self.get_langchain_llm()
         structured_model = model.with_structured_output(pydantic_model)
         result = structured_model.invoke([message])
         return result
@@ -177,7 +177,7 @@ class BaseModel(ABC):
                 input_dict,
             ]
         )
-        model = self.get_model_chain()
+        model = self.get_langchain_llm()
         structured_model = model.with_structured_output(pydantic_model)
         result = await structured_model.ainvoke([message])
         return result
