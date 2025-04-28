@@ -4,12 +4,12 @@ from pydantic import BaseModel
 from openai import OpenAI
 from openai import AsyncOpenAI
 
-from ..base_model import BaseModel
+from ..base_toolkit_model import BaseToolkitModel
 from ..ai_config import AudioRecognition
 from ..moderation import ModerationError
 
 
-class AudioRecognitionModel(BaseModel):
+class AudioRecognitionModel(BaseToolkitModel):
     model_name = "audio_recognition"
 
     def get_model_config(self) -> AudioRecognition:

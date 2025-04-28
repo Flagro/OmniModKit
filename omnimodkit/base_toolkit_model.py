@@ -10,7 +10,7 @@ from .ai_config import AIConfig, Model, GenerationType
 from .moderation import Moderation
 
 
-class BaseModel(ABC):
+class BaseToolkitModel(ABC):
     model_name: str
     openai_api_key: str
 

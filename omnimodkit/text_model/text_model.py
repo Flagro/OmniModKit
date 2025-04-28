@@ -10,10 +10,9 @@ from typing import (
 )
 import tiktoken
 from pydantic import BaseModel
-from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage
 
-from ..base_model import BaseModel
+from ..base_toolkit_model import BaseModel
 from ..ai_config import TextGeneration
 from ..moderation import ModerationError
 

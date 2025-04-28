@@ -1,12 +1,12 @@
 from typing import Type
 from pydantic import BaseModel
 from openai import OpenAI
-from ..base_model import BaseModel
+from ..base_toolkit_model import BaseToolkitModel
 from ..ai_config import ImageGeneration
 from ..moderation import ModerationError
 
 
-class ImageGenerationModel(BaseModel):
+class ImageGenerationModel(BaseToolkitModel):
     model_name = "image_generation"
 
     def run_impl(
