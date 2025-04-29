@@ -41,19 +41,12 @@ class ImageGenerationModel(BaseToolkitModel):
 
     def get_price(
         self,
-        image_generation_needed: bool,
         *args,
         **kwargs,
     ) -> float:
         """
         Returns the price of the AI services for the given
         input parameters
-
-        Args:
-        token_len: the number of tokens in the input text
-        audio_length: the length of the audio in seconds
-        image_pixels_count: the number of pixels in the image
-        image_generation_needed: whether the image generation is needed
         """
         output_pixel_price = self.get_model().rate.output_pixel_price
 
@@ -66,4 +59,4 @@ class ImageGenerationModel(BaseToolkitModel):
             int, image_generation_dimensions.split("x")
         )
         total_pixels = image_generation_dimensions_x * image_generation_dimensions_y
-        return total_pixels * output_pixel_price if image_generation_needed else 0
+        return total_pixels * output_pixel_price
