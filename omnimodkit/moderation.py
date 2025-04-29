@@ -22,9 +22,7 @@ class Moderation:
             input=input_formatted,
         )
         flagged = response.results[0].flagged
-        if flagged:
-            return False
-        return True
+        return not flagged
 
     async def amoderate_text(
         self, text: str, input_description: Optional[str] = None
@@ -38,6 +36,4 @@ class Moderation:
             input=input_formatted,
         )
         flagged = response.results[0].flagged
-        if flagged:
-            return False
-        return True
+        return not flagged
