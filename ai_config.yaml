@@ -43,3 +43,11 @@ AIConfig:
         rate:
           input_pixel_price: 0.0001
           output_token_price: 1
+
+  moderation:
+    models:
+      omni-moderation:
+        name: "omni-moderation"
+        is_default: true
+        rate:
+          input_token_price: 0.0001
