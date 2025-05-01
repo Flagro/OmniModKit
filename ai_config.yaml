@@ -47,7 +47,7 @@ AIConfig:
   moderation:
     models:
       omni-moderation:
-        name: "omni-moderation"
+        name: "omni-moderation-latest"
         is_default: true
         rate:
           input_token_price: 0.0001

@@ -45,11 +45,16 @@ class Vision(GenerationType):
     pass
 
 
+class Moderation(GenerationType):
+    pass
+
+
 class AIConfig(BaseModel):
     text_generation: Optional[TextGeneration] = None
     image_generation: Optional[ImageGeneration] = None
     audio_recognition: Optional[AudioRecognition] = None
     vision: Optional[Vision] = None
+    moderation: Optional[Moderation] = None
 
     @classmethod
     def load(cls, file_path: str):
