@@ -1,15 +1,21 @@
 from openai import OpenAI, AsyncOpenAI
+from .ai_config import AIConfig
+from .base_toolkit_model import BaseToolkitModel
 
 
 class ModerationError(Exception):
     pass
 
 
-class Moderation:
-    def __init__(self, openai_api_key: str):
+class Moderation(BaseToolkitModel):
+    model_name = "moderation"
+
+    def __init__(self, ai_config: AIConfig, openai_api_key: str):
         self.client = OpenAI(api_key=openai_api_key)
         self.async_client = AsyncOpenAI(api_key=openai_api_key)
-        self.moderation_model = "omni-moderation-latest"
+        self.ai_config = ai_config
+        self.openai_api_key = openai_api_key
+        self.moderation_model = self.get_model().name
 
     def moderate_text(self, text: str) -> bool:
         """
