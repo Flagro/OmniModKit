@@ -16,7 +16,7 @@ class Moderation:
         self.openai_api_key = openai_api_key
         # TODO: look for default model in moderation models
         self.moderation_model = ai_config.moderation.models[
-            ai_config.moderation.models.keys()[0]
+            next(iter(ai_config.moderation.models.keys()))
         ].name
 
     def moderate_text(self, text: str) -> bool:
