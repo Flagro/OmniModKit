@@ -21,7 +21,7 @@ class BaseToolkitModel(ABC):
     ):
         self.ai_config = ai_config
         self.openai_api_key = openai_api_key
-        self.moderation = Moderation(openai_api_key)
+        self.moderation = Moderation(ai_config=ai_config, openai_api_key=openai_api_key)
 
     def get_langchain_llm(self) -> ChatOpenAI:
         return ChatOpenAI(
