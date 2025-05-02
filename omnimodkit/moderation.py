@@ -1,13 +1,12 @@
 from openai import OpenAI, AsyncOpenAI
 from .ai_config import AIConfig
-from .base_toolkit_model import BaseToolkitModel
 
 
 class ModerationError(Exception):
     pass
 
 
-class Moderation(BaseToolkitModel):
+class Moderation:
     model_name = "moderation"
 
     def __init__(self, ai_config: AIConfig, openai_api_key: str):
@@ -15,7 +14,10 @@ class Moderation(BaseToolkitModel):
         self.async_client = AsyncOpenAI(api_key=openai_api_key)
         self.ai_config = ai_config
         self.openai_api_key = openai_api_key
-        self.moderation_model = self.get_model().name
+        # TODO: look for default model in moderation models
+        self.moderation_model = ai_config.moderation.models[
+            ai_config.moderation.models.keys()[0]
+        ].name
 
     def moderate_text(self, text: str) -> bool:
         """
