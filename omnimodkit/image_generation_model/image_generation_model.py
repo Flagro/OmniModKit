@@ -1,6 +1,6 @@
 from typing import Type
 from pydantic import BaseModel
-from openai import OpenAI
+from openai import OpenAI, AsyncOpenAI
 from ..base_toolkit_model import BaseToolkitModel
 from ..ai_config import ImageGeneration
 from ..moderation import ModerationError
@@ -27,6 +27,33 @@ class ImageGenerationModel(BaseToolkitModel):
 
         client = OpenAI(api_key=self.openai_api_key)
         generation_response = client.images.generate(
+            model=self.get_model().name,
+            prompt=f"{system_prompt}\n{user_input}",
+            n=1,
+            size=self.get_model_config().output_image_size,
+            response_format="url",
+        )
+        image_url = generation_response.data[0].url
+        return pydantic_model(image_url=image_url)
+
+    async def arun_impl(
+        self,
+        system_prompt: str,
+        pydantic_model: Type[BaseModel],
+        user_input: str,
+    ) -> BaseModel:
+        if self.moderation_needed and not await self.amoderate_text(user_input):
+            raise ModerationError(
+                f"Text description '{user_input}' was rejected by the moderation system"
+            )
+        default_pydantic_model = self.get_default_pydantic_model()
+        if pydantic_model is not default_pydantic_model:
+            raise ValueError(
+                f"Image generation requires pydantic_model must be {default_pydantic_model}, "
+            )
+
+        client = AsyncOpenAI(api_key=self.openai_api_key)
+        generation_response = await client.images.generate(
             model=self.get_model().name,
             prompt=f"{system_prompt}\n{user_input}",
             n=1,
