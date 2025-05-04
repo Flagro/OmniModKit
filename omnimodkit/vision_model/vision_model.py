@@ -73,7 +73,9 @@ class VisionModel(BaseToolkitModel):
         in_memory_image_stream: io.BytesIO,
     ) -> BaseModel:
         kwargs = self._prepare_input(
-            in_memory_image_stream, system_prompt, pydantic_model
+            system_prompt=system_prompt,
+            pydantic_model=pydantic_model,
+            in_memory_image_stream=in_memory_image_stream,
         )
         result = await self._aget_structured_output(**kwargs)
         # TODO: check moderation before running the model
