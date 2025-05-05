@@ -24,7 +24,7 @@ class ImageGenerationModel(BaseToolkitModel):
             raise ValueError(
                 f"Image generation requires pydantic_model must be {default_pydantic_model}, "
             )
-
+        # TODO: move client creation to __init__ method
         client = OpenAI(api_key=self.openai_api_key)
         generation_response = client.images.generate(
             model=self.get_model().name,
@@ -51,7 +51,7 @@ class ImageGenerationModel(BaseToolkitModel):
             raise ValueError(
                 f"Image generation requires pydantic_model must be {default_pydantic_model}, "
             )
-
+        # TODO: move client creation to __init__ method
         client = AsyncOpenAI(api_key=self.openai_api_key)
         generation_response = await client.images.generate(
             model=self.get_model().name,
