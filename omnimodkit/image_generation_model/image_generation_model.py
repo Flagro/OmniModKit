@@ -9,6 +9,11 @@ from ..moderation import ModerationError
 class ImageGenerationModel(BaseToolkitModel):
     model_name = "image_generation"
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.client = OpenAI(api_key=self.openai_api_key)
+        self.async_client = AsyncOpenAI(api_key=self.openai_api_key)
+
     def run_impl(
         self,
         system_prompt: str,
@@ -24,9 +29,7 @@ class ImageGenerationModel(BaseToolkitModel):
             raise ValueError(
                 f"Image generation requires pydantic_model must be {default_pydantic_model}, "
             )
-        # TODO: move client creation to __init__ method
-        client = OpenAI(api_key=self.openai_api_key)
-        generation_response = client.images.generate(
+        generation_response = self.client.images.generate(
             model=self.get_model().name,
             prompt=f"{system_prompt}\n{user_input}",
             n=1,
@@ -51,9 +54,7 @@ class ImageGenerationModel(BaseToolkitModel):
             raise ValueError(
                 f"Image generation requires pydantic_model must be {default_pydantic_model}, "
             )
-        # TODO: move client creation to __init__ method
-        client = AsyncOpenAI(api_key=self.openai_api_key)
-        generation_response = await client.images.generate(
+        generation_response = await self.async_client.images.generate(
             model=self.get_model().name,
             prompt=f"{system_prompt}\n{user_input}",
             n=1,
