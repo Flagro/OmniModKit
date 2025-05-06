@@ -1,13 +1,28 @@
 import io
 import base64
 from abc import ABC, abstractmethod
-from typing import Optional, Dict, Any, Type, Generator, AsyncGenerator
+from typing import (
+    Optional,
+    Dict,
+    Any,
+    Type,
+    Generator,
+    AsyncGenerator,
+    TypedDict,
+    Literal,
+    List,
+)
 from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage
 from .prompt_manager import PromptManager
 from .ai_config import AIConfig, Model, GenerationType
 from .moderation import Moderation
+
+
+class OpenAIMessage(TypedDict):
+    role: str
+    content: str
 
 
 class BaseToolkitModel(ABC):
@@ -22,6 +37,46 @@ class BaseToolkitModel(ABC):
         self.ai_config = ai_config
         self.openai_api_key = openai_api_key
         self.moderation = Moderation(ai_config=ai_config, openai_api_key=openai_api_key)
+
+    @staticmethod
+    def compose_message_openai(
+        message_text: str, role: Literal["user", "system"] = "user"
+    ) -> OpenAIMessage:
+        return OpenAIMessage({"role": role, "content": message_text})
+
+    @staticmethod
+    def compose_messages_openai(
+        user_input: str, system_prompt: Optional[str] = None
+    ) -> List[OpenAIMessage]:
+        result = []
+        if system_prompt is not None:
+            result.append(
+                BaseToolkitModel.compose_message_openai(system_prompt, role="system")
+            )
+        result.append(BaseToolkitModel.compose_message_openai(user_input))
+        return result
+
+    @staticmethod
+    def get_langchain_message(message_dict: OpenAIMessage) -> BaseMessage:
+        return (
+            HumanMessage(content=message_dict["content"])
+            if message_dict["role"] == "user"
+            else SystemMessage(content=message_dict["content"])
+        )
+
+    def _compose_messages_list(
+        self,
+        user_input: str,
+        system_message: str,
+        communication_history: List[OpenAIMessage],
+    ) -> List[OpenAIMessage]:
+        user_message = self.compose_message_openai(user_input)
+        system_message = self.compose_message_openai(system_message, role="system")
+        return [system_message, user_message] + communication_history
+
+    @staticmethod
+    def get_langchain_messages(messages: List[OpenAIMessage]) -> List[BaseMessage]:
+        return list(map(BaseToolkitModel.get_langchain_message, messages))
 
     def get_langchain_llm(self) -> ChatOpenAI:
         return ChatOpenAI(
