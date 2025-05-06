@@ -1,18 +1,15 @@
 import functools
 from typing import (
-    Literal,
     AsyncGenerator,
     List,
     Generator,
     Optional,
-    TypedDict,
     Type,
 )
 import tiktoken
 from pydantic import BaseModel
-from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage
 
-from ..base_toolkit_model import BaseToolkitModel
+from ..base_toolkit_model import BaseToolkitModel, OpenAIMessage
 from ..ai_config import TextGeneration
 from ..moderation import ModerationError
 
@@ -30,56 +27,11 @@ class YesNoResponse(BaseModel):
     answer_is_yes: bool
 
 
-class OpenAIMessage(TypedDict):
-    role: str
-    content: str
-
-
 class TextModel(BaseToolkitModel):
     model_name = "text"
 
     def get_model_config(self) -> TextGeneration:
         return self.ai_config.text_generation
-
-    @staticmethod
-    def compose_message_openai(
-        message_text: str, role: Literal["user", "system"] = "user"
-    ) -> OpenAIMessage:
-        return OpenAIMessage({"role": role, "content": message_text})
-
-    @staticmethod
-    def compose_messages_openai(
-        user_input: str, system_prompt: Optional[str] = None
-    ) -> List[OpenAIMessage]:
-        result = []
-        if system_prompt is not None:
-            result.append(
-                TextModel.compose_message_openai(system_prompt, role="system")
-            )
-        result.append(TextModel.compose_message_openai(user_input))
-        return result
-
-    @staticmethod
-    def get_langchain_message(message_dict: OpenAIMessage) -> BaseMessage:
-        return (
-            HumanMessage(content=message_dict["content"])
-            if message_dict["role"] == "user"
-            else SystemMessage(content=message_dict["content"])
-        )
-
-    def _compose_messages_list(
-        self,
-        user_input: str,
-        system_message: str,
-        communication_history: List[OpenAIMessage],
-    ) -> List[OpenAIMessage]:
-        user_message = TextModel.compose_message_openai(user_input)
-        system_message = TextModel.compose_message_openai(system_message, role="system")
-        return [system_message, user_message] + communication_history
-
-    @staticmethod
-    def get_langchain_messages(messages: List[OpenAIMessage]) -> List[BaseMessage]:
-        return list(map(TextModel.get_langchain_message, messages))
 
     def moderate_messages(
         self,
