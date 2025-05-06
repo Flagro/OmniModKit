@@ -88,7 +88,7 @@ class TextModel(BaseToolkitModel):
         self.moderate_messages(messages)
         llm = self.get_langchain_llm()
         structured_llm = llm.with_structured_output(pydantic_model)
-        langchain_messages = TextModel.get_langchain_messages(messages)
+        langchain_messages = self.get_langchain_messages(messages)
         structured_response = structured_llm.invoke(langchain_messages)
         return structured_response
 
@@ -109,7 +109,7 @@ class TextModel(BaseToolkitModel):
         await self.amoderate_messages(messages)
         llm = self.get_langchain_llm()
         structured_llm = llm.with_structured_output(pydantic_model)
-        langchain_messages = TextModel.get_langchain_messages(messages)
+        langchain_messages = self.get_langchain_messages(messages)
         structured_response = await structured_llm.ainvoke(langchain_messages)
         return structured_response
 
@@ -127,7 +127,7 @@ class TextModel(BaseToolkitModel):
         )
         self.moderate_messages(messages)
         llm = self.get_langchain_llm()
-        langchain_messages = TextModel.get_langchain_messages(messages)
+        langchain_messages = self.get_langchain_messages(messages)
         for message in llm.stream(langchain_messages):
             yield pydantic_model(text_chunk=message.content)
 
@@ -145,7 +145,7 @@ class TextModel(BaseToolkitModel):
         )
         await self.amoderate_messages(messages)
         llm = self.get_langchain_llm()
-        langchain_messages = TextModel.get_langchain_messages(messages)
+        langchain_messages = self.get_langchain_messages(messages)
         async for message in llm.astream(langchain_messages):
             yield pydantic_model(text_chunk=message.content)
 
