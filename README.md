@@ -7,6 +7,12 @@ Easily build agent tools on top of that.
 # Implementation
 This package utilizes the implemented langchain structured output pipelines.
 
+# Installation
+
+```bash
+pip install omnimodkit
+```
+
 # Usage
 
 - Import ModelsToolkit
