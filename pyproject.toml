@@ -17,7 +17,7 @@ python-decouple = "*"
 tenacity = "8.2.2"
 pydantic = "^2.7.4"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "^7.0"
 notebook = "^7.4.0"
 
