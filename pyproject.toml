@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "omnimodkit"
-package-mode = false
+package-mode = true
 version = "0.0.0"
 description = "Get structured output from multimodal AI models and integrate them into multitool agents"
 authors = ["Anton Potapov <fgreyeducation@gmail.com>"]
