@@ -4,6 +4,10 @@ package-mode = true
 version = "0.0.0"
 description = "Get structured output from multimodal AI models and integrate them into multitool agents"
 authors = ["Anton Potapov <fgreyeducation@gmail.com>"]
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/Flagro/OmniModKit"
+homepage = "https://github.com/Flagro/OmniModKit"
 
 [tool.poetry.dependencies]
 python = "^3.10"
