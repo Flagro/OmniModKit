@@ -76,3 +76,17 @@ class ModelsToolkit:
                 ai_config=self.ai_config, openai_api_key=self.openai_api_key
             )
         return self._moderation_model
+
+    def get_price(*args, **kwargs):
+        """
+        Get the price of the model
+        """
+        return sum(
+            model.get_price(*args, **kwargs)
+            for model in [
+                TextModel,
+                VisionModel,
+                ImageGenerationModel,
+                AudioRecognitionModel,
+            ]
+        )
