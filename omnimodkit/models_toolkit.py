@@ -82,11 +82,14 @@ class ModelsToolkit:
         Get the price of the model
         """
         return sum(
-            model.get_price(*args, **kwargs)
-            for model in [
-                TextModel,
-                VisionModel,
-                ImageGenerationModel,
-                AudioRecognitionModel,
-            ]
+            (
+                model.get_price(*args, **kwargs)
+                for model in [
+                    TextModel,
+                    VisionModel,
+                    ImageGenerationModel,
+                    AudioRecognitionModel,
+                ]
+            ),
+            start=0,
         )
