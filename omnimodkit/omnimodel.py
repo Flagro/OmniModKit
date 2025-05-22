@@ -36,6 +36,21 @@ class OmniModelInput(BaseModel):
     )
 
 
+class OmniModelOutput(BaseModel):
+    text_response: Optional[str] = Field(
+        default=None,
+        description="Text response from the model.",
+    )
+    image_response: Optional[io.BytesIO] = Field(
+        default=None,
+        description="In-memory image stream for image generation.",
+    )
+    audio_response: Optional[str] = Field(
+        default=None,
+        description="Audio response from the model.",
+    )
+
+
 class OmniModel:
     def __init__(
         self, openai_api_key: Optional[str] = None, ai_config: Optional[AIConfig] = None
