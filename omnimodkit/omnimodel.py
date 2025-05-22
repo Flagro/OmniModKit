@@ -1,5 +1,8 @@
 import os
+import io
 from typing import Optional
+from pydantic import BaseModel, Field
+from typing import List, Dict
 from .ai_config import AIConfig
 from .audio_recognition_model.audio_recognition_model import (
     AudioRecognitionModel,
@@ -8,6 +11,29 @@ from .image_generation_model.image_generation_model import ImageGenerationModel
 from .text_model.text_model import TextModel
 from .vision_model.vision_model import VisionModel
 from .moderation import Moderation
+
+
+class OmniModelInput(BaseModel):
+    system_prompt: Optional[str] = Field(
+        default=None,
+        description="System prompt to be used for the model.",
+    )
+    user_input: Optional[str] = Field(
+        default="",
+        description="User input to be processed by the model.",
+    )
+    messages_history: List[Dict[str, str]] = Field(
+        default_factory=list,
+        description="List of messages history. Each message is a dictionary with 'role' and 'content'.",
+    )
+    in_memory_image_stream: io.BytesIO = Field(
+        default=None,
+        description="In-memory image stream for image generation.",
+    )
+    in_memory_audio_stream: io.BytesIO = Field(
+        default=None,
+        description="In-memory audio stream for audio recognition.",
+    )
 
 
 class OmniModel:
