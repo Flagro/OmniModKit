@@ -92,3 +92,70 @@ class OmniModel:
         self.moderation_model = Moderation(
             ai_config=ai_config, openai_api_key=openai_api_key
         )
+
+    def run(
+        self,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        messages_history: Optional[List[Dict[str, str]]] = None,
+        in_memory_image_stream: Optional[io.BytesIO] = None,
+        in_memory_audio_stream: Optional[io.BytesIO] = None,
+    ) -> OmniModelOutput:
+        """
+        Run the OmniModel with the provided inputs and return the output.
+        """
+        input_data = OmniModelInput(
+            system_prompt=system_prompt,
+            user_input=user_input,
+            messages_history=messages_history,
+            in_memory_image_stream=in_memory_image_stream,
+            in_memory_audio_stream=in_memory_audio_stream,
+        )
+
+        # Determine the output type based on the input data
+        output_type = self.text_model.run(
+            system_prompt=input_data.system_prompt,
+            pydantic_model=OmniModelOutputType,
+            user_input=input_data.user_input,
+        )
+
+        # Process the input data based on the output type
+        if output_type == "text":
+            text_response = self.text_model.run(
+                system_prompt=input_data.system_prompt,
+                pydantic_model=OmniModelOutputType,
+                user_input=input_data.user_input,
+            )
+            return OmniModelOutput(text_response=text_response)
+        elif output_type == "image":
+            image_response = self.image_generation_model.run(
+                system_prompt=input_data.system_prompt,
+                pydantic_model=OmniModelOutputType,
+                in_memory_image_stream=input_data.in_memory_image_stream,
+            )
+            return OmniModelOutput(image_response=image_response)
+        elif output_type == "audio":
+            audio_response = self.audio_recognition_model.run(
+                system_prompt=input_data.system_prompt,
+                pydantic_model=OmniModelOutputType,
+                in_memory_audio_stream=input_data.in_memory_audio_stream,
+            )
+            return OmniModelOutput(audio_response=audio_response)
+        elif output_type == "text_with_image":
+            text_response = self.text_model.run(
+                system_prompt=input_data.system_prompt,
+                pydantic_model=OmniModelOutputType,
+                user_input=input_data.user_input,
+            )
+            image_response = self.image_generation_model.run(
+                system_prompt=input_data.system_prompt,
+                pydantic_model=OmniModelOutputType,
+                in_memory_image_stream=input_data.in_memory_image_stream,
+            )
+            return OmniModelOutput(
+                text_response=text_response, image_response=image_response
+            )
+        else:
+            raise ValueError(
+                f"Unsupported output type: {output_type}. Supported types are: text, image, audio, text_with_image."
+            )
