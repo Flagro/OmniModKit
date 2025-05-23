@@ -1,6 +1,6 @@
 import os
 import io
-from typing import Optional
+from typing import Optional, Literal
 from pydantic import BaseModel, Field
 from typing import List, Dict
 from .ai_config import AIConfig
@@ -33,6 +33,13 @@ class OmniModelInput(BaseModel):
     in_memory_audio_stream: io.BytesIO = Field(
         default=None,
         description="In-memory audio stream for audio recognition.",
+    )
+
+
+class OmniModelOutputType(BaseModel):
+    output_type: Literal["text", "image", "audio", "text_with_image"] = Field(
+        default="text",
+        description="Type of output expected from the model.",
     )
 
 
