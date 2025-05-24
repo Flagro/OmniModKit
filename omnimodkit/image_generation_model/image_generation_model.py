@@ -1,7 +1,7 @@
-from typing import Type
+from typing import Type, List
 from pydantic import BaseModel
 from openai import OpenAI, AsyncOpenAI
-from ..base_toolkit_model import BaseToolkitModel
+from ..base_toolkit_model import BaseToolkitModel, OpenAIMessage
 from ..ai_config import ImageGeneration
 from ..moderation import ModerationError
 
@@ -18,6 +18,7 @@ class ImageGenerationModel(BaseToolkitModel):
         self,
         system_prompt: str,
         pydantic_model: Type[BaseModel],
+        communication_history: List[OpenAIMessage],
         user_input: str,
     ) -> BaseModel:
         if self.moderation_needed and not self.moderate_text(user_input):
@@ -43,6 +44,7 @@ class ImageGenerationModel(BaseToolkitModel):
         self,
         system_prompt: str,
         pydantic_model: Type[BaseModel],
+        communication_history: List[OpenAIMessage],
         user_input: str,
     ) -> BaseModel:
         if self.moderation_needed and not await self.amoderate_text(user_input):
