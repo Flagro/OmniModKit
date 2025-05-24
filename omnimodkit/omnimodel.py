@@ -26,13 +26,13 @@ class OmniModelInput(BaseModel):
         default_factory=list,
         description="List of messages history. Each message is a dictionary with 'role' and 'content'.",
     )
-    in_memory_image_stream: io.BytesIO = Field(
+    image_description: Optional[str] = Field(
         default=None,
-        description="In-memory image stream for image generation.",
+        description="Description of the image to be used for image generation.",
     )
-    in_memory_audio_stream: io.BytesIO = Field(
+    audio_description: Optional[str] = Field(
         default=None,
-        description="In-memory audio stream for audio recognition.",
+        description="Description of the audio to be used for audio recognition.",
     )
 
 
@@ -104,12 +104,25 @@ class OmniModel:
         """
         Run the OmniModel with the provided inputs and return the output.
         """
+
+        image_description = None
+        if in_memory_image_stream is not None:
+            image_description = self.vision_model.run(
+                in_memory_image_stream=in_memory_image_stream,
+            )
+
+        audio_description = None
+        if in_memory_audio_stream is not None:
+            audio_description = self.audio_recognition_model.run(
+                in_memory_audio_stream=in_memory_audio_stream,
+            )
+
         input_data = OmniModelInput(
             system_prompt=system_prompt,
             user_input=user_input,
             messages_history=messages_history,
-            in_memory_image_stream=in_memory_image_stream,
-            in_memory_audio_stream=in_memory_audio_stream,
+            image_description=image_description,
+            audio_description=audio_description,
         )
 
         # Determine the output type based on the input data
