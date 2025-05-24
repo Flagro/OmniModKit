@@ -1,10 +1,10 @@
 import io
-from typing import Type
+from typing import Type, List
 from pydantic import BaseModel
 from openai import OpenAI
 from openai import AsyncOpenAI
 
-from ..base_toolkit_model import BaseToolkitModel
+from ..base_toolkit_model import BaseToolkitModel, OpenAIMessage
 from ..ai_config import AudioRecognition
 from ..moderation import ModerationError
 
@@ -19,6 +19,7 @@ class AudioRecognitionModel(BaseToolkitModel):
         self,
         system_prompt: str,
         pydantic_model: Type[BaseModel],
+        communication_history: List[OpenAIMessage],
         in_memory_audio_stream: io.BytesIO,
     ) -> BaseModel:
         default_pydantic_model = self.get_default_pydantic_model()
@@ -46,6 +47,7 @@ class AudioRecognitionModel(BaseToolkitModel):
         self,
         system_prompt: str,
         pydantic_model: Type[BaseModel],
+        communication_history: List[OpenAIMessage],
         in_memory_audio_stream: io.BytesIO,
     ) -> BaseModel:
         default_pydantic_model = self.get_default_pydantic_model()
