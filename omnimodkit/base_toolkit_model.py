@@ -101,18 +101,29 @@ class BaseToolkitModel(ABC):
         self,
         system_prompt: Optional[str] = None,
         pydantic_model: Optional[Type[BaseModel]] = None,
+        communication_history: Optional[List[OpenAIMessage]] = None,
         *args,
         **kwargs,
     ) -> BaseModel:
         system_prompt = system_prompt or self.get_default_system_prompt()
         pydantic_model = pydantic_model or self.get_default_pydantic_model()
+        communication_history = communication_history or []
         return self.run_impl(
-            *args, system_prompt=system_prompt, pydantic_model=pydantic_model, **kwargs
+            *args,
+            system_prompt=system_prompt,
+            pydantic_model=pydantic_model,
+            communication_history=communication_history,
+            **kwargs,
         )
 
     @abstractmethod
     def run_impl(
-        self, system_prompt: str, pydantic_model: str, *args, **kwargs
+        self,
+        system_prompt: str,
+        pydantic_model: str,
+        communication_history: List[OpenAIMessage],
+        *args,
+        **kwargs,
     ) -> BaseModel:
         raise NotImplementedError
 
@@ -120,48 +131,79 @@ class BaseToolkitModel(ABC):
         self,
         system_prompt: Optional[str] = None,
         pydantic_model: Optional[Type[BaseModel]] = None,
+        communication_history: Optional[List[OpenAIMessage]] = None,
         *args,
         **kwargs,
     ) -> BaseModel:
         system_prompt = system_prompt or self.get_default_system_prompt()
         pydantic_model = pydantic_model or self.get_default_pydantic_model()
+        communication_history = communication_history or []
         return await self.arun_impl(
-            *args, system_prompt=system_prompt, pydantic_model=pydantic_model, **kwargs
+            *args,
+            system_prompt=system_prompt,
+            pydantic_model=pydantic_model,
+            communication_history=communication_history,
+            **kwargs,
         )
 
     async def arun_impl(
-        self, system_prompt: str, pydantic_model: str, *args, **kwargs
+        self,
+        system_prompt: str,
+        pydantic_model: str,
+        communication_history: List[OpenAIMessage],
+        *args,
+        **kwargs,
     ) -> BaseModel:
         raise NotImplementedError
 
     def stream(
         self,
         system_prompt: Optional[str] = None,
+        communication_history: Optional[List[OpenAIMessage]] = None,
         *args,
         **kwargs,
     ) -> Generator[BaseModel, None, None]:
         system_prompt = system_prompt or self.get_default_system_prompt()
-        yield from self.stream_impl(*args, system_prompt=system_prompt, **kwargs)
+        communication_history = communication_history or []
+        yield from self.stream_impl(
+            *args,
+            system_prompt=system_prompt,
+            communication_history=communication_history,
+            **kwargs,
+        )
 
     def stream_impl(
-        self, system_prompt: str, *args, **kwargs
+        self,
+        system_prompt: str,
+        communication_history: List[OpenAIMessage],
+        *args,
+        **kwargs,
     ) -> Generator[BaseModel, None, None]:
         raise NotImplementedError
 
     async def astream(
         self,
         system_prompt: Optional[str] = None,
+        communication_history: Optional[List[OpenAIMessage]] = None,
         *args,
         **kwargs,
     ) -> AsyncGenerator[BaseModel, None]:
         system_prompt = system_prompt or self.get_default_system_prompt()
+        communication_history = communication_history or []
         async for model in self.astream_impl(
-            *args, system_prompt=system_prompt, **kwargs
+            *args,
+            system_prompt=system_prompt,
+            communication_history=communication_history,
+            **kwargs,
         ):
             yield model
 
     async def astream_impl(
-        self, system_prompt: str, *args, **kwargs
+        self,
+        system_prompt: str,
+        communication_history: List[OpenAIMessage],
+        *args,
+        **kwargs,
     ) -> AsyncGenerator[BaseModel, None]:
         raise NotImplementedError
 
