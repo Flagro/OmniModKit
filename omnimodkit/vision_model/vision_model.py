@@ -1,9 +1,9 @@
 import os
 import io
-from typing import Type, Dict, Any
+from typing import Type, Dict, Any, List
 from pydantic import BaseModel
 
-from ..base_toolkit_model import BaseToolkitModel
+from ..base_toolkit_model import BaseToolkitModel, OpenAIMessage
 from ..ai_config import Vision
 from ..moderation import ModerationError
 
@@ -51,6 +51,7 @@ class VisionModel(BaseToolkitModel):
         self,
         system_prompt: str,
         pydantic_model: Type[BaseModel],
+        communication_history: List[OpenAIMessage],
         in_memory_image_stream: io.BytesIO,
     ) -> BaseModel:
         kwargs = self._prepare_input(
@@ -70,6 +71,7 @@ class VisionModel(BaseToolkitModel):
         self,
         system_prompt: str,
         pydantic_model: Type[BaseModel],
+        communication_history: List[OpenAIMessage],
         in_memory_image_stream: io.BytesIO,
     ) -> BaseModel:
         kwargs = self._prepare_input(
