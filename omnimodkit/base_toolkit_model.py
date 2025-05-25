@@ -245,40 +245,6 @@ class BaseToolkitModel(ABC):
     def moderation_needed(self) -> bool:
         return self.get_model_config().moderation_needed
 
-    def _get_structured_output(
-        self,
-        input_dict: Dict[str, Any],
-        system_prompt: str,
-        pydantic_model: Type[BaseModel],
-    ) -> BaseModel:
-        message = HumanMessage(
-            content=[
-                {"type": "text", "text": system_prompt},
-                input_dict,
-            ]
-        )
-        model = self.get_langchain_llm()
-        structured_model = model.with_structured_output(pydantic_model)
-        result = structured_model.invoke([message])
-        return result
-
-    async def _aget_structured_output(
-        self,
-        input_dict: Dict[str, Any],
-        system_prompt: str,
-        pydantic_model: Type[BaseModel],
-    ) -> BaseModel:
-        message = HumanMessage(
-            content=[
-                {"type": "text", "text": system_prompt},
-                input_dict,
-            ]
-        )
-        model = self.get_langchain_llm()
-        structured_model = model.with_structured_output(pydantic_model)
-        result = await structured_model.ainvoke([message])
-        return result
-
     def get_default_system_prompt(self) -> str:
         return PromptManager.get_default_system_prompt(self.model_name)
 
