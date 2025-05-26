@@ -48,9 +48,10 @@ class VisionModel(BaseToolkitModel):
             ]
         )
         history_messages = self.get_langchain_messages(communication_history)
+        messages = history_messages + [message]
         model = self.get_langchain_llm()
         structured_model = model.with_structured_output(pydantic_model)
-        result = structured_model.invoke(history_messages + [message])
+        result = structured_model.invoke(messages)
         # TODO: check moderation before running the model
         if self.moderation_needed and not self.moderate_text(result.model_dump_json()):
             raise ModerationError(
@@ -79,9 +80,10 @@ class VisionModel(BaseToolkitModel):
             ]
         )
         history_messages = self.get_langchain_messages(communication_history)
+        messages = history_messages + [message]
         model = self.get_langchain_llm()
         structured_model = model.with_structured_output(pydantic_model)
-        result = await structured_model.ainvoke(history_messages + [message])
+        result = await structured_model.ainvoke(messages)
         # TODO: check moderation before running the model
         if self.moderation_needed and not self.moderate_text(result.model_dump_json()):
             raise ModerationError(
