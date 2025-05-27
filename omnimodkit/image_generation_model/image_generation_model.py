@@ -30,9 +30,13 @@ class ImageGenerationModel(BaseToolkitModel):
             raise ValueError(
                 f"Image generation requires pydantic_model must be {default_pydantic_model}, "
             )
+        communication_history_prompt = "\n".join(
+            [f"{msg.role}: {msg.content}" for msg in communication_history]
+        )
         generation_response = self.client.images.generate(
             model=self.get_model().name,
-            prompt=f"{system_prompt}\n{user_input}",
+            prompt=f"{system_prompt}\nCommunication history:\n"
+            f"{communication_history_prompt}\nUser input: {user_input}",
             n=1,
             size=self.get_model_config().output_image_size,
             response_format="url",
@@ -56,9 +60,13 @@ class ImageGenerationModel(BaseToolkitModel):
             raise ValueError(
                 f"Image generation requires pydantic_model must be {default_pydantic_model}, "
             )
+        communication_history_prompt = "\n".join(
+            [f"{msg.role}: {msg.content}" for msg in communication_history]
+        )
         generation_response = await self.async_client.images.generate(
             model=self.get_model().name,
-            prompt=f"{system_prompt}\n{user_input}",
+            prompt=f"{system_prompt}\nCommunication history:\n"
+            f"{communication_history_prompt}\nUser input: {user_input}",
             n=1,
             size=self.get_model_config().output_image_size,
             response_format="url",
