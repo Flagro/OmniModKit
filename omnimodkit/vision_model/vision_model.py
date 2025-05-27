@@ -2,7 +2,7 @@ import os
 import io
 from typing import Type, List
 from pydantic import BaseModel
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, BaseMessage
 from ..base_toolkit_model import BaseToolkitModel, OpenAIMessage
 from ..ai_config import Vision
 from ..moderation import ModerationError
@@ -27,13 +27,9 @@ class VisionModel(BaseToolkitModel):
             )
         return base_name.lower().lstrip(".")
 
-    def run_impl(
-        self,
-        system_prompt: str,
-        pydantic_model: Type[BaseModel],
-        communication_history: List[OpenAIMessage],
-        in_memory_image_stream: io.BytesIO,
-    ) -> BaseModel:
+    def compose_messages(
+        self, in_memory_image_stream, system_prompt, communication_history
+    ) -> List[BaseMessage]:
         # Encode in base64:
         image_extension = self._get_file_extension(in_memory_image_stream)
         image_base64 = self.get_b64_from_bytes(in_memory_image_stream)
@@ -49,6 +45,18 @@ class VisionModel(BaseToolkitModel):
         )
         history_messages = self.get_langchain_messages(communication_history)
         messages = history_messages + [message]
+        return messages
+
+    def run_impl(
+        self,
+        system_prompt: str,
+        pydantic_model: Type[BaseModel],
+        communication_history: List[OpenAIMessage],
+        in_memory_image_stream: io.BytesIO,
+    ) -> BaseModel:
+        messages = self.compose_messages(
+            in_memory_image_stream, system_prompt, communication_history
+        )
         model = self.get_langchain_llm()
         structured_model = model.with_structured_output(pydantic_model)
         result = structured_model.invoke(messages)
@@ -66,21 +74,9 @@ class VisionModel(BaseToolkitModel):
         communication_history: List[OpenAIMessage],
         in_memory_image_stream: io.BytesIO,
     ) -> BaseModel:
-        # Encode in base64:
-        image_extension = self._get_file_extension(in_memory_image_stream)
-        image_base64 = self.get_b64_from_bytes(in_memory_image_stream)
-        input_dict = {
-            "type": "image_url",
-            "image_url": {"url": f"data:image/{image_extension};base64,{image_base64}"},
-        }
-        message = HumanMessage(
-            content=[
-                {"type": "text", "text": system_prompt},
-                input_dict,
-            ]
+        messages = self.compose_messages(
+            in_memory_image_stream, system_prompt, communication_history
         )
-        history_messages = self.get_langchain_messages(communication_history)
-        messages = history_messages + [message]
         model = self.get_langchain_llm()
         structured_model = model.with_structured_output(pydantic_model)
         result = await structured_model.ainvoke(messages)
