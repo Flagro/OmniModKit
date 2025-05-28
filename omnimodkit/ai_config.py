@@ -41,6 +41,10 @@ class AudioRecognition(GenerationType):
     pass
 
 
+class AudioGeneration(GenerationType):
+    voice_type: str
+
+
 class Vision(GenerationType):
     pass
 
@@ -53,6 +57,7 @@ class AIConfig(BaseModel):
     text_generation: Optional[TextGeneration] = None
     image_generation: Optional[ImageGeneration] = None
     audio_recognition: Optional[AudioRecognition] = None
+    audio_generation: Optional[AudioGeneration] = None
     vision: Optional[Vision] = None
     moderation: Optional[Moderation] = None
 

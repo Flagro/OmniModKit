@@ -10,6 +10,13 @@ class DefaultAudioInformation(BaseModel):
         return self.audio_description
 
 
+class DefaultAudio(BaseModel):
+    audio_url: str = Field(description="url of the audio")
+
+    def __str__(self):
+        return f"Audio url: {self.audio_url}"
+
+
 class DefaultImageInformation(BaseModel):
     image_description: str = Field(description="a short description of the image")
     image_type: Literal["screenshot", "picture", "selfie", "anime"] = Field(
@@ -55,6 +62,10 @@ class PromptManager:
         return DefaultAudioInformation
 
     @staticmethod
+    def get_default_audio() -> Type[BaseModel]:
+        return DefaultAudio
+
+    @staticmethod
     def get_default_image_information() -> Type[BaseModel]:
         return DefaultImageInformation
 
@@ -84,6 +95,10 @@ class PromptManager:
         return "Based on the audio, fill out the provided fields."
 
     @staticmethod
+    def get_default_system_prompt_audio_generation() -> str:
+        return "Based on the text generate the audio."
+
+    @staticmethod
     def get_default_system_prompt_vision() -> str:
         return "Based on the image, fill out the provided fields."
 
@@ -96,6 +111,8 @@ class PromptManager:
     def get_default_system_prompt(model_name: str) -> str:
         if model_name == "audio_recognition":
             return PromptManager.get_default_system_prompt_audio()
+        if model_name == "audio_generation":
+            return PromptManager.get_default_system_prompt_audio_generation()
         if model_name == "vision":
             return PromptManager.get_default_system_prompt_vision()
         if model_name == "image_generation":
@@ -108,6 +125,8 @@ class PromptManager:
     ) -> Type[BaseModel]:
         if model_name == "audio_recognition":
             return PromptManager.get_default_audio_information()
+        if model_name == "audio_generation":
+            return PromptManager.get_default_audio()
         if model_name == "vision":
             return PromptManager.get_default_image_information()
         if model_name == "image_generation":
