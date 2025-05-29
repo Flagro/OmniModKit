@@ -1,4 +1,3 @@
-import functools
 from typing import (
     AsyncGenerator,
     List,
@@ -6,21 +5,11 @@ from typing import (
     Optional,
     Type,
 )
-import tiktoken
 from pydantic import BaseModel
 
 from ..base_toolkit_model import BaseToolkitModel, OpenAIMessage
 from ..ai_config import TextGeneration
 from ..moderation import ModerationError
-
-
-@functools.lru_cache()
-def _get_encoding_for_model(model_name: str) -> tiktoken.Encoding:
-    """
-    Returns the tiktoken encoding for the given model name,
-    leveraging LRU caching to avoid repeated calls.
-    """
-    return tiktoken.encoding_for_model(model_name)
 
 
 class YesNoResponse(BaseModel):
@@ -154,11 +143,6 @@ class TextModel(BaseToolkitModel):
             self.compose_message_openai(question), YesNoResponse
         )
         return response.answer_is_yes
-
-    def count_tokens(self, text: str) -> int:
-        encoding = _get_encoding_for_model(self.get_model().name)
-        encoded_text = encoding.encode(text)
-        return len(encoded_text)
 
     def get_price(
         self,

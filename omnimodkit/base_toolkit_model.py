@@ -1,5 +1,6 @@
 import io
 import base64
+import functools
 from abc import ABC, abstractmethod
 from typing import (
     Optional,
@@ -11,12 +12,22 @@ from typing import (
     Literal,
     List,
 )
+import tiktoken
 from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage
 from .prompt_manager import PromptManager
 from .ai_config import AIConfig, Model, GenerationType
 from .moderation import Moderation
+
+
+@functools.lru_cache()
+def _get_encoding_for_model(model_name: str) -> tiktoken.Encoding:
+    """
+    Returns the tiktoken encoding for the given model name,
+    leveraging LRU caching to avoid repeated calls.
+    """
+    return tiktoken.encoding_for_model(model_name)
 
 
 class OpenAIMessage(TypedDict):
@@ -36,6 +47,11 @@ class BaseToolkitModel(ABC):
         self.ai_config = ai_config
         self.openai_api_key = openai_api_key
         self.moderation = Moderation(ai_config=ai_config, openai_api_key=openai_api_key)
+
+    def count_tokens(self, text: str) -> int:
+        encoding = _get_encoding_for_model(self.get_model().name)
+        encoded_text = encoding.encode(text)
+        return len(encoded_text)
 
     @staticmethod
     def compose_message_openai(
