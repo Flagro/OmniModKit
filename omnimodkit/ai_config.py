@@ -43,6 +43,7 @@ class AudioRecognition(GenerationType):
 
 class AudioGeneration(GenerationType):
     voice_type: str
+    max_input_tokens: int
 
 
 class Vision(GenerationType):
