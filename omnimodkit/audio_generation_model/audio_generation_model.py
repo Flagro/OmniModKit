@@ -1,4 +1,3 @@
-import io
 from typing import Type, List
 from pydantic import BaseModel
 from openai import OpenAI
@@ -41,8 +40,12 @@ class AudioGenerationModel(BaseToolkitModel):
         system_prompt: str,
         pydantic_model: Type[BaseModel],
         communication_history: List[OpenAIMessage],
-        in_memory_audio_stream: io.BytesIO,
+        user_input: str,
     ) -> BaseModel:
+        if self.moderation_needed and not await self.amoderate_text(user_input):
+            raise ModerationError(
+                f"Audio description '{user_input}' was rejected by the moderation system"
+            )
         default_pydantic_model = self.get_default_pydantic_model()
         if pydantic_model is not default_pydantic_model:
             raise ValueError(
