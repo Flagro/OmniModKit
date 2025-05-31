@@ -4,6 +4,7 @@ from .ai_config import AIConfig
 from .audio_recognition_model.audio_recognition_model import (
     AudioRecognitionModel,
 )
+from .audio_generation_model.audio_generation_model import AudioGenerationModel
 from .image_generation_model.image_generation_model import ImageGenerationModel
 from .text_model.text_model import TextModel
 from .vision_model.vision_model import VisionModel
@@ -35,6 +36,7 @@ class ModelsToolkit:
         self._vision_model: Optional[VisionModel] = None
         self._image_generation_model: Optional[ImageGenerationModel] = None
         self._audio_recognition_model: Optional[AudioRecognitionModel] = None
+        self._audio_generation_model: Optional[AudioGenerationModel] = None
         self._moderation_model: Optional[Moderation] = None
 
     @property
@@ -70,6 +72,14 @@ class ModelsToolkit:
         return self._audio_recognition_model
 
     @property
+    def audio_generation_model(self) -> AudioGenerationModel:
+        if self._audio_generation_model is None:
+            self._audio_generation_model = AudioGenerationModel(
+                ai_config=self.ai_config, openai_api_key=self.openai_api_key
+            )
+        return self._audio_generation_model
+
+    @property
     def moderation_model(self):
         if self._moderation_model is None:
             self._moderation_model = Moderation(
@@ -89,6 +99,7 @@ class ModelsToolkit:
                     VisionModel,
                     ImageGenerationModel,
                     AudioRecognitionModel,
+                    AudioGenerationModel,
                 ]
             ),
             start=0,
