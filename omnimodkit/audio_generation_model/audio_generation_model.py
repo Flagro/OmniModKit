@@ -1,3 +1,4 @@
+import io
 from typing import Type, List
 from pydantic import BaseModel
 from openai import OpenAI
@@ -31,9 +32,18 @@ class AudioGenerationModel(BaseToolkitModel):
                 f"Image generation requires pydantic_model must be {default_pydantic_model}"
             )
         client = OpenAI(api_key=self.openai_api_key)
-        raise NotImplementedError(
-            "Audio generation is not implemented yet. Please implement the audio generation logic."
+        resp = client.audio.speech.create(
+            model=self.get_model().name,
+            voice=self.get_model_config().voice,
+            input=user_input,
+            format="ogg_opus",
+            stream=True,
         )
+        bytes_response = b"".join(chunk for chunk in resp.iter_bytes())
+        io_bytes = io.BytesIO(bytes_response)
+        io_bytes.name = "audio.ogg"
+        io_bytes.seek(0)
+        return pydantic_model(audio_bytes=io_bytes)
 
     async def arun_impl(
         self,
