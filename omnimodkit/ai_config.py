@@ -42,7 +42,7 @@ class AudioRecognition(GenerationType):
 
 
 class AudioGeneration(GenerationType):
-    voice_type: str
+    voice: str
     max_input_tokens: int
 
 
