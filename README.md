@@ -62,6 +62,11 @@ image_bytes.name = "image.png"
 modkit.vision_model.run(
     in_memory_image_stream=image_bytes,
 )
+
+# Use audio generation
+modkit.audio_generation_model.run(
+    user_input="Hello! How can I help you today?",
+)
 ```
 
 # License
