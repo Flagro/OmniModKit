@@ -36,7 +36,7 @@ class AudioGenerationModel(BaseToolkitModel):
             model=self.get_model().name,
             voice=self.get_model_config().voice,
             input=user_input,
-            format="ogg_opus",
+            response_format="opus",
         )
         io_bytes = io.BytesIO(bytes_response)
         io_bytes.name = "audio.ogg"
@@ -64,7 +64,7 @@ class AudioGenerationModel(BaseToolkitModel):
             model=self.get_model().name,
             voice=self.get_model_config().voice,
             input=user_input,
-            format="ogg_opus",
+            response_format="opus",
         )
         io_bytes = io.BytesIO(bytes_response)
         io_bytes.name = "audio.ogg"
