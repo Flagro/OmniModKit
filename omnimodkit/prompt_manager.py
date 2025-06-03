@@ -1,3 +1,4 @@
+import io
 from typing import Type, List, Literal
 from datetime import datetime
 from pydantic import BaseModel, Field
@@ -11,10 +12,10 @@ class DefaultAudioInformation(BaseModel):
 
 
 class DefaultAudio(BaseModel):
-    audio_url: str = Field(description="url of the audio")
+    audio_bytes: io.BytesIO = Field(description="in-memory audio bytes in ogg format")
 
     def __str__(self):
-        return f"Audio url: {self.audio_url}"
+        return f"Audio bytes: {self.audio_bytes.name} ({self.audio_bytes.getbuffer().nbytes} bytes)"
 
 
 class DefaultImageInformation(BaseModel):
