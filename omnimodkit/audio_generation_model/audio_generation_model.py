@@ -38,7 +38,7 @@ class AudioGenerationModel(BaseToolkitModel):
             input=user_input,
             response_format="opus",
         )
-        io_bytes = io.BytesIO(bytes_response)
+        io_bytes = io.BytesIO(bytes_response.content)
         io_bytes.name = "audio.ogg"
         io_bytes.seek(0)
         return pydantic_model(audio_bytes=io_bytes)
@@ -66,7 +66,7 @@ class AudioGenerationModel(BaseToolkitModel):
             input=user_input,
             response_format="opus",
         )
-        io_bytes = io.BytesIO(bytes_response)
+        io_bytes = io.BytesIO(bytes_response.content)
         io_bytes.name = "audio.ogg"
         io_bytes.seek(0)
         return pydantic_model(audio_bytes=io_bytes)
