@@ -1,7 +1,7 @@
 import io
 from typing import Type, List, Literal
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class DefaultAudioInformation(BaseModel):
@@ -12,6 +12,10 @@ class DefaultAudioInformation(BaseModel):
 
 
 class DefaultAudio(BaseModel):
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+    )
+
     audio_bytes: io.BytesIO = Field(description="in-memory audio bytes in ogg format")
 
     def __str__(self):
