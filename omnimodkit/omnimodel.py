@@ -1,16 +1,9 @@
-import os
 import io
 from typing import Optional, Literal
 from pydantic import BaseModel, Field
 from typing import List, Dict
 from .ai_config import AIConfig
-from .audio_recognition_model.audio_recognition_model import (
-    AudioRecognitionModel,
-)
-from .image_generation_model.image_generation_model import ImageGenerationModel
-from .text_model.text_model import TextModel
-from .vision_model.vision_model import VisionModel
-from .moderation import Moderation
+from .models_toolkit import ModelsToolkit
 
 
 class OmniModelInput(BaseModel):
@@ -62,36 +55,8 @@ class OmniModel:
     def __init__(
         self, openai_api_key: Optional[str] = None, ai_config: Optional[AIConfig] = None
     ):
-        if openai_api_key is None:
-            openai_api_key = os.getenv("OPENAI_API_KEY")
-            if not openai_api_key:
-                raise ValueError(
-                    "OPENAI_API_KEY is not set in the environment! "
-                    "Set it for these integration tests."
-                )
-        if ai_config is None:
-            try:
-                ai_config = AIConfig.load("ai_config.yaml")
-            except FileNotFoundError:
-                raise ValueError(
-                    "ai_config.yaml file not found! "
-                    "Set it for these integration tests."
-                )
-        self.openai_api_key = openai_api_key
         self.ai_config = ai_config
-        self.text_model = TextModel(ai_config=ai_config, openai_api_key=openai_api_key)
-        self.vision_model = VisionModel(
-            ai_config=ai_config, openai_api_key=openai_api_key
-        )
-        self.image_generation_model = ImageGenerationModel(
-            ai_config=ai_config, openai_api_key=openai_api_key
-        )
-        self.audio_recognition_model = AudioRecognitionModel(
-            ai_config=ai_config, openai_api_key=openai_api_key
-        )
-        self.moderation_model = Moderation(
-            ai_config=ai_config, openai_api_key=openai_api_key
-        )
+        self.modkit = ModelsToolkit(openai_api_key=openai_api_key, ai_config=ai_config)
 
     def run(
         self,
@@ -107,13 +72,13 @@ class OmniModel:
 
         image_description = None
         if in_memory_image_stream is not None:
-            image_description = self.vision_model.run(
+            image_description = self.modkit.vision_model.run(
                 in_memory_image_stream=in_memory_image_stream,
             )
 
         audio_description = None
         if in_memory_audio_stream is not None:
-            audio_description = self.audio_recognition_model.run(
+            audio_description = self.modkit.audio_recognition_model.run(
                 in_memory_audio_stream=in_memory_audio_stream,
             )
 
@@ -126,7 +91,7 @@ class OmniModel:
         )
 
         # Determine the output type based on the input data
-        output_type = self.text_model.run(
+        output_type = self.modkit.text_model.run(
             system_prompt=input_data.system_prompt,
             pydantic_model=OmniModelOutputType,
             user_input=input_data.user_input,
@@ -134,33 +99,33 @@ class OmniModel:
 
         # Process the input data based on the output type
         if output_type == "text":
-            text_response = self.text_model.run(
+            text_response = self.modkit.text_model.run(
                 system_prompt=input_data.system_prompt,
                 pydantic_model=OmniModelOutputType,
                 user_input=input_data.user_input,
             )
             return OmniModelOutput(text_response=text_response)
         elif output_type == "image":
-            image_response = self.image_generation_model.run(
+            image_response = self.modkit.image_generation_model.run(
                 system_prompt=input_data.system_prompt,
                 pydantic_model=OmniModelOutputType,
                 in_memory_image_stream=input_data.in_memory_image_stream,
             )
             return OmniModelOutput(image_response=image_response)
         elif output_type == "audio":
-            audio_response = self.audio_recognition_model.run(
+            audio_response = self.modkit.audio_recognition_model.run(
                 system_prompt=input_data.system_prompt,
                 pydantic_model=OmniModelOutputType,
                 in_memory_audio_stream=input_data.in_memory_audio_stream,
             )
             return OmniModelOutput(audio_response=audio_response)
         elif output_type == "text_with_image":
-            text_response = self.text_model.run(
+            text_response = self.modkit.text_model.run(
                 system_prompt=input_data.system_prompt,
                 pydantic_model=OmniModelOutputType,
                 user_input=input_data.user_input,
             )
-            image_response = self.image_generation_model.run(
+            image_response = self.modkit.image_generation_model.run(
                 system_prompt=input_data.system_prompt,
                 pydantic_model=OmniModelOutputType,
                 in_memory_image_stream=input_data.in_memory_image_stream,
