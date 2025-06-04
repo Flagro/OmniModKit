@@ -41,13 +41,13 @@ class OmniModelOutput(BaseModel):
         default=None,
         description="Text response from the model.",
     )
-    image_response: Optional[io.BytesIO] = Field(
+    image_url_response: Optional[str] = Field(
         default=None,
-        description="In-memory image stream for image generation.",
+        description="Generated image URL response from the model.",
     )
-    audio_response: Optional[str] = Field(
+    audio_bytes_response: Optional[io.BytesIO] = Field(
         default=None,
-        description="Audio response from the model.",
+        description="In-memory audio bytes response from the model.",
     )
 
 
@@ -101,33 +101,28 @@ class OmniModel:
         if output_type == "text":
             text_response = self.modkit.text_model.run(
                 system_prompt=input_data.system_prompt,
-                pydantic_model=OmniModelOutputType,
                 user_input=input_data.user_input,
             )
             return OmniModelOutput(text_response=text_response)
         elif output_type == "image":
             image_response = self.modkit.image_generation_model.run(
                 system_prompt=input_data.system_prompt,
-                pydantic_model=OmniModelOutputType,
-                in_memory_image_stream=input_data.in_memory_image_stream,
+                user_input=input_data.user_input,
             )
-            return OmniModelOutput(image_response=image_response)
+            return OmniModelOutput(image_url_response=image_response.image_url)
         elif output_type == "audio":
             audio_response = self.modkit.audio_recognition_model.run(
                 system_prompt=input_data.system_prompt,
-                pydantic_model=OmniModelOutputType,
                 in_memory_audio_stream=input_data.in_memory_audio_stream,
             )
             return OmniModelOutput(audio_response=audio_response)
         elif output_type == "text_with_image":
             text_response = self.modkit.text_model.run(
                 system_prompt=input_data.system_prompt,
-                pydantic_model=OmniModelOutputType,
                 user_input=input_data.user_input,
             )
             image_response = self.modkit.image_generation_model.run(
                 system_prompt=input_data.system_prompt,
-                pydantic_model=OmniModelOutputType,
                 in_memory_image_stream=input_data.in_memory_image_stream,
             )
             return OmniModelOutput(
