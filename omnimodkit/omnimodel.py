@@ -72,15 +72,17 @@ class OmniModel:
 
         image_description = None
         if in_memory_image_stream is not None:
-            image_description = self.modkit.vision_model.run(
+            image_description_object = self.modkit.vision_model.run(
                 in_memory_image_stream=in_memory_image_stream,
             )
+            image_description = str(image_description_object)
 
         audio_description = None
         if in_memory_audio_stream is not None:
-            audio_description = self.modkit.audio_recognition_model.run(
+            audio_description_object = self.modkit.audio_recognition_model.run(
                 in_memory_audio_stream=in_memory_audio_stream,
             )
+            audio_description = str(audio_description_object)
 
         input_data = OmniModelInput(
             system_prompt=system_prompt,
