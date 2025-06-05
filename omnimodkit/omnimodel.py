@@ -103,7 +103,7 @@ class OmniModel:
                 system_prompt=input_data.system_prompt,
                 user_input=input_data.user_input,
             )
-            return OmniModelOutput(text_response=text_response)
+            return OmniModelOutput(text_response=text_response.text)
         elif output_type == "image":
             image_response = self.modkit.image_generation_model.run(
                 system_prompt=input_data.system_prompt,
@@ -123,7 +123,7 @@ class OmniModel:
             )
             image_response = self.modkit.image_generation_model.run(
                 system_prompt=input_data.system_prompt,
-                in_memory_image_stream=input_data.in_memory_image_stream,
+                user_input=input_data.user_input,
             )
             return OmniModelOutput(
                 text_response=text_response, image_response=image_response
