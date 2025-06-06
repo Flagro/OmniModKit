@@ -113,9 +113,13 @@ class OmniModel:
             )
             return OmniModelOutput(image_url_response=image_response.image_url)
         elif output_type == "audio":
-            audio_response = self.modkit.audio_generation_model.run(
+            text_response = self.modkit.text_model.run(
                 system_prompt=input_data.system_prompt,
                 user_input=input_data.user_input,
+            )
+            audio_response = self.modkit.audio_generation_model.run(
+                system_prompt=input_data.system_prompt,
+                user_input=text_response.text,
             )
             return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
         elif output_type == "text_with_image":
