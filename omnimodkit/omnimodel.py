@@ -131,9 +131,13 @@ class OmniModel:
                 system_prompt=input_data.system_prompt,
                 user_input=input_data.user_input,
             )
-            image_response = self.modkit.image_generation_model.run(
+            image_description_response = self.modkit.text_model.run(
                 system_prompt=input_data.system_prompt,
                 user_input=input_data.user_input,
+            )
+            image_response = self.modkit.image_generation_model.run(
+                system_prompt=input_data.system_prompt,
+                user_input=image_description_response.text,
             )
             return OmniModelOutput(
                 text_response=text_response, image_response=image_response
