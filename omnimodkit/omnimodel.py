@@ -1,6 +1,6 @@
 import io
 from typing import Optional, Literal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Dict
 from .ai_config import AIConfig
 from .models_toolkit import ModelsToolkit
@@ -37,6 +37,10 @@ class OmniModelOutputType(BaseModel):
 
 
 class OmniModelOutput(BaseModel):
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+    )
+
     text_response: Optional[str] = Field(
         default=None,
         description="Text response from the model.",
