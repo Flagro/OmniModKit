@@ -43,7 +43,7 @@ class OmniModel:
         self,
         user_input: Optional[str] = None,
         system_prompt: Optional[str] = None,
-        messages_history: Optional[List[Dict[str, str]]] = None,
+        communication_history: Optional[List[Dict[str, str]]] = None,
         in_memory_image_stream: Optional[io.BytesIO] = None,
         in_memory_audio_stream: Optional[io.BytesIO] = None,
     ) -> OmniModelOutput:
@@ -58,6 +58,10 @@ class OmniModel:
             )
             image_description = str(image_description_object)
 
+            user_input = (
+                f"{user_input} {image_description}" if user_input else image_description
+            )
+
         audio_description = None
         if in_memory_audio_stream is not None:
             audio_description_object = self.modkit.audio_recognition_model.run(
@@ -65,12 +69,16 @@ class OmniModel:
             )
             audio_description = str(audio_description_object)
 
+            user_input = (
+                f"{user_input} {audio_description}" if user_input else audio_description
+            )
+
         # Determine the output type based on the input data
         output_type = self.modkit.text_model.run(
             system_prompt=system_prompt,
             pydantic_model=OmniModelOutputType,
             user_input=user_input,
-            messages_history=messages_history,
+            communication_history=communication_history,
         )
 
         # Process the input data based on the output type
@@ -78,48 +86,48 @@ class OmniModel:
             text_response = self.modkit.text_model.run(
                 system_prompt=system_prompt,
                 user_input=user_input,
-                messages_history=messages_history,
+                communication_history=communication_history,
             )
             return OmniModelOutput(text_response=text_response.text)
         elif output_type == "image":
             image_description_response = self.modkit.text_model.run(
                 system_prompt=system_prompt,
                 user_input=user_input,
-                messages_history=messages_history,
+                communication_history=communication_history,
             )
             image_response = self.modkit.image_generation_model.run(
                 system_prompt=system_prompt,
                 user_input=image_description_response.text,
-                messages_history=messages_history,
+                communication_history=communication_history,
             )
             return OmniModelOutput(image_url_response=image_response.image_url)
         elif output_type == "audio":
             text_response = self.modkit.text_model.run(
                 system_prompt=system_prompt,
                 user_input=user_input,
-                messages_history=messages_history,
+                communication_history=communication_history,
             )
             audio_response = self.modkit.audio_generation_model.run(
                 system_prompt=system_prompt,
                 user_input=text_response.text,
-                messages_history=messages_history,
+                communication_history=communication_history,
             )
             return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
         elif output_type == "text_with_image":
             text_response = self.modkit.text_model.run(
                 system_prompt=system_prompt,
                 user_input=user_input,
-                messages_history=messages_history,
+                communication_history=communication_history,
             )
             image_description_response = self.modkit.text_model.run(
                 system_prompt=system_prompt,
                 user_input=user_input,
-                messages_history=messages_history,
+                communication_history=communication_history,
             )
             image_response = self.modkit.image_generation_model.run(
                 system_prompt=system_prompt,
                 user_input=image_description_response.text,
-                messages_history=messages_history,
+                communication_history=communication_history,
             )
             return OmniModelOutput(
                 text_response=text_response, image_response=image_response
