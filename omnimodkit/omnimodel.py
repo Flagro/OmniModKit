@@ -74,12 +74,14 @@ class OmniModel:
             )
 
         # Determine the output type based on the input data
-        output_type = self.modkit.text_model.run(
+        output_type_model = self.modkit.text_model.run(
             system_prompt=system_prompt,
             pydantic_model=OmniModelOutputType,
             user_input=user_input,
             communication_history=communication_history,
         )
+
+        output_type = output_type_model.output_type
 
         # Process the input data based on the output type
         if output_type == "text":
