@@ -13,7 +13,40 @@ This package utilizes the implemented langchain structured output pipelines.
 pip install omnimodkit
 ```
 
-# Usage
+# Omnimodel Usage
+
+- Import OmniModel
+- Give it text/image/audio and get text/image/audio
+
+```python
+from omnimodkit import OmniModel
+
+# Initialize the model
+omni_model = OmniModel()
+
+# Get image
+omni_model.run(
+    user_input="Give me an image of a cat",
+)
+
+# Get just text
+omni_model.run(
+    user_input="Tell me a joke",
+)
+
+# Get audio response
+omni_model.run(
+    user_input="Tell me a joke with voice",
+)
+
+# Get image and text
+omni_model.run(
+    user_input="Show me a cat and tell me about it",
+)
+```
+
+
+# Modkit Usage
 
 - Import ModelsToolkit
 - Run appropriate models
