@@ -43,6 +43,30 @@ omni_model.run(
 omni_model.run(
     user_input="Show me a cat and tell me about it",
 )
+
+# Use audio recognition
+import io
+import requests
+
+url = "https://cdn.openai.com/API/examples/data/ZyntriQix.wav"
+audio_bytes = io.BytesIO(requests.get(url, timeout=10).content)
+audio_bytes.name = "audio.wav"
+omni_model.run(
+    user_input="Draw an image based on the audio and tell me about it.",
+    in_memory_audio_stream=audio_bytes,
+)
+
+# Use image recognition
+import io
+import requests
+
+url = "https://raw.githubusercontent.com/Flagro/treefeeder/main/logo.png"
+image_bytes = io.BytesIO(requests.get(url, timeout=10).content)
+image_bytes.name = "image.png"
+omni_model.run(
+    user_input="Describe this image and generate a related image.",
+    in_memory_image_stream=image_bytes,
+)
 ```
 
 
