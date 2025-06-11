@@ -159,13 +159,7 @@ class OmniModel:
         output_type = output_type_model.output_type
 
         # Process the input data based on the output type
-        if output_type == "text":
-            return self._get_text_response(
-                user_input=user_input,
-                system_prompt=system_prompt,
-                communication_history=communication_history,
-            )
-        elif output_type == "image":
+        if output_type == "image":
             return self._get_image_response(
                 user_input=user_input,
                 system_prompt=system_prompt,
@@ -184,6 +178,9 @@ class OmniModel:
                 communication_history=communication_history,
             )
         else:
-            raise ValueError(
-                f"Unsupported output type: {output_type}. Supported types are: text, image, audio, text_with_image."
+            # Use text response as default
+            return self._get_text_response(
+                user_input=user_input,
+                system_prompt=system_prompt,
+                communication_history=communication_history,
             )
