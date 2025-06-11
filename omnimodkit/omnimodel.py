@@ -39,6 +39,81 @@ class OmniModel:
         self.ai_config = ai_config
         self.modkit = ModelsToolkit(openai_api_key=openai_api_key, ai_config=ai_config)
 
+    def _get_text_response(
+        self,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[Dict[str, str]]] = None,
+    ) -> OmniModelOutput:
+        text_response = self.modkit.text_model.run(
+            system_prompt=system_prompt,
+            user_input=user_input,
+            communication_history=communication_history,
+        )
+        return OmniModelOutput(text_response=text_response.text)
+
+    def _get_image_response(
+        self,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[Dict[str, str]]] = None,
+    ) -> OmniModelOutput:
+        image_description_response = self.modkit.text_model.run(
+            system_prompt=system_prompt,
+            user_input=user_input,
+            communication_history=communication_history,
+        )
+        image_response = self.modkit.image_generation_model.run(
+            system_prompt=system_prompt,
+            user_input=image_description_response.text,
+            communication_history=communication_history,
+        )
+        return OmniModelOutput(image_url_response=image_response.image_url)
+
+    def _get_audio_response(
+        self,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[Dict[str, str]]] = None,
+    ) -> OmniModelOutput:
+        text_response = self.modkit.text_model.run(
+            system_prompt=system_prompt,
+            user_input=user_input,
+            communication_history=communication_history,
+        )
+        audio_response = self.modkit.audio_generation_model.run(
+            system_prompt=system_prompt,
+            user_input=text_response.text,
+            communication_history=communication_history,
+        )
+        return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
+
+    def _get_text_with_image_response(
+        self,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[Dict[str, str]]] = None,
+    ) -> OmniModelOutput:
+        text_response = self.modkit.text_model.run(
+            system_prompt=system_prompt,
+            user_input=user_input,
+            communication_history=communication_history,
+        )
+        image_description_response = self.modkit.text_model.run(
+            system_prompt=system_prompt,
+            user_input=user_input,
+            communication_history=communication_history,
+        )
+        image_response = self.modkit.image_generation_model.run(
+            system_prompt=system_prompt,
+            user_input=image_description_response.text,
+            communication_history=communication_history,
+        )
+        return OmniModelOutput(
+            text_response=text_response.text,
+            image_url_response=image_response.image_url,
+        )
+
     def run(
         self,
         user_input: Optional[str] = None,
@@ -85,54 +160,28 @@ class OmniModel:
 
         # Process the input data based on the output type
         if output_type == "text":
-            text_response = self.modkit.text_model.run(
-                system_prompt=system_prompt,
+            return self._get_text_response(
                 user_input=user_input,
+                system_prompt=system_prompt,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(text_response=text_response.text)
         elif output_type == "image":
-            image_description_response = self.modkit.text_model.run(
-                system_prompt=system_prompt,
+            return self._get_image_response(
                 user_input=user_input,
-                communication_history=communication_history,
-            )
-            image_response = self.modkit.image_generation_model.run(
                 system_prompt=system_prompt,
-                user_input=image_description_response.text,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(image_url_response=image_response.image_url)
         elif output_type == "audio":
-            text_response = self.modkit.text_model.run(
-                system_prompt=system_prompt,
+            return self._get_audio_response(
                 user_input=user_input,
-                communication_history=communication_history,
-            )
-            audio_response = self.modkit.audio_generation_model.run(
                 system_prompt=system_prompt,
-                user_input=text_response.text,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
         elif output_type == "text_with_image":
-            text_response = self.modkit.text_model.run(
-                system_prompt=system_prompt,
+            return self._get_text_with_image_response(
                 user_input=user_input,
-                communication_history=communication_history,
-            )
-            image_description_response = self.modkit.text_model.run(
                 system_prompt=system_prompt,
-                user_input=user_input,
                 communication_history=communication_history,
-            )
-            image_response = self.modkit.image_generation_model.run(
-                system_prompt=system_prompt,
-                user_input=image_description_response.text,
-                communication_history=communication_history,
-            )
-            return OmniModelOutput(
-                text_response=text_response, image_response=image_response
             )
         else:
             raise ValueError(
