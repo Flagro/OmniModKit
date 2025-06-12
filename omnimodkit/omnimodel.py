@@ -52,6 +52,19 @@ class OmniModel:
         )
         return OmniModelOutput(text_response=text_response.text)
 
+    async def _aget_text_response(
+        self,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[Dict[str, str]]] = None,
+    ) -> OmniModelOutput:
+        text_response = await self.modkit.text_model.arun(
+            system_prompt=system_prompt,
+            user_input=user_input,
+            communication_history=communication_history,
+        )
+        return OmniModelOutput(text_response=text_response.text)
+
     def _get_image_response(
         self,
         user_input: Optional[str] = None,
@@ -70,6 +83,24 @@ class OmniModel:
         )
         return OmniModelOutput(image_url_response=image_response.image_url)
 
+    async def _aget_image_response(
+        self,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[Dict[str, str]]] = None,
+    ) -> OmniModelOutput:
+        image_description_response = await self.modkit.text_model.arun(
+            system_prompt=system_prompt,
+            user_input=user_input,
+            communication_history=communication_history,
+        )
+        image_response = await self.modkit.image_generation_model.arun(
+            system_prompt=system_prompt,
+            user_input=image_description_response.text,
+            communication_history=communication_history,
+        )
+        return OmniModelOutput(image_url_response=image_response.image_url)
+
     def _get_audio_response(
         self,
         user_input: Optional[str] = None,
@@ -82,6 +113,24 @@ class OmniModel:
             communication_history=communication_history,
         )
         audio_response = self.modkit.audio_generation_model.run(
+            system_prompt=system_prompt,
+            user_input=text_response.text,
+            communication_history=communication_history,
+        )
+        return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
+
+    async def _aget_audio_response(
+        self,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[Dict[str, str]]] = None,
+    ) -> OmniModelOutput:
+        text_response = await self.modkit.text_model.arun(
+            system_prompt=system_prompt,
+            user_input=user_input,
+            communication_history=communication_history,
+        )
+        audio_response = await self.modkit.audio_generation_model.arun(
             system_prompt=system_prompt,
             user_input=text_response.text,
             communication_history=communication_history,
@@ -114,6 +163,32 @@ class OmniModel:
             image_url_response=image_response.image_url,
         )
 
+    async def _aget_text_with_image_response(
+        self,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[Dict[str, str]]] = None,
+    ) -> OmniModelOutput:
+        text_response = await self.modkit.text_model.arun(
+            system_prompt=system_prompt,
+            user_input=user_input,
+            communication_history=communication_history,
+        )
+        image_description_response = await self.modkit.text_model.arun(
+            system_prompt=system_prompt,
+            user_input=user_input,
+            communication_history=communication_history,
+        )
+        image_response = await self.modkit.image_generation_model.arun(
+            system_prompt=system_prompt,
+            user_input=image_description_response.text,
+            communication_history=communication_history,
+        )
+        return OmniModelOutput(
+            text_response=text_response.text,
+            image_url_response=image_response.image_url,
+        )
+
     def _get_user_input(
         self,
         user_input: Optional[str] = None,
@@ -134,6 +209,35 @@ class OmniModel:
         audio_description = None
         if in_memory_audio_stream is not None:
             audio_description_object = self.modkit.audio_recognition_model.run(
+                in_memory_audio_stream=in_memory_audio_stream,
+            )
+            audio_description = str(audio_description_object)
+
+            user_input = (
+                f"{user_input} {audio_description}" if user_input else audio_description
+            )
+        return user_input
+
+    async def _aget_user_input(
+        self,
+        user_input: Optional[str] = None,
+        in_memory_image_stream: Optional[io.BytesIO] = None,
+        in_memory_audio_stream: Optional[io.BytesIO] = None,
+    ) -> str:
+        image_description = None
+        if in_memory_image_stream is not None:
+            image_description_object = await self.modkit.vision_model.arun(
+                in_memory_image_stream=in_memory_image_stream,
+            )
+            image_description = str(image_description_object)
+
+            user_input = (
+                f"{user_input} {image_description}" if user_input else image_description
+            )
+
+        audio_description = None
+        if in_memory_audio_stream is not None:
+            audio_description_object = await self.modkit.audio_recognition_model.arun(
                 in_memory_audio_stream=in_memory_audio_stream,
             )
             audio_description = str(audio_description_object)
