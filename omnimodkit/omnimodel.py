@@ -114,18 +114,12 @@ class OmniModel:
             image_url_response=image_response.image_url,
         )
 
-    def run(
+    def _get_user_input(
         self,
         user_input: Optional[str] = None,
-        system_prompt: Optional[str] = None,
-        communication_history: Optional[List[Dict[str, str]]] = None,
         in_memory_image_stream: Optional[io.BytesIO] = None,
         in_memory_audio_stream: Optional[io.BytesIO] = None,
-    ) -> OmniModelOutput:
-        """
-        Run the OmniModel with the provided inputs and return the output.
-        """
-
+    ) -> str:
         image_description = None
         if in_memory_image_stream is not None:
             image_description_object = self.modkit.vision_model.run(
@@ -147,6 +141,24 @@ class OmniModel:
             user_input = (
                 f"{user_input} {audio_description}" if user_input else audio_description
             )
+        return user_input
+
+    def run(
+        self,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[Dict[str, str]]] = None,
+        in_memory_image_stream: Optional[io.BytesIO] = None,
+        in_memory_audio_stream: Optional[io.BytesIO] = None,
+    ) -> OmniModelOutput:
+        """
+        Run the OmniModel with the provided inputs and return the output.
+        """
+        user_input = self._get_user_input(
+            user_input=user_input,
+            in_memory_image_stream=in_memory_image_stream,
+            in_memory_audio_stream=in_memory_audio_stream,
+        )
 
         # Determine the output type based on the input data
         output_type_model = self.modkit.text_model.run(
@@ -155,7 +167,6 @@ class OmniModel:
             user_input=user_input,
             communication_history=communication_history,
         )
-
         output_type = output_type_model.output_type
 
         # Process the input data based on the output type
