@@ -299,3 +299,56 @@ class OmniModel:
                 system_prompt=system_prompt,
                 communication_history=communication_history,
             )
+
+    async def arun(
+        self,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[Dict[str, str]]] = None,
+        in_memory_image_stream: Optional[io.BytesIO] = None,
+        in_memory_audio_stream: Optional[io.BytesIO] = None,
+    ) -> OmniModelOutput:
+        """
+        Asynchronously run the OmniModel with the provided inputs and return the output.
+        """
+        user_input = await self._aget_user_input(
+            user_input=user_input,
+            in_memory_image_stream=in_memory_image_stream,
+            in_memory_audio_stream=in_memory_audio_stream,
+        )
+
+        # Determine the output type based on the input data
+        output_type_model = await self.modkit.text_model.arun(
+            system_prompt=system_prompt,
+            pydantic_model=OmniModelOutputType,
+            user_input=user_input,
+            communication_history=communication_history,
+        )
+        output_type = output_type_model.output_type
+
+        # Process the input data based on the output type
+        if output_type == "image":
+            return await self._aget_image_response(
+                user_input=user_input,
+                system_prompt=system_prompt,
+                communication_history=communication_history,
+            )
+        elif output_type == "audio":
+            return await self._aget_audio_response(
+                user_input=user_input,
+                system_prompt=system_prompt,
+                communication_history=communication_history,
+            )
+        elif output_type == "text_with_image":
+            return await self._aget_text_with_image_response(
+                user_input=user_input,
+                system_prompt=system_prompt,
+                communication_history=communication_history,
+            )
+        else:
+            # Use text response as default
+            return await self._aget_text_response(
+                user_input=user_input,
+                system_prompt=system_prompt,
+                communication_history=communication_history,
+            )
