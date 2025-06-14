@@ -1,5 +1,5 @@
 import io
-from typing import Optional, Literal
+from typing import Optional, Union
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Dict
 from .ai_config import AIConfig
@@ -39,8 +39,12 @@ class TextWithImageResponse(BaseModel):
 
 
 class OmniModelOutputType(BaseModel):
-    output_type: Literal["text", "image", "audio", "text_with_image"] = Field(
-        default="text",
+    output_type: Union[
+        TextResponse,
+        ImageResponse,
+        AudioResponse,
+        TextWithImageResponse,
+    ] = Field(
         description="Type of output expected from the model.",
     )
 
@@ -306,31 +310,28 @@ class OmniModel:
         output_type = output_type_model.output_type
 
         # Process the input data based on the output type
-        if output_type == "image":
+        if isinstance(output_type, ImageResponse):
             return self._get_image_response(
                 user_input=user_input,
                 system_prompt=system_prompt,
                 communication_history=communication_history,
             )
-        elif output_type == "audio":
+        elif isinstance(output_type, AudioResponse):
             return self._get_audio_response(
                 user_input=user_input,
                 system_prompt=system_prompt,
                 communication_history=communication_history,
             )
-        elif output_type == "text_with_image":
+        elif isinstance(output_type, TextWithImageResponse):
             return self._get_text_with_image_response(
                 user_input=user_input,
                 system_prompt=system_prompt,
                 communication_history=communication_history,
             )
+        elif isinstance(output_type, TextResponse):
+            return output_type.text
         else:
-            # Use text response as default
-            return self._get_text_response(
-                user_input=user_input,
-                system_prompt=system_prompt,
-                communication_history=communication_history,
-            )
+            raise ValueError("Unexpected output type received from the model.")
 
     async def arun(
         self,
