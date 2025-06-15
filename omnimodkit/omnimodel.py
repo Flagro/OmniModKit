@@ -75,32 +75,6 @@ class OmniModel:
         self.ai_config = ai_config
         self.modkit = ModelsToolkit(openai_api_key=openai_api_key, ai_config=ai_config)
 
-    def _get_text_response(
-        self,
-        user_input: Optional[str] = None,
-        system_prompt: Optional[str] = None,
-        communication_history: Optional[List[Dict[str, str]]] = None,
-    ) -> OmniModelOutput:
-        text_response = self.modkit.text_model.run(
-            system_prompt=system_prompt,
-            user_input=user_input,
-            communication_history=communication_history,
-        )
-        return OmniModelOutput(text_response=text_response.text)
-
-    async def _aget_text_response(
-        self,
-        user_input: Optional[str] = None,
-        system_prompt: Optional[str] = None,
-        communication_history: Optional[List[Dict[str, str]]] = None,
-    ) -> OmniModelOutput:
-        text_response = await self.modkit.text_model.arun(
-            system_prompt=system_prompt,
-            user_input=user_input,
-            communication_history=communication_history,
-        )
-        return OmniModelOutput(text_response=text_response.text)
-
     def _get_image_response(
         self,
         user_input: Optional[str] = None,
@@ -329,7 +303,7 @@ class OmniModel:
                 communication_history=communication_history,
             )
         elif isinstance(output_type, TextResponse):
-            return output_type.text
+            return OmniModelOutput(text_response=output_type.text)
         else:
             raise ValueError("Unexpected output type received from the model.")
 
@@ -360,28 +334,25 @@ class OmniModel:
         output_type = output_type_model.output_type
 
         # Process the input data based on the output type
-        if output_type == "image":
+        if isinstance(output_type, ImageResponse):
             return await self._aget_image_response(
                 user_input=user_input,
                 system_prompt=system_prompt,
                 communication_history=communication_history,
             )
-        elif output_type == "audio":
+        elif isinstance(output_type, AudioResponse):
             return await self._aget_audio_response(
                 user_input=user_input,
                 system_prompt=system_prompt,
                 communication_history=communication_history,
             )
-        elif output_type == "text_with_image":
+        elif isinstance(output_type, TextWithImageResponse):
             return await self._aget_text_with_image_response(
                 user_input=user_input,
                 system_prompt=system_prompt,
                 communication_history=communication_history,
             )
+        elif isinstance(output_type, TextResponse):
+            return OmniModelOutput(text_response=output_type.text)
         else:
-            # Use text response as default
-            return await self._aget_text_response(
-                user_input=user_input,
-                system_prompt=system_prompt,
-                communication_history=communication_history,
-            )
+            raise ValueError("Unexpected output type received from the model.")
