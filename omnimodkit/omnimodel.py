@@ -75,42 +75,6 @@ class OmniModel:
         self.ai_config = ai_config
         self.modkit = ModelsToolkit(openai_api_key=openai_api_key, ai_config=ai_config)
 
-    def _get_audio_response(
-        self,
-        user_input: Optional[str] = None,
-        system_prompt: Optional[str] = None,
-        communication_history: Optional[List[Dict[str, str]]] = None,
-    ) -> OmniModelOutput:
-        text_response = self.modkit.text_model.run(
-            system_prompt=system_prompt,
-            user_input=user_input,
-            communication_history=communication_history,
-        )
-        audio_response = self.modkit.audio_generation_model.run(
-            system_prompt=system_prompt,
-            user_input=text_response.text,
-            communication_history=communication_history,
-        )
-        return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
-
-    async def _aget_audio_response(
-        self,
-        user_input: Optional[str] = None,
-        system_prompt: Optional[str] = None,
-        communication_history: Optional[List[Dict[str, str]]] = None,
-    ) -> OmniModelOutput:
-        text_response = await self.modkit.text_model.arun(
-            system_prompt=system_prompt,
-            user_input=user_input,
-            communication_history=communication_history,
-        )
-        audio_response = await self.modkit.audio_generation_model.arun(
-            system_prompt=system_prompt,
-            user_input=text_response.text,
-            communication_history=communication_history,
-        )
-        return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
-
     def _get_text_with_image_response(
         self,
         user_input: Optional[str] = None,
@@ -256,11 +220,12 @@ class OmniModel:
             )
             return OmniModelOutput(image_url_response=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
-            return self._get_audio_response(
-                user_input=user_input,
+            audio_response = self.modkit.audio_generation_model.run(
                 system_prompt=system_prompt,
+                user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
+            return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
             return self._get_text_with_image_response(
                 user_input=user_input,
@@ -307,11 +272,12 @@ class OmniModel:
             )
             return OmniModelOutput(image_url_response=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
-            return await self._aget_audio_response(
-                user_input=user_input,
+            audio_response = await self.modkit.audio_generation_model.arun(
                 system_prompt=system_prompt,
+                user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
+            return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
             return await self._aget_text_with_image_response(
                 user_input=user_input,
