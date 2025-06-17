@@ -75,6 +75,26 @@ class OmniModel:
         self.ai_config = ai_config
         self.modkit = ModelsToolkit(openai_api_key=openai_api_key, ai_config=ai_config)
 
+    def _compose_user_input(
+        self,
+        user_input: Optional[str] = None,
+        image_description: Optional[str] = None,
+        audio_description: Optional[str] = None,
+    ) -> str:
+        """
+        Compose the user input by combining text, image description, and audio description.
+        """
+        if user_input is None:
+            user_input = ""
+
+        if image_description is not None:
+            user_input += f" {image_description}"
+
+        if audio_description is not None:
+            user_input += f" {audio_description}"
+
+        return user_input.strip()
+
     def _get_user_input(
         self,
         user_input: Optional[str] = None,
@@ -88,10 +108,6 @@ class OmniModel:
             )
             image_description = str(image_description_object)
 
-            user_input = (
-                f"{user_input} {image_description}" if user_input else image_description
-            )
-
         audio_description = None
         if in_memory_audio_stream is not None:
             audio_description_object = self.modkit.audio_recognition_model.run(
@@ -99,9 +115,11 @@ class OmniModel:
             )
             audio_description = str(audio_description_object)
 
-            user_input = (
-                f"{user_input} {audio_description}" if user_input else audio_description
-            )
+        user_input = self._compose_user_input(
+            user_input=user_input,
+            image_description=image_description,
+            audio_description=audio_description,
+        )
         return user_input
 
     async def _aget_user_input(
