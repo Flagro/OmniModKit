@@ -142,6 +142,18 @@ class BaseToolkitModel(ABC):
     ) -> BaseModel:
         raise NotImplementedError
 
+    @abstractmethod
+    def run_default(
+        self,
+        user_input: str,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[OpenAIMessage]] = None,
+    ) -> BaseModel:
+        raise NotImplementedError(
+            "run_default is not implemented in this BaseToolkitModel. "
+            "Please implement it in the derived class."
+        )
+
     async def arun(
         self,
         system_prompt: Optional[str] = None,
