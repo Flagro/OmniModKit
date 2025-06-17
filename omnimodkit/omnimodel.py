@@ -115,12 +115,11 @@ class OmniModel:
             )
             audio_description = str(audio_description_object)
 
-        user_input = self._compose_user_input(
+        return self._compose_user_input(
             user_input=user_input,
             image_description=image_description,
             audio_description=audio_description,
         )
-        return user_input
 
     async def _aget_user_input(
         self,
@@ -134,22 +133,17 @@ class OmniModel:
                 in_memory_image_stream=in_memory_image_stream,
             )
             image_description = str(image_description_object)
-
-            user_input = (
-                f"{user_input} {image_description}" if user_input else image_description
-            )
-
         audio_description = None
         if in_memory_audio_stream is not None:
             audio_description_object = await self.modkit.audio_recognition_model.arun(
                 in_memory_audio_stream=in_memory_audio_stream,
             )
             audio_description = str(audio_description_object)
-
-            user_input = (
-                f"{user_input} {audio_description}" if user_input else audio_description
-            )
-        return user_input
+        return self._compose_user_input(
+            user_input=user_input,
+            image_description=image_description,
+            audio_description=audio_description,
+        )
 
     def run(
         self,
