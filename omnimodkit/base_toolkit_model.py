@@ -16,7 +16,6 @@ import tiktoken
 from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage
-from .prompt_manager import PromptManager
 from .ai_config import AIConfig, Model, GenerationType
 from .moderation import Moderation
 
