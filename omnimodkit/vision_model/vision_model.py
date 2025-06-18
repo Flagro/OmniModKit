@@ -1,11 +1,29 @@
 import os
 import io
-from typing import Type, List
-from pydantic import BaseModel
+from typing import Type, List, Literal
+from pydantic import BaseModel, Field
 from langchain_core.messages import HumanMessage, BaseMessage
 from ..base_toolkit_model import BaseToolkitModel, OpenAIMessage
 from ..ai_config import Vision
 from ..moderation import ModerationError
+
+
+class DefaultImageInformation(BaseModel):
+    image_description: str = Field(description="a short description of the image")
+    image_type: Literal["screenshot", "picture", "selfie", "anime"] = Field(
+        description="type of the image"
+    )
+    main_objects: List[str] = Field(
+        description="list of the main objects on the picture"
+    )
+
+    def __str__(self):
+        main_objects_prompt = ", ".join(self.main_objects)
+        return (
+            f'Image description: "{self.image_description}", '
+            f'Image type: "{self.image_type}", '
+            f'Main objects: "{main_objects_prompt}"'
+        )
 
 
 class VisionModel(BaseToolkitModel):
@@ -14,6 +32,10 @@ class VisionModel(BaseToolkitModel):
     @staticmethod
     def get_default_system_prompt() -> str:
         return "Based on the image, fill out the provided fields."
+
+    @staticmethod
+    def get_default_pydantic_model(*args, **kwargs) -> Type[BaseModel]:
+        return DefaultImageInformation
 
     def get_model_config(self) -> Vision:
         return self.ai_config.vision

@@ -1,6 +1,6 @@
 import io
 from typing import Type, List
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, ConfigDict
 from openai import OpenAI
 from openai import AsyncOpenAI
 
@@ -9,12 +9,27 @@ from ..ai_config import AudioGeneration
 from ..moderation import ModerationError
 
 
+class DefaultAudio(BaseModel):
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+    )
+
+    audio_bytes: io.BytesIO = Field(description="in-memory audio bytes in ogg format")
+
+    def __str__(self):
+        return f"Audio bytes: {self.audio_bytes.name} ({self.audio_bytes.getbuffer().nbytes} bytes)"
+
+
 class AudioGenerationModel(BaseToolkitModel):
     model_name = "audio_generation"
 
     @staticmethod
     def get_default_system_prompt() -> str:
         return "Based on the text generate the audio."
+
+    @staticmethod
+    def get_default_pydantic_model(*args, **kwargs) -> Type[BaseModel]:
+        return DefaultAudio
 
     def get_model_config(self) -> AudioGeneration:
         return self.ai_config.audio_generation

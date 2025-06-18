@@ -1,9 +1,16 @@
 from typing import Type, List
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from openai import OpenAI, AsyncOpenAI
 from ..base_toolkit_model import BaseToolkitModel, OpenAIMessage
 from ..ai_config import ImageGeneration
 from ..moderation import ModerationError
+
+
+class DefaultImage(BaseModel):
+    image_url: str = Field(description="url of the image")
+
+    def __str__(self):
+        return f"Image url: {self.image_url}"
 
 
 class ImageGenerationModel(BaseToolkitModel):
@@ -18,6 +25,10 @@ class ImageGenerationModel(BaseToolkitModel):
     def get_default_system_prompt() -> str:
         # TODO: this should not be a formatted string
         return "Please provide the necessary information: {image_desc}"
+
+    @staticmethod
+    def get_default_pydantic_model(*args, **kwargs) -> Type[BaseModel]:
+        return DefaultImage
 
     def run_impl(
         self,

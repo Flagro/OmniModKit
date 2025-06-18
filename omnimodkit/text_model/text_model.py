@@ -5,7 +5,7 @@ from typing import (
     Optional,
     Type,
 )
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from ..base_toolkit_model import BaseToolkitModel, OpenAIMessage
 from ..ai_config import TextGeneration
@@ -16,12 +16,34 @@ class YesNoResponse(BaseModel):
     answer_is_yes: bool
 
 
+class DefaultText(BaseModel):
+    text: str = Field(description="text to be processed")
+
+    def __str__(self):
+        return self.text
+
+
+class DefaultTextChunk(BaseModel):
+    text_chunk: str = Field(description="text chunk to be processed")
+
+    def __str__(self):
+        return self.text_chunk
+
+
 class TextModel(BaseToolkitModel):
     model_name = "text"
 
     @staticmethod
     def get_default_system_prompt() -> str:
         return "Please provide the necessary information."
+
+    @staticmethod
+    def get_default_pydantic_model(
+        streamable: bool = False,
+    ) -> Type[BaseModel]:
+        if streamable:
+            return DefaultTextChunk
+        return DefaultText
 
     def get_model_config(self) -> TextGeneration:
         return self.ai_config.text_generation

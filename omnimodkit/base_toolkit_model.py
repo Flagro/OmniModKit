@@ -280,7 +280,15 @@ class BaseToolkitModel(ABC):
             "Please implement it in the derived class."
         )
 
-    def get_default_pydantic_model(self, *args, **kwargs) -> Type[BaseModel]:
-        return PromptManager.get_default_pydantic_model(
-            self.model_name, *args, **kwargs
+    @staticmethod
+    @abstractmethod
+    def get_default_pydantic_model(*args, **kwargs) -> Type[BaseModel]:
+        """
+        Returns the default Pydantic model for the toolkit model.
+        This method should be overridden in derived classes to provide
+        the specific default Pydantic model.
+        """
+        raise NotImplementedError(
+            "get_default_pydantic_model is not implemented in this BaseToolkitModel. "
+            "Please implement it in the derived class."
         )

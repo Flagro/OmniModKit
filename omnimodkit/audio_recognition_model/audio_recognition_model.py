@@ -1,6 +1,6 @@
 import io
 from typing import Type, List
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from openai import OpenAI
 from openai import AsyncOpenAI
 
@@ -9,12 +9,23 @@ from ..ai_config import AudioRecognition
 from ..moderation import ModerationError
 
 
+class DefaultAudioInformation(BaseModel):
+    audio_description: str = Field(description="a short description of the audio")
+
+    def __str__(self):
+        return self.audio_description
+
+
 class AudioRecognitionModel(BaseToolkitModel):
     model_name = "audio_recognition"
 
     @staticmethod
     def get_default_system_prompt() -> str:
         return "Based on the audio, fill out the provided fields."
+
+    @staticmethod
+    def get_default_pydantic_model(*args, **kwargs) -> Type[BaseModel]:
+        return DefaultAudioInformation
 
     def get_model_config(self) -> AudioRecognition:
         return self.ai_config.audio_recognition
