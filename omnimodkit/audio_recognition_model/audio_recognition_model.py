@@ -12,6 +12,10 @@ from ..moderation import ModerationError
 class AudioRecognitionModel(BaseToolkitModel):
     model_name = "audio_recognition"
 
+    @staticmethod
+    def get_default_system_prompt() -> str:
+        return "Based on the audio, fill out the provided fields."
+
     def get_model_config(self) -> AudioRecognition:
         return self.ai_config.audio_recognition
 

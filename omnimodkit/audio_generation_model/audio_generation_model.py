@@ -12,6 +12,10 @@ from ..moderation import ModerationError
 class AudioGenerationModel(BaseToolkitModel):
     model_name = "audio_generation"
 
+    @staticmethod
+    def get_default_system_prompt() -> str:
+        return "Based on the text generate the audio."
+
     def get_model_config(self) -> AudioGeneration:
         return self.ai_config.audio_generation
 

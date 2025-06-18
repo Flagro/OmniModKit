@@ -19,6 +19,10 @@ class YesNoResponse(BaseModel):
 class TextModel(BaseToolkitModel):
     model_name = "text"
 
+    @staticmethod
+    def get_default_system_prompt() -> str:
+        return "Please provide the necessary information."
+
     def get_model_config(self) -> TextGeneration:
         return self.ai_config.text_generation
 

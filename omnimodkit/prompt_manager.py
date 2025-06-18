@@ -92,39 +92,6 @@ class PromptManager:
         return date_prompt
 
     @staticmethod
-    def get_default_system_prompt_text() -> str:
-        return "Please provide the necessary information."
-
-    @staticmethod
-    def get_default_system_prompt_audio() -> str:
-        return "Based on the audio, fill out the provided fields."
-
-    @staticmethod
-    def get_default_system_prompt_audio_generation() -> str:
-        return "Based on the text generate the audio."
-
-    @staticmethod
-    def get_default_system_prompt_vision() -> str:
-        return "Based on the image, fill out the provided fields."
-
-    @staticmethod
-    def get_default_system_prompt_image() -> str:
-        # TODO: this should not be a formatted string
-        return "Please provide the necessary information: {image_desc}"
-
-    @staticmethod
-    def get_default_system_prompt(model_name: str) -> str:
-        if model_name == "audio_recognition":
-            return PromptManager.get_default_system_prompt_audio()
-        if model_name == "audio_generation":
-            return PromptManager.get_default_system_prompt_audio_generation()
-        if model_name == "vision":
-            return PromptManager.get_default_system_prompt_vision()
-        if model_name == "image_generation":
-            return PromptManager.get_default_system_prompt_image()
-        return PromptManager.get_default_system_prompt_text()
-
-    @staticmethod
     def get_default_pydantic_model(
         model_name: str, streamable: bool = False
     ) -> Type[BaseModel]:

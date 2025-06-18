@@ -11,6 +11,10 @@ from ..moderation import ModerationError
 class VisionModel(BaseToolkitModel):
     model_name = "vision"
 
+    @staticmethod
+    def get_default_system_prompt() -> str:
+        return "Based on the image, fill out the provided fields."
+
     def get_model_config(self) -> Vision:
         return self.ai_config.vision
 

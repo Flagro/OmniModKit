@@ -14,6 +14,11 @@ class ImageGenerationModel(BaseToolkitModel):
         self.client = OpenAI(api_key=self.openai_api_key)
         self.async_client = AsyncOpenAI(api_key=self.openai_api_key)
 
+    @staticmethod
+    def get_default_system_prompt() -> str:
+        # TODO: this should not be a formatted string
+        return "Please provide the necessary information: {image_desc}"
+
     def run_impl(
         self,
         system_prompt: str,
