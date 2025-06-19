@@ -141,7 +141,6 @@ class BaseToolkitModel(ABC):
     ) -> BaseModel:
         raise NotImplementedError
 
-    @abstractmethod
     def run_default(
         self,
         user_input: str,
