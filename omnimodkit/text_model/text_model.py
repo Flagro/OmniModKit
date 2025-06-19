@@ -39,7 +39,7 @@ class TextModel(BaseToolkitModel):
 
     @staticmethod
     def get_default_pydantic_model(
-        streamable: bool = False,
+        *args, streamable: bool = False, **kwargs
     ) -> Type[BaseModel]:
         if streamable:
             return DefaultTextChunk
