@@ -182,6 +182,17 @@ class BaseToolkitModel(ABC):
     ) -> BaseModel:
         raise NotImplementedError
 
+    def arun_default(
+        self,
+        user_input: str,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[OpenAIMessage]] = None,
+    ) -> BaseModel:
+        raise NotImplementedError(
+            "arun_default is not implemented in this BaseToolkitModel. "
+            "Please implement it in the derived class."
+        )
+
     def stream(
         self,
         system_prompt: Optional[str] = None,
@@ -206,6 +217,17 @@ class BaseToolkitModel(ABC):
         **kwargs,
     ) -> Generator[BaseModel, None, None]:
         raise NotImplementedError
+
+    def stream_default(
+        self,
+        user_input: str,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[OpenAIMessage]] = None,
+    ) -> Generator[BaseModel, None, None]:
+        raise NotImplementedError(
+            "stream_default is not implemented in this BaseToolkitModel. "
+            "Please implement it in the derived class."
+        )
 
     async def astream(
         self,
@@ -232,6 +254,17 @@ class BaseToolkitModel(ABC):
         **kwargs,
     ) -> AsyncGenerator[BaseModel, None]:
         raise NotImplementedError
+
+    async def astream_default(
+        self,
+        user_input: str,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[OpenAIMessage]] = None,
+    ) -> AsyncGenerator[BaseModel, None]:
+        raise NotImplementedError(
+            "astream_default is not implemented in this BaseToolkitModel. "
+            "Please implement it in the derived class."
+        )
 
     @abstractmethod
     def get_price(*args, **kwargs):
