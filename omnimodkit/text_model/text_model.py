@@ -32,18 +32,12 @@ class DefaultTextChunk(BaseModel):
 
 class TextModel(BaseToolkitModel):
     model_name = "text"
+    default_pydantic_model: Type[BaseModel] = DefaultText
+    default_streamable_pydantic_model: Type[BaseModel] = DefaultTextChunk
 
     @staticmethod
     def get_default_system_prompt() -> str:
         return "Please provide the necessary information."
-
-    @staticmethod
-    def get_default_pydantic_model(
-        *args, streamable: bool = False, **kwargs
-    ) -> Type[BaseModel]:
-        if streamable:
-            return DefaultTextChunk
-        return DefaultText
 
     def get_model_config(self) -> TextGeneration:
         return self.ai_config.text_generation
@@ -95,8 +89,6 @@ class TextModel(BaseToolkitModel):
     ) -> BaseModel:
         if communication_history is None:
             communication_history = []
-        if pydantic_model is None:
-            pydantic_model = self.get_default_pydantic_model()
         messages = self._compose_messages_list(
             user_input, system_prompt, communication_history
         )
@@ -116,8 +108,6 @@ class TextModel(BaseToolkitModel):
     ) -> BaseModel:
         if communication_history is None:
             communication_history = []
-        if pydantic_model is None:
-            pydantic_model = self.get_default_pydantic_model()
         messages = self._compose_messages_list(
             user_input, system_prompt, communication_history
         )
@@ -136,7 +126,7 @@ class TextModel(BaseToolkitModel):
     ) -> Generator[BaseModel, None, None]:
         if communication_history is None:
             communication_history = []
-        pydantic_model = self.get_default_pydantic_model(streamable=True)
+        pydantic_model = self.default_pydantic_model(streamable=True)
         messages = self._compose_messages_list(
             user_input, system_prompt, communication_history
         )
@@ -154,7 +144,7 @@ class TextModel(BaseToolkitModel):
     ) -> AsyncGenerator[BaseModel, None]:
         if communication_history is None:
             communication_history = []
-        pydantic_model = self.get_default_pydantic_model(streamable=True)
+        pydantic_model = self.default_pydantic_model(streamable=True)
         messages = self._compose_messages_list(
             user_input, system_prompt, communication_history
         )

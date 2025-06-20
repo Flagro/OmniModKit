@@ -38,6 +38,7 @@ class BaseToolkitModel(ABC):
     model_name: str
     openai_api_key: str
     default_pydantic_model: Type[BaseModel] = BaseModel
+    default_streamable_pydantic_model: Optional[Type[BaseModel]] = None
 
     def __init__(
         self,
