@@ -126,7 +126,7 @@ class TextModel(BaseToolkitModel):
     ) -> Generator[BaseModel, None, None]:
         if communication_history is None:
             communication_history = []
-        pydantic_model = self.default_pydantic_model(streamable=True)
+        pydantic_model = self.default_streamable_pydantic_model
         messages = self._compose_messages_list(
             user_input, system_prompt, communication_history
         )
@@ -144,7 +144,7 @@ class TextModel(BaseToolkitModel):
     ) -> AsyncGenerator[BaseModel, None]:
         if communication_history is None:
             communication_history = []
-        pydantic_model = self.default_pydantic_model(streamable=True)
+        pydantic_model = self.default_streamable_pydantic_model
         messages = self._compose_messages_list(
             user_input, system_prompt, communication_history
         )
