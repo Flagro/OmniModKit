@@ -28,14 +28,11 @@ class DefaultImageInformation(BaseModel):
 
 class VisionModel(BaseToolkitModel):
     model_name = "vision"
+    default_pydantic_model: Type[BaseModel] = DefaultImageInformation
 
     @staticmethod
     def get_default_system_prompt() -> str:
         return "Based on the image, fill out the provided fields."
-
-    @staticmethod
-    def get_default_pydantic_model(*args, **kwargs) -> Type[BaseModel]:
-        return DefaultImageInformation
 
     def get_model_config(self) -> Vision:
         return self.ai_config.vision

@@ -37,6 +37,7 @@ class OpenAIMessage(TypedDict):
 class BaseToolkitModel(ABC):
     model_name: str
     openai_api_key: str
+    default_pydantic_model: Type[BaseModel] = BaseModel
 
     def __init__(
         self,
@@ -120,7 +121,7 @@ class BaseToolkitModel(ABC):
         **kwargs,
     ) -> BaseModel:
         system_prompt = system_prompt or self.get_default_system_prompt()
-        pydantic_model = pydantic_model or self.get_default_pydantic_model()
+        pydantic_model = pydantic_model or self.default_pydantic_model
         communication_history = communication_history or []
         return self.run_impl(
             *args,
@@ -161,7 +162,7 @@ class BaseToolkitModel(ABC):
         **kwargs,
     ) -> BaseModel:
         system_prompt = system_prompt or self.get_default_system_prompt()
-        pydantic_model = pydantic_model or self.get_default_pydantic_model()
+        pydantic_model = pydantic_model or self.default_pydantic_model
         communication_history = communication_history or []
         return await self.arun_impl(
             *args,
@@ -308,18 +309,5 @@ class BaseToolkitModel(ABC):
     def get_default_system_prompt() -> str:
         raise NotImplementedError(
             "get_default_system_prompt is not implemented in this BaseToolkitModel. "
-            "Please implement it in the derived class."
-        )
-
-    @staticmethod
-    @abstractmethod
-    def get_default_pydantic_model(*args, **kwargs) -> Type[BaseModel]:
-        """
-        Returns the default Pydantic model for the toolkit model.
-        This method should be overridden in derived classes to provide
-        the specific default Pydantic model.
-        """
-        raise NotImplementedError(
-            "get_default_pydantic_model is not implemented in this BaseToolkitModel. "
             "Please implement it in the derived class."
         )

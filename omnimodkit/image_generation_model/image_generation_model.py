@@ -15,6 +15,7 @@ class DefaultImage(BaseModel):
 
 class ImageGenerationModel(BaseToolkitModel):
     model_name = "image_generation"
+    default_pydantic_model: Type[BaseModel] = DefaultImage
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -25,10 +26,6 @@ class ImageGenerationModel(BaseToolkitModel):
     def get_default_system_prompt() -> str:
         # TODO: this should not be a formatted string
         return "Please provide the necessary information: {image_desc}"
-
-    @staticmethod
-    def get_default_pydantic_model(*args, **kwargs) -> Type[BaseModel]:
-        return DefaultImage
 
     def run_impl(
         self,
@@ -41,7 +38,7 @@ class ImageGenerationModel(BaseToolkitModel):
             raise ModerationError(
                 f"Text description '{user_input}' was rejected by the moderation system"
             )
-        default_pydantic_model = self.get_default_pydantic_model()
+        default_pydantic_model = self.default_pydantic_model
         if pydantic_model is not default_pydantic_model:
             raise ValueError(
                 f"Image generation requires pydantic_model must be {default_pydantic_model}, "
@@ -71,7 +68,7 @@ class ImageGenerationModel(BaseToolkitModel):
             raise ModerationError(
                 f"Text description '{user_input}' was rejected by the moderation system"
             )
-        default_pydantic_model = self.get_default_pydantic_model()
+        default_pydantic_model = self.default_pydantic_model
         if pydantic_model is not default_pydantic_model:
             raise ValueError(
                 f"Image generation requires pydantic_model must be {default_pydantic_model}, "

@@ -18,14 +18,11 @@ class DefaultAudioInformation(BaseModel):
 
 class AudioRecognitionModel(BaseToolkitModel):
     model_name = "audio_recognition"
+    default_pydantic_model: Type[BaseModel] = DefaultAudioInformation
 
     @staticmethod
     def get_default_system_prompt() -> str:
         return "Based on the audio, fill out the provided fields."
-
-    @staticmethod
-    def get_default_pydantic_model(*args, **kwargs) -> Type[BaseModel]:
-        return DefaultAudioInformation
 
     def get_model_config(self) -> AudioRecognition:
         return self.ai_config.audio_recognition
@@ -37,7 +34,7 @@ class AudioRecognitionModel(BaseToolkitModel):
         communication_history: List[OpenAIMessage],
         in_memory_audio_stream: io.BytesIO,
     ) -> BaseModel:
-        default_pydantic_model = self.get_default_pydantic_model()
+        default_pydantic_model = self.default_pydantic_model
         if pydantic_model is not default_pydantic_model:
             raise ValueError(
                 f"Image generation requires pydantic_model must be {default_pydantic_model}"
@@ -48,7 +45,7 @@ class AudioRecognitionModel(BaseToolkitModel):
             file=in_memory_audio_stream,
             model=self.get_model().name,
         )
-        result = self.get_default_pydantic_model()(
+        result = default_pydantic_model(
             audio_description=transcript.text,
         )
         # TODO: check moderation before running the model
@@ -65,7 +62,7 @@ class AudioRecognitionModel(BaseToolkitModel):
         communication_history: List[OpenAIMessage],
         in_memory_audio_stream: io.BytesIO,
     ) -> BaseModel:
-        default_pydantic_model = self.get_default_pydantic_model()
+        default_pydantic_model = self.default_pydantic_model
         if pydantic_model is not default_pydantic_model:
             raise ValueError(
                 f"Image generation requires pydantic_model must be {default_pydantic_model}"
@@ -76,7 +73,7 @@ class AudioRecognitionModel(BaseToolkitModel):
             file=in_memory_audio_stream,
             model=self.get_model().name,
         )
-        result = self.get_default_pydantic_model()(
+        result = self.default_pydantic_model(
             audio_description=transcript.text,
         )
         # TODO: check moderation before running the model

@@ -22,14 +22,11 @@ class DefaultAudio(BaseModel):
 
 class AudioGenerationModel(BaseToolkitModel):
     model_name = "audio_generation"
+    default_pydantic_model: Type[BaseModel] = DefaultAudio
 
     @staticmethod
     def get_default_system_prompt() -> str:
         return "Based on the text generate the audio."
-
-    @staticmethod
-    def get_default_pydantic_model(*args, **kwargs) -> Type[BaseModel]:
-        return DefaultAudio
 
     def get_model_config(self) -> AudioGeneration:
         return self.ai_config.audio_generation
@@ -45,7 +42,7 @@ class AudioGenerationModel(BaseToolkitModel):
             raise ModerationError(
                 f"Audio description '{user_input}' was rejected by the moderation system"
             )
-        default_pydantic_model = self.get_default_pydantic_model()
+        default_pydantic_model = self.default_pydantic_model
         if pydantic_model is not default_pydantic_model:
             raise ValueError(
                 f"Image generation requires pydantic_model must be {default_pydantic_model}"
@@ -73,7 +70,7 @@ class AudioGenerationModel(BaseToolkitModel):
             raise ModerationError(
                 f"Audio description '{user_input}' was rejected by the moderation system"
             )
-        default_pydantic_model = self.get_default_pydantic_model()
+        default_pydantic_model = self.default_pydantic_model
         if pydantic_model is not default_pydantic_model:
             raise ValueError(
                 f"Image generation requires pydantic_model must be {default_pydantic_model}"
