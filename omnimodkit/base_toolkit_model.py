@@ -247,9 +247,7 @@ class BaseToolkitModel(ABC):
     ) -> Generator[BaseModel, None, None]:
         system_prompt = system_prompt or self.get_default_system_prompt()
         communication_history = communication_history or []
-        pydantic_model = (
-            self.default_streamable_pydantic_model or self.default_pydantic_model
-        )
+        pydantic_model = self.default_streamable_pydantic_model
         for model in self.stream_impl(
             system_prompt=system_prompt,
             communication_history=communication_history,
@@ -296,9 +294,7 @@ class BaseToolkitModel(ABC):
     ) -> AsyncGenerator[BaseModel, None]:
         system_prompt = system_prompt or self.get_default_system_prompt()
         communication_history = communication_history or []
-        pydantic_model = (
-            self.default_streamable_pydantic_model or self.default_pydantic_model
-        )
+        pydantic_model = self.default_streamable_pydantic_model
         async for model in self.astream_impl(
             system_prompt=system_prompt,
             communication_history=communication_history,
