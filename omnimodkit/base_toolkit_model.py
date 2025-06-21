@@ -199,10 +199,20 @@ class BaseToolkitModel(ABC):
         system_prompt: Optional[str] = None,
         communication_history: Optional[List[OpenAIMessage]] = None,
     ) -> BaseModel:
-        raise NotImplementedError(
-            "arun_default is not implemented in this BaseToolkitModel. "
-            "Please implement it in the derived class."
+        system_prompt = system_prompt or self.get_default_system_prompt()
+        communication_history = communication_history or []
+        pydantic_model = self.default_pydantic_model
+        result = self.arun_impl(
+            system_prompt=system_prompt,
+            pydantic_model=pydantic_model,
+            communication_history=communication_history,
+            user_input=user_input,
         )
+        if not isinstance(result, pydantic_model):
+            raise ValueError(
+                f"Expected result of type {pydantic_model}, " f"but got {type(result)}"
+            )
+        return result
 
     def stream(
         self,
@@ -235,10 +245,22 @@ class BaseToolkitModel(ABC):
         system_prompt: Optional[str] = None,
         communication_history: Optional[List[OpenAIMessage]] = None,
     ) -> Generator[BaseModel, None, None]:
-        raise NotImplementedError(
-            "stream_default is not implemented in this BaseToolkitModel. "
-            "Please implement it in the derived class."
+        system_prompt = system_prompt or self.get_default_system_prompt()
+        communication_history = communication_history or []
+        pydantic_model = (
+            self.default_streamable_pydantic_model or self.default_pydantic_model
         )
+        for model in self.stream_impl(
+            system_prompt=system_prompt,
+            communication_history=communication_history,
+            user_input=user_input,
+        ):
+            if not isinstance(model, pydantic_model):
+                raise ValueError(
+                    f"Expected result of type {pydantic_model}, "
+                    f"but got {type(model)}"
+                )
+            yield model
 
     async def astream(
         self,
@@ -272,10 +294,22 @@ class BaseToolkitModel(ABC):
         system_prompt: Optional[str] = None,
         communication_history: Optional[List[OpenAIMessage]] = None,
     ) -> AsyncGenerator[BaseModel, None]:
-        raise NotImplementedError(
-            "astream_default is not implemented in this BaseToolkitModel. "
-            "Please implement it in the derived class."
+        system_prompt = system_prompt or self.get_default_system_prompt()
+        communication_history = communication_history or []
+        pydantic_model = (
+            self.default_streamable_pydantic_model or self.default_pydantic_model
         )
+        async for model in self.astream_impl(
+            system_prompt=system_prompt,
+            communication_history=communication_history,
+            user_input=user_input,
+        ):
+            if not isinstance(model, pydantic_model):
+                raise ValueError(
+                    f"Expected result of type {pydantic_model}, "
+                    f"but got {type(model)}"
+                )
+            yield model
 
     @abstractmethod
     def get_price(*args, **kwargs):
