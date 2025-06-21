@@ -149,10 +149,20 @@ class BaseToolkitModel(ABC):
         system_prompt: Optional[str] = None,
         communication_history: Optional[List[OpenAIMessage]] = None,
     ) -> BaseModel:
-        raise NotImplementedError(
-            "run_default is not implemented in this BaseToolkitModel. "
-            "Please implement it in the derived class."
+        system_prompt = system_prompt or self.get_default_system_prompt()
+        communication_history = communication_history or []
+        pydantic_model = self.default_pydantic_model
+        result = self.run_impl(
+            system_prompt=system_prompt,
+            pydantic_model=pydantic_model,
+            communication_history=communication_history,
+            user_input=user_input,
         )
+        if not isinstance(result, pydantic_model):
+            raise ValueError(
+                f"Expected result of type {pydantic_model}, " f"but got {type(result)}"
+            )
+        return result
 
     async def arun(
         self,
