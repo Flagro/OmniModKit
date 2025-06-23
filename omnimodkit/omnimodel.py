@@ -103,14 +103,14 @@ class OmniModel:
     ) -> str:
         image_description = None
         if in_memory_image_stream is not None:
-            image_description_object = self.modkit.vision_model.run(
+            image_description_object = self.modkit.vision_model.run_default(
                 in_memory_image_stream=in_memory_image_stream,
             )
             image_description = str(image_description_object)
 
         audio_description = None
         if in_memory_audio_stream is not None:
-            audio_description_object = self.modkit.audio_recognition_model.run(
+            audio_description_object = self.modkit.audio_recognition_model.run_default(
                 in_memory_audio_stream=in_memory_audio_stream,
             )
             audio_description = str(audio_description_object)
@@ -129,14 +129,16 @@ class OmniModel:
     ) -> str:
         image_description = None
         if in_memory_image_stream is not None:
-            image_description_object = await self.modkit.vision_model.arun(
+            image_description_object = await self.modkit.vision_model.arun_default(
                 in_memory_image_stream=in_memory_image_stream,
             )
             image_description = str(image_description_object)
         audio_description = None
         if in_memory_audio_stream is not None:
-            audio_description_object = await self.modkit.audio_recognition_model.arun(
-                in_memory_audio_stream=in_memory_audio_stream,
+            audio_description_object = (
+                await self.modkit.audio_recognition_model.arun_default(
+                    in_memory_audio_stream=in_memory_audio_stream,
+                )
             )
             audio_description = str(audio_description_object)
         return self._compose_user_input(
@@ -163,7 +165,7 @@ class OmniModel:
         )
 
         # Determine the output type based on the input data
-        output_type_model = self.modkit.text_model.run(
+        output_type_model = self.modkit.text_model.run_default(
             system_prompt=system_prompt,
             pydantic_model=OmniModelOutputType,
             user_input=user_input,
@@ -173,21 +175,21 @@ class OmniModel:
 
         # Process the input data based on the output type
         if isinstance(output_type, ImageResponse):
-            image_response = self.modkit.image_generation_model.run(
+            image_response = self.modkit.image_generation_model.run_default(
                 system_prompt=system_prompt,
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
             return OmniModelOutput(image_url_response=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
-            audio_response = self.modkit.audio_generation_model.run(
+            audio_response = self.modkit.audio_generation_model.run_default(
                 system_prompt=system_prompt,
                 user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
             return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
-            image_response = self.modkit.image_generation_model.run(
+            image_response = self.modkit.image_generation_model.run_default(
                 system_prompt=system_prompt,
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
@@ -219,7 +221,7 @@ class OmniModel:
         )
 
         # Determine the output type based on the input data
-        output_type_model = await self.modkit.text_model.arun(
+        output_type_model = await self.modkit.text_model.arun_default(
             system_prompt=system_prompt,
             pydantic_model=OmniModelOutputType,
             user_input=user_input,
@@ -229,21 +231,21 @@ class OmniModel:
 
         # Process the input data based on the output type
         if isinstance(output_type, ImageResponse):
-            image_response = await self.modkit.image_generation_model.arun(
+            image_response = await self.modkit.image_generation_model.arun_default(
                 system_prompt=system_prompt,
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
             return OmniModelOutput(image_url_response=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
-            audio_response = await self.modkit.audio_generation_model.arun(
+            audio_response = await self.modkit.audio_generation_model.arun_default(
                 system_prompt=system_prompt,
                 user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
             return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
-            image_response = await self.modkit.image_generation_model.arun(
+            image_response = await self.modkit.image_generation_model.arun_default(
                 system_prompt=system_prompt,
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
