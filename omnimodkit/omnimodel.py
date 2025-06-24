@@ -68,6 +68,29 @@ class OmniModelOutput(BaseModel):
     )
 
 
+class OmniModelStreamOutput(BaseModel):
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+    )
+
+    total_text_response: Optional[str] = Field(
+        default=None,
+        description="Text response from the model.",
+    )
+    text_response_new_chunk: Optional[str] = Field(
+        default=None,
+        description="New chunk of text response from the model.",
+    )
+    image_url_response: Optional[str] = Field(
+        default=None,
+        description="Generated image URL response from the model.",
+    )
+    audio_bytes_response: Optional[io.BytesIO] = Field(
+        default=None,
+        description="In-memory audio bytes response from the model.",
+    )
+
+
 class OmniModel:
     def __init__(
         self, openai_api_key: Optional[str] = None, ai_config: Optional[AIConfig] = None
@@ -258,3 +281,29 @@ class OmniModel:
             return OmniModelOutput(text_response=output_type.text)
         else:
             raise ValueError("Unexpected output type received from the model.")
+
+    def stream(
+        self,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[Dict[str, str]]] = None,
+        in_memory_image_stream: Optional[io.BytesIO] = None,
+        in_memory_audio_stream: Optional[io.BytesIO] = None,
+    ) -> OmniModelStreamOutput:
+        raise NotImplementedError(
+            "Streaming is not implemented in the base OmniModel class. "
+            "Please use a subclass that implements streaming functionality."
+        )
+
+    async def astream(
+        self,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[Dict[str, str]]] = None,
+        in_memory_image_stream: Optional[io.BytesIO] = None,
+        in_memory_audio_stream: Optional[io.BytesIO] = None,
+    ) -> OmniModelStreamOutput:
+        raise NotImplementedError(
+            "Asynchronous streaming is not implemented in the base OmniModel class. "
+            "Please use a subclass that implements asynchronous streaming functionality."
+        )
