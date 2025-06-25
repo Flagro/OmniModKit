@@ -54,25 +54,6 @@ class OmniModelOutput(BaseModel):
         arbitrary_types_allowed=True,
     )
 
-    text_response: Optional[str] = Field(
-        default=None,
-        description="Text response from the model.",
-    )
-    image_url_response: Optional[str] = Field(
-        default=None,
-        description="Generated image URL response from the model.",
-    )
-    audio_bytes_response: Optional[io.BytesIO] = Field(
-        default=None,
-        description="In-memory audio bytes response from the model.",
-    )
-
-
-class OmniModelStreamOutput(BaseModel):
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-    )
-
     total_text_response: Optional[str] = Field(
         default=None,
         description="Text response from the model.",
@@ -218,11 +199,11 @@ class OmniModel:
                 communication_history=communication_history,
             )
             return OmniModelOutput(
-                text_response=output_type.text,
+                total_text_response=output_type.text,
                 image_url_response=image_response.image_url,
             )
         elif isinstance(output_type, TextResponse):
-            return OmniModelOutput(text_response=output_type.text)
+            return OmniModelOutput(total_text_response=output_type.text)
         else:
             raise ValueError("Unexpected output type received from the model.")
 
@@ -274,11 +255,11 @@ class OmniModel:
                 communication_history=communication_history,
             )
             return OmniModelOutput(
-                text_response=output_type.text,
+                total_text_response=output_type.text,
                 image_url_response=image_response.image_url,
             )
         elif isinstance(output_type, TextResponse):
-            return OmniModelOutput(text_response=output_type.text)
+            return OmniModelOutput(total_text_response=output_type.text)
         else:
             raise ValueError("Unexpected output type received from the model.")
 
@@ -289,7 +270,7 @@ class OmniModel:
         communication_history: Optional[List[Dict[str, str]]] = None,
         in_memory_image_stream: Optional[io.BytesIO] = None,
         in_memory_audio_stream: Optional[io.BytesIO] = None,
-    ) -> OmniModelStreamOutput:
+    ) -> OmniModelOutput:
         raise NotImplementedError(
             "Streaming is not implemented in the base OmniModel class. "
             "Please use a subclass that implements streaming functionality."
@@ -302,7 +283,7 @@ class OmniModel:
         communication_history: Optional[List[Dict[str, str]]] = None,
         in_memory_image_stream: Optional[io.BytesIO] = None,
         in_memory_audio_stream: Optional[io.BytesIO] = None,
-    ) -> OmniModelStreamOutput:
+    ) -> OmniModelOutput:
         raise NotImplementedError(
             "Asynchronous streaming is not implemented in the base OmniModel class. "
             "Please use a subclass that implements asynchronous streaming functionality."
