@@ -13,6 +13,13 @@ class TextResponse(BaseModel):
     )
 
 
+class TextStreamingResponse(BaseModel):
+    text_response: bool = Field(
+        default=False,
+        description="Indicates if the response is a text response.",
+    )
+
+
 class ImageResponse(BaseModel):
     image_description_to_generate: str = Field(
         default="",
@@ -46,6 +53,17 @@ class OmniModelOutputType(BaseModel):
         TextWithImageResponse,
     ] = Field(
         description="Type of output expected from the model.",
+    )
+
+
+class OmniModelStreamingOutputType(BaseModel):
+    output_type: Union[
+        TextStreamingResponse,
+        ImageResponse,
+        AudioResponse,
+        TextWithImageResponse,
+    ] = Field(
+        description="Type of output expected from the model during streaming.",
     )
 
 
