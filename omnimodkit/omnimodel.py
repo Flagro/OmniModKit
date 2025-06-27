@@ -1,5 +1,5 @@
 import io
-from typing import Optional, Union
+from typing import Optional, Union, Generator, AsyncGenerator
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Dict
 from .ai_config import AIConfig
@@ -288,11 +288,59 @@ class OmniModel:
         communication_history: Optional[List[Dict[str, str]]] = None,
         in_memory_image_stream: Optional[io.BytesIO] = None,
         in_memory_audio_stream: Optional[io.BytesIO] = None,
-    ) -> OmniModelOutput:
-        raise NotImplementedError(
-            "Streaming is not implemented in the base OmniModel class. "
-            "Please use a subclass that implements streaming functionality."
+    ) -> Generator[OmniModelOutput, None, None]:
+        """
+        Run the OmniModel with the provided inputs and return the output.
+        """
+        user_input = self._get_user_input(
+            user_input=user_input,
+            in_memory_image_stream=in_memory_image_stream,
+            in_memory_audio_stream=in_memory_audio_stream,
         )
+
+        # Determine the output type based on the input data
+        output_type_model = self.modkit.text_model.run_default(
+            system_prompt=system_prompt,
+            pydantic_model=OmniModelStreamingOutputType,
+            user_input=user_input,
+            communication_history=communication_history,
+        )
+        output_type = output_type_model.output_type
+
+        # Process the input data based on the output type
+        if isinstance(output_type, ImageResponse):
+            image_response = self.modkit.image_generation_model.run_default(
+                system_prompt=system_prompt,
+                user_input=output_type.image_description_to_generate,
+                communication_history=communication_history,
+            )
+            return OmniModelOutput(image_url_response=image_response.image_url)
+        elif isinstance(output_type, AudioResponse):
+            audio_response = self.modkit.audio_generation_model.run_default(
+                system_prompt=system_prompt,
+                user_input=output_type.audio_description_to_generate,
+                communication_history=communication_history,
+            )
+            return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
+        elif isinstance(output_type, TextWithImageResponse):
+            image_response = self.modkit.image_generation_model.run_default(
+                system_prompt=system_prompt,
+                user_input=output_type.image_description_to_generate,
+                communication_history=communication_history,
+            )
+            return OmniModelOutput(
+                total_text_response=output_type.text,
+                image_url_response=image_response.image_url,
+            )
+        elif isinstance(output_type, TextStreamingResponse):
+            for chunk in self.modkit.text_model.stream_default(
+                system_prompt=system_prompt,
+                user_input=user_input,
+                communication_history=communication_history,
+            ):
+                yield OmniModelOutput(text_response_new_chunk=chunk.text_chunk)
+        else:
+            raise ValueError("Unexpected output type received from the model.")
 
     async def astream(
         self,
@@ -301,7 +349,7 @@ class OmniModel:
         communication_history: Optional[List[Dict[str, str]]] = None,
         in_memory_image_stream: Optional[io.BytesIO] = None,
         in_memory_audio_stream: Optional[io.BytesIO] = None,
-    ) -> OmniModelOutput:
+    ) -> AsyncGenerator[OmniModelOutput, None]:
         raise NotImplementedError(
             "Asynchronous streaming is not implemented in the base OmniModel class. "
             "Please use a subclass that implements asynchronous streaming functionality."
