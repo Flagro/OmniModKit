@@ -333,12 +333,17 @@ class OmniModel:
                 image_url_response=image_response.image_url,
             )
         elif isinstance(output_type, TextStreamingResponse):
+            total_text = ""
             for chunk in self.modkit.text_model.stream_default(
                 system_prompt=system_prompt,
                 user_input=user_input,
                 communication_history=communication_history,
             ):
-                yield OmniModelOutput(text_response_new_chunk=chunk.text_chunk)
+                total_text += chunk.text_chunk
+                yield OmniModelOutput(
+                    total_text_response=total_text,
+                    text_response_new_chunk=chunk.text_chunk,
+                )
         else:
             raise ValueError("Unexpected output type received from the model.")
 
@@ -394,11 +399,16 @@ class OmniModel:
                 image_url_response=image_response.image_url,
             )
         elif isinstance(output_type, TextResponse):
+            total_text = ""
             for chunk in await self.modkit.text_model.astream_default(
                 system_prompt=system_prompt,
                 user_input=user_input,
                 communication_history=communication_history,
             ):
-                yield OmniModelOutput(text_response_new_chunk=chunk.text_chunk)
+                total_text += chunk.text_chunk
+                yield OmniModelOutput(
+                    total_text_response=total_text,
+                    text_response_new_chunk=chunk.text_chunk,
+                )
         else:
             raise ValueError("Unexpected output type received from the model.")
