@@ -350,7 +350,55 @@ class OmniModel:
         in_memory_image_stream: Optional[io.BytesIO] = None,
         in_memory_audio_stream: Optional[io.BytesIO] = None,
     ) -> AsyncGenerator[OmniModelOutput, None]:
-        raise NotImplementedError(
-            "Asynchronous streaming is not implemented in the base OmniModel class. "
-            "Please use a subclass that implements asynchronous streaming functionality."
+        """
+        Asynchronously run the OmniModel with the provided inputs and return the output.
+        """
+        user_input = await self._aget_user_input(
+            user_input=user_input,
+            in_memory_image_stream=in_memory_image_stream,
+            in_memory_audio_stream=in_memory_audio_stream,
         )
+
+        # Determine the output type based on the input data
+        output_type_model = await self.modkit.text_model.arun_default(
+            system_prompt=system_prompt,
+            pydantic_model=OmniModelOutputType,
+            user_input=user_input,
+            communication_history=communication_history,
+        )
+        output_type = output_type_model.output_type
+
+        # Process the input data based on the output type
+        if isinstance(output_type, ImageResponse):
+            image_response = await self.modkit.image_generation_model.arun_default(
+                system_prompt=system_prompt,
+                user_input=output_type.image_description_to_generate,
+                communication_history=communication_history,
+            )
+            return OmniModelOutput(image_url_response=image_response.image_url)
+        elif isinstance(output_type, AudioResponse):
+            audio_response = await self.modkit.audio_generation_model.arun_default(
+                system_prompt=system_prompt,
+                user_input=output_type.audio_description_to_generate,
+                communication_history=communication_history,
+            )
+            return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
+        elif isinstance(output_type, TextWithImageResponse):
+            image_response = await self.modkit.image_generation_model.arun_default(
+                system_prompt=system_prompt,
+                user_input=output_type.image_description_to_generate,
+                communication_history=communication_history,
+            )
+            return OmniModelOutput(
+                total_text_response=output_type.text,
+                image_url_response=image_response.image_url,
+            )
+        elif isinstance(output_type, TextResponse):
+            for chunk in await self.modkit.text_model.astream_default(
+                system_prompt=system_prompt,
+                user_input=user_input,
+                communication_history=communication_history,
+            ):
+                yield OmniModelOutput(text_response_new_chunk=chunk.text_chunk)
+        else:
+            raise ValueError("Unexpected output type received from the model.")
