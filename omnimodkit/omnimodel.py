@@ -328,6 +328,9 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
+            # No point in streaming text with image synchronously,
+            # as the image generation is a long-running task
+            # (longer than text generation).
             return OmniModelOutput(
                 total_text_response=output_type.text,
                 image_url_response=image_response.image_url,
@@ -394,6 +397,7 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
+            # TODO: Stream text with image asynchronously.
             return OmniModelOutput(
                 total_text_response=output_type.text,
                 image_url_response=image_response.image_url,
