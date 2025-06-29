@@ -44,6 +44,12 @@ omni_model.run(
     user_input="Show me a cat and tell me about it",
 )
 
+# Stream responses
+for response in omni_model.stream(
+    user_input="Tell me a joke",
+):
+    print(response.text_response_new_chunk, end="|", flush=True)
+
 # Use audio recognition
 import io
 import requests
