@@ -33,7 +33,7 @@ class DefaultTextChunk(BaseModel):
 class TextModel(BaseToolkitModel):
     model_name = "text"
     default_pydantic_model: Type[BaseModel] = DefaultText
-    default_streamable_pydantic_model: Type[BaseModel] = DefaultTextChunk
+    default_streamable_pydantic_model: Optional[Type[BaseModel]] = DefaultTextChunk
 
     @staticmethod
     def get_default_system_prompt() -> str:
