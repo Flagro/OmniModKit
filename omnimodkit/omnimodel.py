@@ -72,19 +72,19 @@ class OmniModelOutput(BaseModel):
         arbitrary_types_allowed=True,
     )
 
-    total_text_response: Optional[str] = Field(
+    total_text: Optional[str] = Field(
         default=None,
         description="Text response from the model.",
     )
-    text_response_new_chunk: Optional[str] = Field(
+    text_new_chunk: Optional[str] = Field(
         default=None,
         description="New chunk of text response from the model.",
     )
-    image_url_response: Optional[str] = Field(
+    image_url: Optional[str] = Field(
         default=None,
         description="Generated image URL response from the model.",
     )
-    audio_bytes_response: Optional[io.BytesIO] = Field(
+    audio_bytes: Optional[io.BytesIO] = Field(
         default=None,
         description="In-memory audio bytes response from the model.",
     )
@@ -202,14 +202,14 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(image_url_response=image_response.image_url)
+            return OmniModelOutput(image_url=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
             audio_response = self.modkit.audio_generation_model.run_default(
                 system_prompt=system_prompt,
                 user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
+            return OmniModelOutput(audio_bytes=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
             image_response = self.modkit.image_generation_model.run_default(
                 system_prompt=system_prompt,
@@ -217,11 +217,11 @@ class OmniModel:
                 communication_history=communication_history,
             )
             return OmniModelOutput(
-                total_text_response=output_type.text,
-                image_url_response=image_response.image_url,
+                total_text=output_type.text,
+                image_url=image_response.image_url,
             )
         elif isinstance(output_type, TextResponse):
-            return OmniModelOutput(total_text_response=output_type.text)
+            return OmniModelOutput(total_text=output_type.text)
         else:
             raise ValueError("Unexpected output type received from the model.")
 
@@ -258,14 +258,14 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(image_url_response=image_response.image_url)
+            return OmniModelOutput(image_url=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
             audio_response = await self.modkit.audio_generation_model.arun_default(
                 system_prompt=system_prompt,
                 user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
+            return OmniModelOutput(audio_bytes=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
             image_response = await self.modkit.image_generation_model.arun_default(
                 system_prompt=system_prompt,
@@ -273,11 +273,11 @@ class OmniModel:
                 communication_history=communication_history,
             )
             return OmniModelOutput(
-                total_text_response=output_type.text,
-                image_url_response=image_response.image_url,
+                total_text=output_type.text,
+                image_url=image_response.image_url,
             )
         elif isinstance(output_type, TextResponse):
-            return OmniModelOutput(total_text_response=output_type.text)
+            return OmniModelOutput(total_text=output_type.text)
         else:
             raise ValueError("Unexpected output type received from the model.")
 
@@ -314,14 +314,14 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(image_url_response=image_response.image_url)
+            return OmniModelOutput(image_url=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
             audio_response = self.modkit.audio_generation_model.run_default(
                 system_prompt=system_prompt,
                 user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
+            return OmniModelOutput(audio_bytes=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
             image_response = self.modkit.image_generation_model.run_default(
                 system_prompt=system_prompt,
@@ -332,8 +332,8 @@ class OmniModel:
             # as the image generation is a long-running task
             # (longer than text generation).
             return OmniModelOutput(
-                total_text_response=output_type.text,
-                image_url_response=image_response.image_url,
+                total_text=output_type.text,
+                image_url=image_response.image_url,
             )
         elif isinstance(output_type, TextStreamingResponse):
             total_text = ""
@@ -344,8 +344,8 @@ class OmniModel:
             ):
                 total_text += chunk.text_chunk
                 yield OmniModelOutput(
-                    total_text_response=total_text,
-                    text_response_new_chunk=chunk.text_chunk,
+                    total_text=total_text,
+                    text_new_chunk=chunk.text_chunk,
                 )
         else:
             raise ValueError("Unexpected output type received from the model.")
@@ -383,14 +383,14 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(image_url_response=image_response.image_url)
+            return OmniModelOutput(image_url=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
             audio_response = await self.modkit.audio_generation_model.arun_default(
                 system_prompt=system_prompt,
                 user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(audio_bytes_response=audio_response.audio_bytes)
+            return OmniModelOutput(audio_bytes=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
             image_response = await self.modkit.image_generation_model.arun_default(
                 system_prompt=system_prompt,
@@ -399,8 +399,8 @@ class OmniModel:
             )
             # TODO: Stream text with image asynchronously.
             return OmniModelOutput(
-                total_text_response=output_type.text,
-                image_url_response=image_response.image_url,
+                total_text=output_type.text,
+                image_url=image_response.image_url,
             )
         elif isinstance(output_type, TextResponse):
             total_text = ""
@@ -411,8 +411,8 @@ class OmniModel:
             ):
                 total_text += chunk.text_chunk
                 yield OmniModelOutput(
-                    total_text_response=total_text,
-                    text_response_new_chunk=chunk.text_chunk,
+                    total_text=total_text,
+                    text_new_chunk=chunk.text_chunk,
                 )
         else:
             raise ValueError("Unexpected output type received from the model.")
