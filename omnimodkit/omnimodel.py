@@ -383,14 +383,14 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(image_url=image_response.image_url)
+            yield OmniModelOutput(image_url=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
             audio_response = await self.modkit.audio_generation_model.arun_default(
                 system_prompt=system_prompt,
                 user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(audio_bytes=audio_response.audio_bytes)
+            yield OmniModelOutput(audio_bytes=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
             image_response = await self.modkit.image_generation_model.arun_default(
                 system_prompt=system_prompt,
@@ -398,7 +398,7 @@ class OmniModel:
                 communication_history=communication_history,
             )
             # TODO: Stream text with image asynchronously.
-            return OmniModelOutput(
+            yield OmniModelOutput(
                 total_text=output_type.text,
                 image_url=image_response.image_url,
             )
