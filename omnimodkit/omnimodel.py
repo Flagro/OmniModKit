@@ -187,7 +187,7 @@ class OmniModel:
         )
 
         # Determine the output type based on the input data
-        output_type_model = self.modkit.text_model.run_default(
+        output_type_model = self.modkit.text_model.run(
             system_prompt=system_prompt,
             pydantic_model=OmniModelOutputType,
             user_input=user_input,
@@ -243,7 +243,7 @@ class OmniModel:
         )
 
         # Determine the output type based on the input data
-        output_type_model = await self.modkit.text_model.arun_default(
+        output_type_model = await self.modkit.text_model.arun(
             system_prompt=system_prompt,
             pydantic_model=OmniModelOutputType,
             user_input=user_input,
@@ -299,7 +299,7 @@ class OmniModel:
         )
 
         # Determine the output type based on the input data
-        output_type_model = self.modkit.text_model.run_default(
+        output_type_model = self.modkit.text_model.run(
             system_prompt=system_prompt,
             pydantic_model=OmniModelStreamingOutputType,
             user_input=user_input,
@@ -368,7 +368,7 @@ class OmniModel:
         )
 
         # Determine the output type based on the input data
-        output_type_model = await self.modkit.text_model.arun_default(
+        output_type_model = await self.modkit.text_model.arun(
             system_prompt=system_prompt,
             pydantic_model=OmniModelOutputType,
             user_input=user_input,
