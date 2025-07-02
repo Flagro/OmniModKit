@@ -404,7 +404,7 @@ class OmniModel:
             )
         elif isinstance(output_type, TextResponse):
             total_text = ""
-            for chunk in await self.modkit.text_model.astream_default(
+            async for chunk in self.modkit.text_model.astream_default(
                 system_prompt=system_prompt,
                 user_input=user_input,
                 communication_history=communication_history,
