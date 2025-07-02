@@ -283,6 +283,8 @@ class BaseToolkitModel(ABC):
         system_prompt: Optional[str] = None,
         communication_history: Optional[List[OpenAIMessage]] = None,
     ) -> AsyncGenerator[BaseModel, None]:
+        system_prompt = system_prompt or self.get_default_system_prompt()
+        communication_history = communication_history or []
         async for model in self.astream_impl(
             system_prompt=system_prompt,
             communication_history=communication_history,
