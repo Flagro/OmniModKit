@@ -87,10 +87,29 @@ class ModelsToolkit:
             )
         return self._moderation_model
 
-    def get_price(*args, **kwargs):
+    def get_price(
+        input_text: Optional[str] = None,
+        output_text: Optional[str] = None,
+        image_generated: bool = False,
+        audio_generated: bool = False,
+        image_input: bool = False,
+        audio_input: bool = False,
+        *args,
+        **kwargs,
+    ):
         """
         Get the price of the model
         """
+        kwargs.update(
+            {
+                "input_text": input_text,
+                "output_text": output_text,
+                "image_generated": image_generated,
+                "audio_generated": audio_generated,
+                "image_input": image_input,
+                "audio_input": audio_input,
+            }
+        )
         return sum(
             (
                 model.get_price(*args, **kwargs)
