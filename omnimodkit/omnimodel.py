@@ -420,3 +420,37 @@ class OmniModel:
                 )
         else:
             raise ValueError("Unexpected output type received from the model.")
+
+    def get_price(
+        self,
+        output: OmniModelOutput,
+    ) -> float:
+        """
+        Get the price of the model based on input and output text, image, and audio.
+        """
+        raise NotImplementedError(
+            "get_price method is not implemented for OmniModel. "
+            "Please implement it in the subclass."
+        )
+
+    def inject_price(
+        self,
+        output: OmniModelOutput,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[Dict[str, str]]] = None,
+        in_memory_image_stream: Optional[io.BytesIO] = None,
+        in_memory_audio_stream: Optional[io.BytesIO] = None,
+    ) -> OmniModelOutput:
+        """
+        Inject the price into the OmniModelOutput based on the input and output.
+        """
+        output.total_price = self.get_price(
+            output=output,
+            user_input=user_input,
+            system_prompt=system_prompt,
+            communication_history=communication_history,
+            in_memory_image_stream=in_memory_image_stream,
+            in_memory_audio_stream=in_memory_audio_stream,
+        )
+        return output
