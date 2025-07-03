@@ -88,6 +88,10 @@ class OmniModelOutput(BaseModel):
         default=None,
         description="In-memory audio bytes response from the model.",
     )
+    total_price: Optional[float] = Field(
+        default=None,
+        description="Total price of the model response based on input and output.",
+    )
 
 
 class OmniModel:
