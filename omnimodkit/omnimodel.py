@@ -424,6 +424,11 @@ class OmniModel:
     def get_price(
         self,
         output: OmniModelOutput,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[Dict[str, str]]] = None,
+        in_memory_image_stream: Optional[io.BytesIO] = None,
+        in_memory_audio_stream: Optional[io.BytesIO] = None,
     ) -> float:
         """
         Get the price of the model based on input and output text, image, and audio.
