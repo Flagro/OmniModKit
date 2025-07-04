@@ -433,9 +433,17 @@ class OmniModel:
         """
         Get the price of the model based on input and output text, image, and audio.
         """
-        raise NotImplementedError(
-            "get_price method is not implemented for OmniModel. "
-            "Please implement it in the subclass."
+        return self.modkit.get_price(
+            output_text=output.total_text,
+            image_generated=output.image_url is not None,
+            audio_generated=output.audio_bytes is not None,
+            input_text=(
+                (user_input or "")
+                + (system_prompt or "")
+                + "\n".join([msg["text"] for msg in communication_history or []])
+            ),
+            image_input=in_memory_image_stream is not None,
+            audio_input=in_memory_audio_stream is not None,
         )
 
     def inject_price(
