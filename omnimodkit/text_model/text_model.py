@@ -164,8 +164,6 @@ class TextModel(BaseToolkitModel):
         self,
         input_text: str,
         output_text: str,
-        *args,
-        **kwargs,
     ) -> float:
         input_token_len = self.count_tokens(input_text)
         output_token_len = self.count_tokens(output_text)
