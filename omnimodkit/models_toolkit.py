@@ -1,4 +1,5 @@
 import os
+import io
 from typing import Optional
 from .ai_config import AIConfig
 from .audio_recognition_model.audio_recognition_model import (
@@ -91,10 +92,10 @@ class ModelsToolkit:
         self,
         input_text: Optional[str] = None,
         output_text: Optional[str] = None,
-        image_generated: bool = False,
-        audio_generated: bool = False,
-        image_input: bool = False,
-        audio_input: bool = False,
+        input_image: Optional[io.BytesIO] = None,
+        output_image_url: Optional[str] = None,
+        input_audio: Optional[io.BytesIO] = None,
+        output_audio: Optional[io.BytesIO] = None,
     ):
         """
         Get the price of the model
@@ -104,12 +105,5 @@ class ModelsToolkit:
             total_price += self.text_model.get_price(
                 input_text=input_text, output_text=output_text
             )
-        if image_generated:
-            total_price += self.image_generation_model.get_price()
-        if audio_generated:
-            total_price += self.audio_generation_model.get_price()
-        if image_input:
-            total_price += self.vision_model.get_price()
-        if audio_input:
-            total_price += self.audio_recognition_model.get_price()
+        # TODO: Add price calculation for other models
         return total_price

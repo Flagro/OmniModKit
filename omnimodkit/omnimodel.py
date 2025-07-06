@@ -434,16 +434,16 @@ class OmniModel:
         Get the price of the model based on input and output text, image, and audio.
         """
         return self.modkit.get_price(
-            output_text=output.total_text,
-            image_generated=output.image_url is not None,
-            audio_generated=output.audio_bytes is not None,
             input_text=(
                 (user_input or "")
                 + (system_prompt or "")
                 + "\n".join([msg["text"] for msg in communication_history or []])
             ),
-            image_input=in_memory_image_stream is not None,
-            audio_input=in_memory_audio_stream is not None,
+            output_text=output.total_text,
+            input_image=in_memory_image_stream,
+            output_image_url=output.image_url,
+            input_audio=in_memory_audio_stream,
+            output_audio=output.audio_bytes,
         )
 
     def inject_price(
