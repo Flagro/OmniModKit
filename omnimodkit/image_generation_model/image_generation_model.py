@@ -1,4 +1,4 @@
-from typing import Type, List
+from typing import Type, List, Optional
 from pydantic import BaseModel, Field
 from openai import OpenAI, AsyncOpenAI
 from ..base_toolkit_model import BaseToolkitModel, OpenAIMessage
@@ -92,8 +92,8 @@ class ImageGenerationModel(BaseToolkitModel):
 
     def get_price(
         self,
-        *args,
-        **kwargs,
+        input_text: Optional[str] = None,
+        output_image_url: Optional[str] = None,
     ) -> float:
         """
         Returns the price of the AI services for the given

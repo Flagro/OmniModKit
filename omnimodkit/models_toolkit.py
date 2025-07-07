@@ -105,5 +105,9 @@ class ModelsToolkit:
             total_price += self.text_model.get_price(
                 input_text=input_text, output_text=output_text
             )
+        if input_image is not None:
+            total_price += self.image_generation_model.get_price(
+                input_text=input_text, output_image_url=output_image_url
+            )
         # TODO: Add price calculation for other models
         return total_price
