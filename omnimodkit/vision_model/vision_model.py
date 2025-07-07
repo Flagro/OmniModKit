@@ -1,6 +1,6 @@
 import os
 import io
-from typing import Type, List, Literal
+from typing import Type, List, Literal, Optional
 from pydantic import BaseModel, Field
 from langchain_core.messages import HumanMessage, BaseMessage
 from ..base_toolkit_model import BaseToolkitModel, OpenAIMessage
@@ -112,9 +112,13 @@ class VisionModel(BaseToolkitModel):
 
     def get_price(
         self,
-        image_pixels_count: int,
+        input_image: Optional[io.BytesIO] = None,
+        output_text: Optional[str] = None,
         *args,
         **kwargs,
     ) -> float:
+        image_pixels_count = (
+            1024 * 1024
+        )  # Assuming a default image size of 1024x1024 pixels for now
         input_pixel_price = self.get_model().rate.input_pixel_price
         return image_pixels_count * input_pixel_price
