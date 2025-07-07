@@ -89,7 +89,8 @@ class AudioGenerationModel(BaseToolkitModel):
 
     def get_price(
         self,
-        input: str,
+        input_text: str = None,
+        output_audio: io.BytesIO = None,
     ) -> float:
         input_token_price = self.get_model().rate.input_token_price
         return self.count_tokens(input) * input_token_price

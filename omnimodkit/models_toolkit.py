@@ -113,5 +113,13 @@ class ModelsToolkit:
             total_price += self.vision_model.get_price(
                 input_image=input_image, output_text=output_text
             )
+        if output_audio is not None:
+            total_price += self.audio_generation_model.get_price(
+                input_text=input_text, output_audio=output_audio
+            )
+        if input_audio is not None:
+            total_price += self.audio_recognition_model.get_price(
+                input_audio=input_audio, output_text=output_text
+            )
         # TODO: Add price calculation for other models
         return total_price
