@@ -99,15 +99,21 @@ class ImageGenerationModel(BaseToolkitModel):
         Returns the price of the AI services for the given
         input parameters
         """
-        output_pixel_price = self.get_model().rate.output_pixel_price
+        price = 0
+        if output_image_url:
+            output_pixel_price = self.get_model().rate.output_pixel_price
 
-        image_generation_dimensions = self.get_model_config().output_image_size
-        if "x" not in image_generation_dimensions:
-            raise ValueError(
-                f"Invalid image generation dimensions: {image_generation_dimensions}"
+            image_generation_dimensions = self.get_model_config().output_image_size
+            if "x" not in image_generation_dimensions:
+                raise ValueError(
+                    f"Invalid image generation dimensions: {image_generation_dimensions}"
+                )
+            image_generation_dimensions_x, image_generation_dimensions_y = map(
+                int, image_generation_dimensions.split("x")
             )
-        image_generation_dimensions_x, image_generation_dimensions_y = map(
-            int, image_generation_dimensions.split("x")
-        )
-        total_pixels = image_generation_dimensions_x * image_generation_dimensions_y
-        return total_pixels * output_pixel_price
+            total_pixels = image_generation_dimensions_x * image_generation_dimensions_y
+            price += total_pixels * output_pixel_price
+        if input_text:
+            token_cnt = self.count_tokens(input_text)
+            price += self.get_model().rate.input_token_price * token_cnt
+        return price
