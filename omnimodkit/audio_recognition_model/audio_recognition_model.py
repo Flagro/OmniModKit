@@ -90,4 +90,9 @@ class AudioRecognitionModel(BaseToolkitModel):
     ) -> float:
         audio_length = 100  # Placeholder for audio length in seconds
         input_audio_second_price = self.get_model().rate.input_audio_second_price
-        return audio_length * input_audio_second_price
+        output_token_length = self.count_tokens(output_text) if output_text else 0
+        output_token_price = self.get_model().rate.output_token_price
+        return (
+            audio_length * input_audio_second_price
+            + output_token_length * output_token_price
+        )
