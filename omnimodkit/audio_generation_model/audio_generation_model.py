@@ -92,5 +92,11 @@ class AudioGenerationModel(BaseToolkitModel):
         input_text: str = None,
         output_audio: io.BytesIO = None,
     ) -> float:
+        input_token_length = self.count_tokens(input_text) if input_text else 0
         input_token_price = self.get_model().rate.input_token_price
-        return self.count_tokens(input) * input_token_price
+        output_audio_length = 100  # Placeholder for audio length in seconds
+        output_audio_second_price = self.get_model().rate.output_audio_second_price
+        return (
+            input_token_length * input_token_price
+            + output_audio_length * output_audio_second_price
+        )
