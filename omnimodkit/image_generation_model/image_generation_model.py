@@ -99,7 +99,7 @@ class ImageGenerationModel(BaseToolkitModel):
         Returns the price of the AI services for the given
         input parameters
         """
-        price = 0
+        price = 0.0
         if output_image_url:
             output_pixel_price = self.get_model().rate.output_pixel_price
 

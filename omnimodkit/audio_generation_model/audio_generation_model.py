@@ -1,5 +1,5 @@
 import io
-from typing import Type, List
+from typing import Type, List, Optional
 from pydantic import BaseModel, Field, ConfigDict
 from openai import OpenAI
 from openai import AsyncOpenAI
@@ -89,14 +89,16 @@ class AudioGenerationModel(BaseToolkitModel):
 
     def get_price(
         self,
-        input_text: str = None,
-        output_audio: io.BytesIO = None,
+        input_text: Optional[str] = None,
+        output_audio: Optional[io.BytesIO] = None,
     ) -> float:
-        input_token_length = self.count_tokens(input_text) if input_text else 0
-        input_token_price = self.get_model().rate.input_token_price
-        output_audio_length = 100  # Placeholder for audio length in seconds
-        output_audio_second_price = self.get_model().rate.output_audio_second_price
-        return (
-            input_token_length * input_token_price
-            + output_audio_length * output_audio_second_price
-        )
+        price = 0.0
+        if output_audio is not None:
+            output_audio_length = 100  # Placeholder for audio length in seconds
+            output_audio_second_price = self.get_model().rate.output_audio_second_price
+            price += output_audio_length * output_audio_second_price
+        if input_text is not None:
+            input_token_length = self.count_tokens(input_text) if input_text else 0
+            input_token_price = self.get_model().rate.input_token_price
+            price += input_token_length * input_token_price
+        return price
