@@ -162,13 +162,16 @@ class TextModel(BaseToolkitModel):
 
     def get_price(
         self,
-        input_text: str,
-        output_text: str,
+        input_text: Optional[str],
+        output_text: Optional[str],
     ) -> float:
-        input_token_len = self.count_tokens(input_text)
-        output_token_len = self.count_tokens(output_text)
-        input_token_price = self.get_model().rate.input_token_price
-        output_token_price = self.get_model().rate.output_token_price
-        return (
-            input_token_len * input_token_price + output_token_len * output_token_price
-        )
+        price = 0.0
+        if input_text is not None:
+            input_token_len = self.count_tokens(input_text)
+            input_token_price = self.get_model().rate.input_token_price
+            price += input_token_len * input_token_price
+        if output_text is not None:
+            output_token_len = self.count_tokens(output_text)
+            output_token_price = self.get_model().rate.output_token_price
+            price += output_token_len * output_token_price
+        return price
