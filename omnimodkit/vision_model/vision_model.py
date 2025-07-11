@@ -114,11 +114,16 @@ class VisionModel(BaseToolkitModel):
         self,
         input_image: Optional[io.BytesIO] = None,
         output_text: Optional[str] = None,
-        *args,
-        **kwargs,
     ) -> float:
-        image_pixels_count = (
-            1024 * 1024
-        )  # Assuming a default image size of 1024x1024 pixels for now
-        input_pixel_price = self.get_model().rate.input_pixel_price
-        return image_pixels_count * input_pixel_price
+        price = 0.0
+        if input_image is not None:
+            image_pixels_count = (
+                1024 * 1024
+            )  # Assuming a default image size of 1024x1024 pixels for now
+            input_pixel_price = self.get_model().rate.input_pixel_price
+            price += image_pixels_count * input_pixel_price
+        if output_text is not None:
+            output_token_len = self.count_tokens(output_text)
+            output_text_price = self.get_model().rate.output_token_price
+            price += output_token_len * output_text_price
+        return price
