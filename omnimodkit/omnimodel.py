@@ -206,28 +206,37 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(image_url=image_response.image_url)
+            result = OmniModelOutput(image_url=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
             audio_response = self.modkit.audio_generation_model.run_default(
                 system_prompt=system_prompt,
                 user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(audio_bytes=audio_response.audio_bytes)
+            result = OmniModelOutput(audio_bytes=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
             image_response = self.modkit.image_generation_model.run_default(
                 system_prompt=system_prompt,
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(
+            result = OmniModelOutput(
                 total_text=output_type.text,
                 image_url=image_response.image_url,
             )
         elif isinstance(output_type, TextResponse):
-            return OmniModelOutput(total_text=output_type.text)
+            result = OmniModelOutput(total_text=output_type.text)
         else:
             raise ValueError("Unexpected output type received from the model.")
+
+        return self.inject_price(
+            output=result,
+            user_input=user_input,
+            system_prompt=system_prompt,
+            communication_history=communication_history,
+            in_memory_image_stream=in_memory_image_stream,
+            in_memory_audio_stream=in_memory_audio_stream,
+        )
 
     async def arun(
         self,
@@ -262,28 +271,36 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(image_url=image_response.image_url)
+            result = OmniModelOutput(image_url=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
             audio_response = await self.modkit.audio_generation_model.arun_default(
                 system_prompt=system_prompt,
                 user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(audio_bytes=audio_response.audio_bytes)
+            result = OmniModelOutput(audio_bytes=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
             image_response = await self.modkit.image_generation_model.arun_default(
                 system_prompt=system_prompt,
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(
+            result = OmniModelOutput(
                 total_text=output_type.text,
                 image_url=image_response.image_url,
             )
         elif isinstance(output_type, TextResponse):
-            return OmniModelOutput(total_text=output_type.text)
+            result = OmniModelOutput(total_text=output_type.text)
         else:
             raise ValueError("Unexpected output type received from the model.")
+        return self.inject_price(
+            output=result,
+            user_input=user_input,
+            system_prompt=system_prompt,
+            communication_history=communication_history,
+            in_memory_image_stream=in_memory_image_stream,
+            in_memory_audio_stream=in_memory_audio_stream,
+        )
 
     def stream(
         self,
@@ -310,6 +327,8 @@ class OmniModel:
             communication_history=communication_history,
         )
         output_type = output_type_model.output_type
+
+        # TODO: inject price into the output type model
 
         # Process the input data based on the output type
         if isinstance(output_type, ImageResponse):
@@ -379,6 +398,8 @@ class OmniModel:
             communication_history=communication_history,
         )
         output_type = output_type_model.output_type
+
+        # TODO: inject price into the output type model
 
         # Process the input data based on the output type
         if isinstance(output_type, ImageResponse):
