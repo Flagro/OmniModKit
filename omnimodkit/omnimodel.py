@@ -337,14 +337,14 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(image_url=image_response.image_url)
+            final_response = OmniModelOutput(image_url=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
             audio_response = self.modkit.audio_generation_model.run_default(
                 system_prompt=system_prompt,
                 user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
-            return OmniModelOutput(audio_bytes=audio_response.audio_bytes)
+            final_response = OmniModelOutput(audio_bytes=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
             image_response = self.modkit.image_generation_model.run_default(
                 system_prompt=system_prompt,
@@ -354,7 +354,7 @@ class OmniModel:
             # No point in streaming text with image synchronously,
             # as the image generation is a long-running task
             # (longer than text generation).
-            return OmniModelOutput(
+            final_response = OmniModelOutput(
                 total_text=output_type.text,
                 image_url=image_response.image_url,
             )
@@ -370,8 +370,17 @@ class OmniModel:
                     total_text=total_text,
                     text_new_chunk=chunk.text_chunk,
                 )
+            final_response = OmniModelOutput(total_text=total_text, text_new_chunk="")
         else:
             raise ValueError("Unexpected output type received from the model.")
+        return self.inject_price(
+            output=final_response,
+            user_input=user_input,
+            system_prompt=system_prompt,
+            communication_history=communication_history,
+            in_memory_image_stream=in_memory_image_stream,
+            in_memory_audio_stream=in_memory_audio_stream,
+        )
 
     async def astream(
         self,
@@ -408,14 +417,14 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
-            yield OmniModelOutput(image_url=image_response.image_url)
+            final_response = OmniModelOutput(image_url=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
             audio_response = await self.modkit.audio_generation_model.arun_default(
                 system_prompt=system_prompt,
                 user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
-            yield OmniModelOutput(audio_bytes=audio_response.audio_bytes)
+            final_response = OmniModelOutput(audio_bytes=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
             image_response = await self.modkit.image_generation_model.arun_default(
                 system_prompt=system_prompt,
@@ -423,7 +432,7 @@ class OmniModel:
                 communication_history=communication_history,
             )
             # TODO: Stream text with image asynchronously.
-            yield OmniModelOutput(
+            final_response = OmniModelOutput(
                 total_text=output_type.text,
                 image_url=image_response.image_url,
             )
@@ -439,8 +448,17 @@ class OmniModel:
                     total_text=total_text,
                     text_new_chunk=chunk.text_chunk,
                 )
+            final_response = OmniModelOutput(total_text=total_text, text_new_chunk="")
         else:
             raise ValueError("Unexpected output type received from the model.")
+        yield self.inject_price(
+            output=final_response,
+            user_input=user_input,
+            system_prompt=system_prompt,
+            communication_history=communication_history,
+            in_memory_image_stream=in_memory_image_stream,
+            in_memory_audio_stream=in_memory_audio_stream,
+        )
 
     def get_price(
         self,
