@@ -328,8 +328,6 @@ class OmniModel:
         )
         output_type = output_type_model.output_type
 
-        # TODO: inject price into the output type model
-
         # Process the input data based on the output type
         if isinstance(output_type, ImageResponse):
             image_response = self.modkit.image_generation_model.run_default(
@@ -407,8 +405,6 @@ class OmniModel:
             communication_history=communication_history,
         )
         output_type = output_type_model.output_type
-
-        # TODO: inject price into the output type model
 
         # Process the input data based on the output type
         if isinstance(output_type, ImageResponse):

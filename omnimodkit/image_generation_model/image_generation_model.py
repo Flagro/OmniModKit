@@ -114,6 +114,7 @@ class ImageGenerationModel(BaseToolkitModel):
             total_pixels = image_generation_dimensions_x * image_generation_dimensions_y
             price += total_pixels * output_pixel_price
         if input_text:
-            token_cnt = self.count_tokens(input_text)
+            # TODO: count tokens doesnt work with given get_model() settings
+            token_cnt = 100  # self.count_tokens(input_text)
             price += self.get_model().rate.input_token_price * token_cnt
         return price
