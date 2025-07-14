@@ -162,8 +162,8 @@ class TextModel(BaseToolkitModel):
 
     def get_price(
         self,
-        input_text: Optional[str],
-        output_text: Optional[str],
+        input_text: Optional[str] = None,
+        output_text: Optional[str] = None,
     ) -> float:
         price = 0.0
         if input_text is not None:
