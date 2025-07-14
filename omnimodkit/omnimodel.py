@@ -1,9 +1,9 @@
 import io
-from typing import Optional, Union, Generator, AsyncGenerator
+from typing import Optional, Union, Generator, AsyncGenerator, List
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Dict
 from .ai_config import AIConfig
 from .models_toolkit import ModelsToolkit
+from .base_toolkit_model import OpenAIMessage
 
 
 class TextResponse(BaseModel):
@@ -177,7 +177,7 @@ class OmniModel:
         self,
         user_input: Optional[str] = None,
         system_prompt: Optional[str] = None,
-        communication_history: Optional[List[Dict[str, str]]] = None,
+        communication_history: Optional[List[OpenAIMessage]] = None,
         in_memory_image_stream: Optional[io.BytesIO] = None,
         in_memory_audio_stream: Optional[io.BytesIO] = None,
     ) -> OmniModelOutput:
@@ -242,7 +242,7 @@ class OmniModel:
         self,
         user_input: Optional[str] = None,
         system_prompt: Optional[str] = None,
-        communication_history: Optional[List[Dict[str, str]]] = None,
+        communication_history: Optional[List[OpenAIMessage]] = None,
         in_memory_image_stream: Optional[io.BytesIO] = None,
         in_memory_audio_stream: Optional[io.BytesIO] = None,
     ) -> OmniModelOutput:
@@ -306,7 +306,7 @@ class OmniModel:
         self,
         user_input: Optional[str] = None,
         system_prompt: Optional[str] = None,
-        communication_history: Optional[List[Dict[str, str]]] = None,
+        communication_history: Optional[List[OpenAIMessage]] = None,
         in_memory_image_stream: Optional[io.BytesIO] = None,
         in_memory_audio_stream: Optional[io.BytesIO] = None,
     ) -> Generator[OmniModelOutput, None, None]:
@@ -384,7 +384,7 @@ class OmniModel:
         self,
         user_input: Optional[str] = None,
         system_prompt: Optional[str] = None,
-        communication_history: Optional[List[Dict[str, str]]] = None,
+        communication_history: Optional[List[OpenAIMessage]] = None,
         in_memory_image_stream: Optional[io.BytesIO] = None,
         in_memory_audio_stream: Optional[io.BytesIO] = None,
     ) -> AsyncGenerator[OmniModelOutput, None]:
@@ -461,7 +461,7 @@ class OmniModel:
         output: OmniModelOutput,
         user_input: Optional[str] = None,
         system_prompt: Optional[str] = None,
-        communication_history: Optional[List[Dict[str, str]]] = None,
+        communication_history: Optional[List[OpenAIMessage]] = None,
         in_memory_image_stream: Optional[io.BytesIO] = None,
         in_memory_audio_stream: Optional[io.BytesIO] = None,
     ) -> float:
@@ -487,7 +487,7 @@ class OmniModel:
         output: OmniModelOutput,
         user_input: Optional[str] = None,
         system_prompt: Optional[str] = None,
-        communication_history: Optional[List[Dict[str, str]]] = None,
+        communication_history: Optional[List[OpenAIMessage]] = None,
         in_memory_image_stream: Optional[io.BytesIO] = None,
         in_memory_audio_stream: Optional[io.BytesIO] = None,
     ) -> OmniModelOutput:
