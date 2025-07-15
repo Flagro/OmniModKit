@@ -49,8 +49,19 @@ class BaseToolkitModel(ABC):
         self.openai_api_key = openai_api_key
         self.moderation = Moderation(ai_config=ai_config, openai_api_key=openai_api_key)
 
+    @property
+    def text_model_name(self) -> Optional[str]:
+        """
+        Returns the name of the text model used by this toolkit model.
+        If not set, returns None.
+        """
+        # TODO: Put this in the AIConfig
+        return "gpt-4o"
+
     def count_tokens(self, text: str) -> int:
-        encoding = _get_encoding_for_model(self.get_model().name)
+        if self.text_model_name is None:
+            raise ValueError("text_model_name is not set for this BaseToolkitModel.")
+        encoding = _get_encoding_for_model(self.text_model_name)
         encoded_text = encoding.encode(text)
         return len(encoded_text)
 
