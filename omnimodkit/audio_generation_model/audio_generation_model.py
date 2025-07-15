@@ -98,8 +98,7 @@ class AudioGenerationModel(BaseToolkitModel):
             output_audio_second_price = self.get_model().rate.output_audio_second_price
             price += output_audio_length * output_audio_second_price
         if input_text is not None:
-            # TODO: count tokens doesnt work with given get_model() settings
-            input_token_length = 100  # self.count_tokens(input_text)
+            input_token_length = self.count_tokens(input_text)
             input_token_price = self.get_model().rate.input_token_price
             price += input_token_length * input_token_price
         return price

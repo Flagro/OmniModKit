@@ -94,8 +94,7 @@ class AudioRecognitionModel(BaseToolkitModel):
             input_audio_second_price = self.get_model().rate.input_audio_second_price
             price += audio_length * input_audio_second_price
         if output_text is not None:
-            # TODO: count tokens doesnt work with given get_model() settings
-            output_token_length = 100  # self.count_tokens(output_text)
+            output_token_length = self.count_tokens(output_text)
             output_token_price = self.get_model().rate.output_token_price
             price += output_token_length * output_token_price
         return price

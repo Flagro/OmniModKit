@@ -123,8 +123,7 @@ class VisionModel(BaseToolkitModel):
             input_pixel_price = self.get_model().rate.input_pixel_price
             price += image_pixels_count * input_pixel_price
         if output_text is not None:
-            # TODO: count tokens doesnt work with given get_model() settings
-            output_token_len = 100  # self.count_tokens(output_text)
+            output_token_len = self.count_tokens(output_text)
             output_text_price = self.get_model().rate.output_token_price
             price += output_token_len * output_text_price
         return price

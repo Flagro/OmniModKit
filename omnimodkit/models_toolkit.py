@@ -121,5 +121,4 @@ class ModelsToolkit:
             total_price += self.audio_recognition_model.get_price(
                 input_audio=input_audio, output_text=output_text
             )
-        # TODO: Add price calculation for other models
         return total_price
