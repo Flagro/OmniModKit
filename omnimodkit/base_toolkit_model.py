@@ -312,12 +312,16 @@ class BaseToolkitModel(ABC):
     def get_price(*args, **kwargs):
         raise NotImplementedError
 
-    def _get_default_model(self) -> Optional[Model]:
+    def _get_default_model(
+        self, models_dict: Optional[Dict[str, Model]] = None
+    ) -> Optional[Model]:
+        if models_dict is None:
+            models_dict = self.get_models_dict()
         return next(
             iter(
                 filter(
                     lambda model: getattr(model, "is_default", False),
-                    self.get_models_dict().values(),
+                    models_dict.values(),
                 )
             ),
             None,
