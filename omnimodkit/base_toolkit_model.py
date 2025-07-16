@@ -55,8 +55,9 @@ class BaseToolkitModel(ABC):
         Returns the name of the text model used by this toolkit model.
         If not set, returns None.
         """
-        # TODO: Put this in the AIConfig
-        return "gpt-4o"
+        model_dict = self.ai_config.text_generation
+        default_model = self._get_default_model(model_dict.models)
+        return default_model.name if default_model else None
 
     def count_tokens(self, text: str) -> int:
         if self.text_model_name is None:
