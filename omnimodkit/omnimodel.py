@@ -434,7 +434,7 @@ class OmniModel:
                 communication_history=communication_history,
             )
             final_response = OmniModelOutput(audio_bytes=audio_response.audio_bytes)
-        elif isinstance(output_type, TextWithImageResponse):
+        elif isinstance(output_type, TextWithImageStreamingResponse):
             image_response_task = asyncio.create_task(
                 self.modkit.image_generation_model.arun_default(
                     system_prompt=system_prompt,
@@ -442,10 +442,21 @@ class OmniModel:
                     communication_history=communication_history,
                 )
             )
-
-            # TODO: Stream text with image asynchronously.
+            total_text = ""
+            async for chunk in self.modkit.text_model.astream_default(
+                system_prompt=system_prompt,
+                user_input=user_input,
+                communication_history=communication_history,
+            ):
+                if chunk.text_chunk:
+                    total_text += chunk.text_chunk
+                    yield OmniModelOutput(
+                        total_text=total_text,
+                        text_new_chunk=chunk.text_chunk,
+                    )
+            image_response = await image_response_task
             final_response = OmniModelOutput(
-                total_text=output_type.text,
+                total_text=total_text,
                 image_url=image_response.image_url,
             )
         elif isinstance(output_type, TextResponse):
