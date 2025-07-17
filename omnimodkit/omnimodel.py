@@ -1,4 +1,5 @@
 import io
+import asyncio
 from typing import Optional, Union, Generator, AsyncGenerator, List
 from pydantic import BaseModel, Field, ConfigDict
 from .ai_config import AIConfig
@@ -45,6 +46,13 @@ class TextWithImageResponse(BaseModel):
     )
 
 
+class TextWithImageStreamingResponse(BaseModel):
+    image_description_to_generate: str = Field(
+        default="",
+        description="Description of the generated image.",
+    )
+
+
 class OmniModelOutputType(BaseModel):
     output_type: Union[
         TextResponse,
@@ -61,7 +69,7 @@ class OmniModelStreamingOutputType(BaseModel):
         TextStreamingResponse,
         ImageResponse,
         AudioResponse,
-        TextWithImageResponse,
+        TextWithImageStreamingResponse,
     ] = Field(
         description="Type of output expected from the model during streaming.",
     )
@@ -343,17 +351,22 @@ class OmniModel:
                 communication_history=communication_history,
             )
             final_response = OmniModelOutput(audio_bytes=audio_response.audio_bytes)
-        elif isinstance(output_type, TextWithImageResponse):
+        elif isinstance(output_type, TextWithImageStreamingResponse):
             image_response = self.modkit.image_generation_model.run_default(
                 system_prompt=system_prompt,
                 user_input=output_type.image_description_to_generate,
+                communication_history=communication_history,
+            )
+            text_response = self.modkit.text_model.stream_default(
+                system_prompt=system_prompt,
+                user_input=user_input,
                 communication_history=communication_history,
             )
             # No point in streaming text with image synchronously,
             # as the image generation is a long-running task
             # (longer than text generation).
             final_response = OmniModelOutput(
-                total_text=output_type.text,
+                total_text=text_response,
                 image_url=image_response.image_url,
             )
         elif isinstance(output_type, TextStreamingResponse):
@@ -422,11 +435,14 @@ class OmniModel:
             )
             final_response = OmniModelOutput(audio_bytes=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
-            image_response = await self.modkit.image_generation_model.arun_default(
-                system_prompt=system_prompt,
-                user_input=output_type.image_description_to_generate,
-                communication_history=communication_history,
+            image_response_task = asyncio.create_task(
+                self.modkit.image_generation_model.arun_default(
+                    system_prompt=system_prompt,
+                    user_input=output_type.image_description_to_generate,
+                    communication_history=communication_history,
+                )
             )
+
             # TODO: Stream text with image asynchronously.
             final_response = OmniModelOutput(
                 total_text=output_type.text,
