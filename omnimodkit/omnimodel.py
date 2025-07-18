@@ -413,7 +413,7 @@ class OmniModel:
         # Determine the output type based on the input data
         output_type_model = await self.modkit.text_model.arun(
             system_prompt=system_prompt,
-            pydantic_model=OmniModelOutputType,
+            pydantic_model=OmniModelStreamingOutputType,
             user_input=user_input,
             communication_history=communication_history,
         )
