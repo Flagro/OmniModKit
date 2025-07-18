@@ -202,13 +202,13 @@ class BaseToolkitModel(ABC):
     ) -> BaseModel:
         raise NotImplementedError
 
-    def arun_default(
+    async def arun_default(
         self,
         user_input: str,
         system_prompt: Optional[str] = None,
         communication_history: Optional[List[OpenAIMessage]] = None,
     ) -> BaseModel:
-        result = self.arun(
+        result = await self.arun(
             system_prompt=system_prompt,
             communication_history=communication_history,
             user_input=user_input,
