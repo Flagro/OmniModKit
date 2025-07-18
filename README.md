@@ -50,8 +50,17 @@ for response in omni_model.stream(
 ):
     print(response.text_new_chunk, end="|", flush=True)
 
-# Async stream responses
+# Async stream responses with image generation
+last_response = None
+async for response in omni_model.astream(
+    user_input="Draw a cat and provide some text about it",
+):
+    if response.text_new_chunk:
+        print(response.text_new_chunk, end="|", flush=True)
+    last_response = response
+print("\nFinal response:", last_response)
 
+# Async stream responses
 async for response in omni_model.astream(
     user_input="Tell me a joke",
 ):
