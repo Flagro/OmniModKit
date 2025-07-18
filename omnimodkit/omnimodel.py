@@ -47,6 +47,10 @@ class TextWithImageResponse(BaseModel):
 
 
 class TextWithImageStreamingResponse(BaseModel):
+    text_generation_needed: bool = Field(
+        default=False,
+        description="Indicates if text generation is needed.",
+    )
     image_description_to_generate: str = Field(
         default="",
         description="Description of the generated image.",
