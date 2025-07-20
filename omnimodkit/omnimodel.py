@@ -1,10 +1,15 @@
 import io
 import asyncio
-from typing import Optional, Union, Generator, AsyncGenerator, List
+from typing import Optional, Union, Generator, AsyncGenerator, List, Literal
 from pydantic import BaseModel, Field, ConfigDict
 from .ai_config import AIConfig
 from .models_toolkit import ModelsToolkit
 from .base_toolkit_model import OpenAIMessage
+
+
+AvailableModelType = Literal[
+    "text", "vision", "image_generation", "audio_recognition", "audio_generation"
+]
 
 
 class TextResponse(BaseModel):
@@ -108,10 +113,80 @@ class OmniModelOutput(BaseModel):
 
 class OmniModel:
     def __init__(
-        self, openai_api_key: Optional[str] = None, ai_config: Optional[AIConfig] = None
+        self,
+        openai_api_key: Optional[str] = None,
+        ai_config: Optional[AIConfig] = None,
+        allowed_models: Optional[List[AvailableModelType]] = None,
     ):
         self.ai_config = ai_config
         self.modkit = ModelsToolkit(openai_api_key=openai_api_key, ai_config=ai_config)
+
+        # Set default allowed models if none provided
+        if allowed_models is None:
+            self.allowed_models = [
+                "text",
+                "vision",
+                "image_generation",
+                "audio_recognition",
+                "audio_generation",
+            ]
+        else:
+            self.allowed_models = allowed_models
+
+    def _get_allowed_output_types(self, is_streaming: bool = False) -> List[type]:
+        """
+        Get the list of allowed output type classes based on allowed_models.
+        """
+        allowed_types = []
+
+        if "text" in self.allowed_models:
+            if is_streaming:
+                allowed_types.append(TextStreamingResponse)
+            else:
+                allowed_types.append(TextResponse)
+
+        if "image_generation" in self.allowed_models:
+            allowed_types.append(ImageResponse)
+
+        if "audio_generation" in self.allowed_models:
+            allowed_types.append(AudioResponse)
+
+        if "text" in self.allowed_models and "image_generation" in self.allowed_models:
+            if is_streaming:
+                allowed_types.append(TextWithImageStreamingResponse)
+            else:
+                allowed_types.append(TextWithImageResponse)
+
+        return allowed_types
+
+    def _create_dynamic_output_type_model(self, is_streaming: bool = False) -> type:
+        """
+        Create a dynamic output type model based on allowed models.
+        """
+        allowed_types = self._get_allowed_output_types(is_streaming=is_streaming)
+
+        if is_streaming:
+            union_types = allowed_types or [TextStreamingResponse]
+        else:
+            union_types = allowed_types or [TextResponse]
+
+        if len(union_types) == 1:
+            union_type = union_types[0]
+        else:
+            union_type = Union[tuple(union_types)]
+
+        class DynamicOmniModelOutputType(BaseModel):
+            output_type: union_type = Field(
+                description="Type of output expected from the model.",
+            )
+
+        return DynamicOmniModelOutputType
+
+    def _can_use_model(self, model_type: str) -> bool:
+        """
+        Check if a specific model type is allowed.
+        """
+        return model_type in self.allowed_models
 
     def _compose_user_input(
         self,
@@ -140,14 +215,16 @@ class OmniModel:
         in_memory_audio_stream: Optional[io.BytesIO] = None,
     ) -> str:
         image_description = None
-        if in_memory_image_stream is not None:
+        if in_memory_image_stream is not None and self._can_use_model("vision"):
             image_description_object = self.modkit.vision_model.run_default(
                 in_memory_image_stream=in_memory_image_stream,
             )
             image_description = str(image_description_object)
 
         audio_description = None
-        if in_memory_audio_stream is not None:
+        if in_memory_audio_stream is not None and self._can_use_model(
+            "audio_recognition"
+        ):
             audio_description_object = self.modkit.audio_recognition_model.run_default(
                 in_memory_audio_stream=in_memory_audio_stream,
             )
@@ -166,13 +243,15 @@ class OmniModel:
         in_memory_audio_stream: Optional[io.BytesIO] = None,
     ) -> str:
         image_description = None
-        if in_memory_image_stream is not None:
+        if in_memory_image_stream is not None and self._can_use_model("vision"):
             image_description_object = await self.modkit.vision_model.arun_default(
                 in_memory_image_stream=in_memory_image_stream,
             )
             image_description = str(image_description_object)
         audio_description = None
-        if in_memory_audio_stream is not None:
+        if in_memory_audio_stream is not None and self._can_use_model(
+            "audio_recognition"
+        ):
             audio_description_object = (
                 await self.modkit.audio_recognition_model.arun_default(
                     in_memory_audio_stream=in_memory_audio_stream,
@@ -203,9 +282,12 @@ class OmniModel:
         )
 
         # Determine the output type based on the input data
+        dynamic_output_type_model = self._create_dynamic_output_type_model(
+            is_streaming=False
+        )
         output_type_model = self.modkit.text_model.run(
             system_prompt=system_prompt,
-            pydantic_model=OmniModelOutputType,
+            pydantic_model=dynamic_output_type_model,
             user_input=user_input,
             communication_history=communication_history,
         )
@@ -213,6 +295,10 @@ class OmniModel:
 
         # Process the input data based on the output type
         if isinstance(output_type, ImageResponse):
+            if not self._can_use_model("image_generation"):
+                raise ValueError(
+                    "Image generation is not allowed with the current model configuration."
+                )
             image_response = self.modkit.image_generation_model.run_default(
                 system_prompt=system_prompt,
                 user_input=output_type.image_description_to_generate,
@@ -220,6 +306,10 @@ class OmniModel:
             )
             result = OmniModelOutput(image_url=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
+            if not self._can_use_model("audio_generation"):
+                raise ValueError(
+                    "Audio generation is not allowed with the current model configuration."
+                )
             audio_response = self.modkit.audio_generation_model.run_default(
                 system_prompt=system_prompt,
                 user_input=output_type.audio_description_to_generate,
@@ -227,6 +317,10 @@ class OmniModel:
             )
             result = OmniModelOutput(audio_bytes=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
+            if not self._can_use_model("image_generation"):
+                raise ValueError(
+                    "Image generation is not allowed with the current model configuration."
+                )
             image_response = self.modkit.image_generation_model.run_default(
                 system_prompt=system_prompt,
                 user_input=output_type.image_description_to_generate,
@@ -268,9 +362,12 @@ class OmniModel:
         )
 
         # Determine the output type based on the input data
+        dynamic_output_type_model = self._create_dynamic_output_type_model(
+            is_streaming=False
+        )
         output_type_model = await self.modkit.text_model.arun(
             system_prompt=system_prompt,
-            pydantic_model=OmniModelOutputType,
+            pydantic_model=dynamic_output_type_model,
             user_input=user_input,
             communication_history=communication_history,
         )
@@ -278,6 +375,10 @@ class OmniModel:
 
         # Process the input data based on the output type
         if isinstance(output_type, ImageResponse):
+            if not self._can_use_model("image_generation"):
+                raise ValueError(
+                    "Image generation is not allowed with the current model configuration."
+                )
             image_response = await self.modkit.image_generation_model.arun_default(
                 system_prompt=system_prompt,
                 user_input=output_type.image_description_to_generate,
@@ -285,6 +386,10 @@ class OmniModel:
             )
             result = OmniModelOutput(image_url=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
+            if not self._can_use_model("audio_generation"):
+                raise ValueError(
+                    "Audio generation is not allowed with the current model configuration."
+                )
             audio_response = await self.modkit.audio_generation_model.arun_default(
                 system_prompt=system_prompt,
                 user_input=output_type.audio_description_to_generate,
@@ -292,6 +397,10 @@ class OmniModel:
             )
             result = OmniModelOutput(audio_bytes=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageResponse):
+            if not self._can_use_model("image_generation"):
+                raise ValueError(
+                    "Image generation is not allowed with the current model configuration."
+                )
             image_response = await self.modkit.image_generation_model.arun_default(
                 system_prompt=system_prompt,
                 user_input=output_type.image_description_to_generate,
@@ -332,9 +441,12 @@ class OmniModel:
         )
 
         # Determine the output type based on the input data
+        dynamic_output_type_model = self._create_dynamic_output_type_model(
+            is_streaming=True
+        )
         output_type_model = self.modkit.text_model.run(
             system_prompt=system_prompt,
-            pydantic_model=OmniModelStreamingOutputType,
+            pydantic_model=dynamic_output_type_model,
             user_input=user_input,
             communication_history=communication_history,
         )
@@ -342,6 +454,10 @@ class OmniModel:
 
         # Process the input data based on the output type
         if isinstance(output_type, ImageResponse):
+            if not self._can_use_model("image_generation"):
+                raise ValueError(
+                    "Image generation is not allowed with the current model configuration."
+                )
             image_response = self.modkit.image_generation_model.run_default(
                 system_prompt=system_prompt,
                 user_input=output_type.image_description_to_generate,
@@ -349,6 +465,10 @@ class OmniModel:
             )
             final_response = OmniModelOutput(image_url=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
+            if not self._can_use_model("audio_generation"):
+                raise ValueError(
+                    "Audio generation is not allowed with the current model configuration."
+                )
             audio_response = self.modkit.audio_generation_model.run_default(
                 system_prompt=system_prompt,
                 user_input=output_type.audio_description_to_generate,
@@ -356,6 +476,10 @@ class OmniModel:
             )
             final_response = OmniModelOutput(audio_bytes=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageStreamingResponse):
+            if not self._can_use_model("image_generation"):
+                raise ValueError(
+                    "Image generation is not allowed with the current model configuration."
+                )
             image_response = self.modkit.image_generation_model.run_default(
                 system_prompt=system_prompt,
                 user_input=output_type.image_description_to_generate,
@@ -415,9 +539,12 @@ class OmniModel:
         )
 
         # Determine the output type based on the input data
+        dynamic_output_type_model = self._create_dynamic_output_type_model(
+            is_streaming=True
+        )
         output_type_model = await self.modkit.text_model.arun(
             system_prompt=system_prompt,
-            pydantic_model=OmniModelStreamingOutputType,
+            pydantic_model=dynamic_output_type_model,
             user_input=user_input,
             communication_history=communication_history,
         )
@@ -425,6 +552,10 @@ class OmniModel:
 
         # Process the input data based on the output type
         if isinstance(output_type, ImageResponse):
+            if not self._can_use_model("image_generation"):
+                raise ValueError(
+                    "Image generation is not allowed with the current model configuration."
+                )
             image_response = await self.modkit.image_generation_model.arun_default(
                 system_prompt=system_prompt,
                 user_input=output_type.image_description_to_generate,
@@ -432,6 +563,10 @@ class OmniModel:
             )
             final_response = OmniModelOutput(image_url=image_response.image_url)
         elif isinstance(output_type, AudioResponse):
+            if not self._can_use_model("audio_generation"):
+                raise ValueError(
+                    "Audio generation is not allowed with the current model configuration."
+                )
             audio_response = await self.modkit.audio_generation_model.arun_default(
                 system_prompt=system_prompt,
                 user_input=output_type.audio_description_to_generate,
@@ -439,6 +574,10 @@ class OmniModel:
             )
             final_response = OmniModelOutput(audio_bytes=audio_response.audio_bytes)
         elif isinstance(output_type, TextWithImageStreamingResponse):
+            if not self._can_use_model("image_generation"):
+                raise ValueError(
+                    "Image generation is not allowed with the current model configuration."
+                )
             image_response_task = asyncio.create_task(
                 self.modkit.image_generation_model.arun_default(
                     system_prompt=system_prompt,
@@ -463,7 +602,7 @@ class OmniModel:
                 total_text=total_text,
                 image_url=image_response.image_url,
             )
-        elif isinstance(output_type, TextResponse):
+        elif isinstance(output_type, TextStreamingResponse):
             total_text = ""
             async for chunk in self.modkit.text_model.astream_default(
                 system_prompt=system_prompt,
@@ -504,13 +643,26 @@ class OmniModel:
             + (system_prompt or "")
             + "\n".join([msg["text"] for msg in communication_history or []])
         )
+
+        # Only calculate prices for allowed models
+        input_image = in_memory_image_stream if self._can_use_model("vision") else None
+        output_image_url = (
+            output.image_url if self._can_use_model("image_generation") else None
+        )
+        input_audio = (
+            in_memory_audio_stream if self._can_use_model("audio_recognition") else None
+        )
+        output_audio = (
+            output.audio_bytes if self._can_use_model("audio_generation") else None
+        )
+
         return self.modkit.get_price(
             input_text=total_input_text,
             output_text=output.total_text,
-            input_image=in_memory_image_stream,
-            output_image_url=output.image_url,
-            input_audio=in_memory_audio_stream,
-            output_audio=output.audio_bytes,
+            input_image=input_image,
+            output_image_url=output_image_url,
+            input_audio=input_audio,
+            output_audio=output_audio,
         )
 
     def inject_price(
