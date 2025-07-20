@@ -120,18 +120,13 @@ class OmniModel:
     ):
         self.ai_config = ai_config
         self.modkit = ModelsToolkit(openai_api_key=openai_api_key, ai_config=ai_config)
+        self.allowed_models = allowed_models
 
-        # Set default allowed models if none provided
-        if allowed_models is None:
-            self.allowed_models = [
-                "text",
-                "vision",
-                "image_generation",
-                "audio_recognition",
-                "audio_generation",
-            ]
-        else:
-            self.allowed_models = allowed_models
+    def _can_use_model(self, model_type: AvailableModelType) -> bool:
+        """
+        Check if a specific model type is allowed.
+        """
+        return self.allowed_models is None or model_type in self.allowed_models
 
     def _get_allowed_output_types(self, is_streaming: bool = False) -> List[type]:
         """
@@ -139,19 +134,19 @@ class OmniModel:
         """
         allowed_types = []
 
-        if "text" in self.allowed_models:
+        if self._can_use_model("text"):
             if is_streaming:
                 allowed_types.append(TextStreamingResponse)
             else:
                 allowed_types.append(TextResponse)
 
-        if "image_generation" in self.allowed_models:
+        if self._can_use_model("image_generation"):
             allowed_types.append(ImageResponse)
 
-        if "audio_generation" in self.allowed_models:
+        if self._can_use_model("audio_generation"):
             allowed_types.append(AudioResponse)
 
-        if "text" in self.allowed_models and "image_generation" in self.allowed_models:
+        if self._can_use_model("text") and self._can_use_model("image_generation"):
             if is_streaming:
                 allowed_types.append(TextWithImageStreamingResponse)
             else:
@@ -181,12 +176,6 @@ class OmniModel:
             )
 
         return DynamicOmniModelOutputType
-
-    def _can_use_model(self, model_type: str) -> bool:
-        """
-        Check if a specific model type is allowed.
-        """
-        return model_type in self.allowed_models
 
     def _compose_user_input(
         self,
