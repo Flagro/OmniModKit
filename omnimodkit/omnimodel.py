@@ -654,6 +654,46 @@ class OmniModel:
             output_audio=output_audio,
         )
 
+    def estimate_price(
+        self,
+        user_input: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        communication_history: Optional[List[OpenAIMessage]] = None,
+        in_memory_image_stream: Optional[io.BytesIO] = None,
+        in_memory_audio_stream: Optional[io.BytesIO] = None,
+    ) -> float:
+        """
+        Estimate the price of the model based on input and output text, image, and audio.
+        """
+        total_input_text = (
+            (user_input or "")
+            + (system_prompt or "")
+            + "\n".join([msg["text"] for msg in communication_history or []])
+        )
+
+        # Only calculate prices for allowed models
+        input_image = in_memory_image_stream if self._can_use_model("vision") else None
+        output_image_url = (
+            None if not self._can_use_model("image_generation") else "dummy_image_url"
+        )
+        input_audio = (
+            in_memory_audio_stream if self._can_use_model("audio_recognition") else None
+        )
+        output_audio = (
+            None
+            if not self._can_use_model("audio_generation")
+            else io.BytesIO(b"dummy_audio")
+        )
+
+        return self.modkit.get_price(
+            input_text=total_input_text,
+            output_text=None,
+            input_image=input_image,
+            output_image_url=output_image_url,
+            input_audio=input_audio,
+            output_audio=output_audio,
+        )
+
     def inject_price(
         self,
         output: OmniModelOutput,
