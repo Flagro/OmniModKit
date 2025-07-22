@@ -62,28 +62,6 @@ class TextWithImageStreamingResponse(BaseModel):
     )
 
 
-class OmniModelOutputType(BaseModel):
-    output_type: Union[
-        TextResponse,
-        ImageResponse,
-        AudioResponse,
-        TextWithImageResponse,
-    ] = Field(
-        description="Type of output expected from the model.",
-    )
-
-
-class OmniModelStreamingOutputType(BaseModel):
-    output_type: Union[
-        TextStreamingResponse,
-        ImageResponse,
-        AudioResponse,
-        TextWithImageStreamingResponse,
-    ] = Field(
-        description="Type of output expected from the model during streaming.",
-    )
-
-
 class OmniModelOutput(BaseModel):
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
