@@ -1,7 +1,7 @@
 import io
 import asyncio
 from typing import Optional, Union, Generator, AsyncGenerator, List, Literal
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, create_model
 from .ai_config import AIConfig
 from .models_toolkit import ModelsToolkit
 from .base_toolkit_model import OpenAIMessage
@@ -154,10 +154,13 @@ class OmniModel:
         else:
             union_type = Union[tuple(union_types)]
 
-        class DynamicOmniModelOutputType(BaseModel):
-            output_type: union_type = Field(
-                description="Type of output expected from the model.",
-            )
+        DynamicOmniModelOutputType = create_model(
+            "DynamicOmniModelOutputType",
+            output_type=(
+                union_type,
+                Field(description="Type of output expected from the model."),
+            ),
+        )
 
         return DynamicOmniModelOutputType
 
