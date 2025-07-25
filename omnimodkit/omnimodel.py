@@ -466,8 +466,13 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
+            adjusted_text_generation_system_prompt = (
+                f"{system_prompt}\n"
+                "Generate text assuming that the image with the given description has "
+                "already been generated and it will be attached to the response as an attachment."
+            )
             text_response = self.modkit.text_model.stream_default(
-                system_prompt=system_prompt,
+                system_prompt=adjusted_text_generation_system_prompt,
                 user_input=user_input,
                 communication_history=communication_history,
             )
@@ -566,9 +571,14 @@ class OmniModel:
                     communication_history=communication_history,
                 )
             )
+            adjusted_text_generation_system_prompt = (
+                f"{system_prompt}\n"
+                "Generate text assuming that the image with the given description has "
+                "already been generated and it will be attached to the response as an attachment."
+            )
             total_text = ""
             async for chunk in self.modkit.text_model.astream_default(
-                system_prompt=system_prompt,
+                system_prompt=adjusted_text_generation_system_prompt,
                 user_input=user_input,
                 communication_history=communication_history,
             ):
