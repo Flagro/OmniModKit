@@ -20,9 +20,9 @@ class DefaultAudio(BaseModel):
         return f"Audio bytes: {self.audio_bytes.name} ({self.audio_bytes.getbuffer().nbytes} bytes)"
 
 
-class AudioGenerationModel(BaseToolkitModel):
+class AudioGenerationModel(BaseToolkitModel[DefaultAudio]):
     model_name = "audio_generation"
-    default_pydantic_model: Type[BaseModel] = DefaultAudio
+    default_pydantic_model: Type[DefaultAudio] = DefaultAudio
 
     @staticmethod
     def get_default_system_prompt() -> str:

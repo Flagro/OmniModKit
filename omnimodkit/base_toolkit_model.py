@@ -11,6 +11,8 @@ from typing import (
     TypedDict,
     Literal,
     List,
+    TypeVar,
+    Generic,
 )
 import tiktoken
 from pydantic import BaseModel
@@ -18,6 +20,9 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage
 from .ai_config import AIConfig, Model, GenerationType
 from .moderation import Moderation
+
+
+T = TypeVar("T", bound=BaseModel)
 
 
 @functools.lru_cache()
@@ -34,10 +39,10 @@ class OpenAIMessage(TypedDict):
     content: str
 
 
-class BaseToolkitModel(ABC):
+class BaseToolkitModel(ABC, Generic[T]):
     model_name: str
     openai_api_key: str
-    default_pydantic_model: Type[BaseModel] = BaseModel
+    default_pydantic_model: Type[T] = BaseModel
     default_streamable_pydantic_model: Optional[Type[BaseModel]] = None
 
     def __init__(
@@ -160,7 +165,7 @@ class BaseToolkitModel(ABC):
         user_input: str,
         system_prompt: Optional[str] = None,
         communication_history: Optional[List[OpenAIMessage]] = None,
-    ) -> BaseModel:
+    ) -> T:
         result = self.run(
             system_prompt=system_prompt,
             communication_history=communication_history,
@@ -207,7 +212,7 @@ class BaseToolkitModel(ABC):
         user_input: str,
         system_prompt: Optional[str] = None,
         communication_history: Optional[List[OpenAIMessage]] = None,
-    ) -> BaseModel:
+    ) -> T:
         result = await self.arun(
             system_prompt=system_prompt,
             communication_history=communication_history,
@@ -250,15 +255,15 @@ class BaseToolkitModel(ABC):
         user_input: str,
         system_prompt: Optional[str] = None,
         communication_history: Optional[List[OpenAIMessage]] = None,
-    ) -> Generator[BaseModel, None, None]:
+    ) -> Generator[T, None, None]:
         for model in self.stream(
             system_prompt=system_prompt,
             communication_history=communication_history,
             user_input=user_input,
         ):
-            if not isinstance(model, self.default_streamable_pydantic_model):
+            if not isinstance(model, self.default_pydantic_model):
                 raise ValueError(
-                    f"Expected result of type {self.default_streamable_pydantic_model}, "
+                    f"Expected result of type {self.default_pydantic_model}, "
                     f"but got {type(model)}"
                 )
             yield model
@@ -294,17 +299,15 @@ class BaseToolkitModel(ABC):
         user_input: str,
         system_prompt: Optional[str] = None,
         communication_history: Optional[List[OpenAIMessage]] = None,
-    ) -> AsyncGenerator[BaseModel, None]:
-        system_prompt = system_prompt or self.get_default_system_prompt()
-        communication_history = communication_history or []
-        async for model in self.astream_impl(
+    ) -> AsyncGenerator[T, None]:
+        async for model in self.astream(
             system_prompt=system_prompt,
             communication_history=communication_history,
             user_input=user_input,
         ):
-            if not isinstance(model, self.default_streamable_pydantic_model):
+            if not isinstance(model, self.default_pydantic_model):
                 raise ValueError(
-                    f"Expected result of type {self.default_streamable_pydantic_model}, "
+                    f"Expected result of type {self.default_pydantic_model}, "
                     f"but got {type(model)}"
                 )
             yield model

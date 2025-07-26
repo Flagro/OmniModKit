@@ -26,9 +26,9 @@ class DefaultImageInformation(BaseModel):
         )
 
 
-class VisionModel(BaseToolkitModel):
+class VisionModel(BaseToolkitModel[DefaultImageInformation]):
     model_name = "vision"
-    default_pydantic_model: Type[BaseModel] = DefaultImageInformation
+    default_pydantic_model: Type[DefaultImageInformation] = DefaultImageInformation
 
     @staticmethod
     def get_default_system_prompt() -> str:

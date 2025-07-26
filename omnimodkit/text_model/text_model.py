@@ -30,10 +30,10 @@ class DefaultTextChunk(BaseModel):
         return self.text_chunk
 
 
-class TextModel(BaseToolkitModel):
+class TextModel(BaseToolkitModel[DefaultText]):
     model_name = "text"
-    default_pydantic_model: Type[BaseModel] = DefaultText
-    default_streamable_pydantic_model: Optional[Type[BaseModel]] = DefaultTextChunk
+    default_pydantic_model: Type[DefaultText] = DefaultText
+    default_streamable_pydantic_model: Optional[Type[DefaultTextChunk]] = DefaultTextChunk
 
     @staticmethod
     def get_default_system_prompt() -> str:
