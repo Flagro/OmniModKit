@@ -24,8 +24,7 @@ class ImageGenerationModel(BaseToolkitModel[DefaultImage]):
 
     @staticmethod
     def get_default_system_prompt() -> str:
-        # TODO: this should not be a formatted string
-        return "Please provide the necessary information: {image_desc}"
+        return "Please provide the necessary information based on the user's request."
 
     def run_impl(
         self,
