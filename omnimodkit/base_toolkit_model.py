@@ -354,9 +354,8 @@ class BaseToolkitModel(ABC, Generic[T]):
     def moderation_needed(self) -> bool:
         return self.get_model_config().moderation_needed
 
-    @staticmethod
     @abstractmethod
-    def get_default_system_prompt() -> str:
+    def get_default_system_prompt(self) -> str:
         raise NotImplementedError(
             "get_default_system_prompt is not implemented in this BaseToolkitModel. "
             "Please implement it in the derived class."

@@ -20,8 +20,7 @@ class AudioRecognitionModel(BaseToolkitModel[DefaultAudioInformation]):
     model_name = "audio_recognition"
     default_pydantic_model: Type[DefaultAudioInformation] = DefaultAudioInformation
 
-    @staticmethod
-    def get_default_system_prompt() -> str:
+    def get_default_system_prompt(self) -> str:
         return "Based on the audio, fill out the provided fields."
 
     def get_model_config(self) -> AudioRecognition:

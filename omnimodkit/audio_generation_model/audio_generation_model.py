@@ -24,8 +24,7 @@ class AudioGenerationModel(BaseToolkitModel[DefaultAudio]):
     model_name = "audio_generation"
     default_pydantic_model: Type[DefaultAudio] = DefaultAudio
 
-    @staticmethod
-    def get_default_system_prompt() -> str:
+    def get_default_system_prompt(self) -> str:
         return "Based on the text generate the audio."
 
     def get_model_config(self) -> AudioGeneration:
