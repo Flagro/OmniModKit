@@ -261,9 +261,9 @@ class BaseToolkitModel(ABC, Generic[T]):
             communication_history=communication_history,
             user_input=user_input,
         ):
-            if not isinstance(model, self.default_pydantic_model):
+            if not isinstance(model, self.default_streamable_pydantic_model):
                 raise ValueError(
-                    f"Expected result of type {self.default_pydantic_model}, "
+                    f"Expected result of type {self.default_streamable_pydantic_model}, "
                     f"but got {type(model)}"
                 )
             yield model
@@ -305,9 +305,9 @@ class BaseToolkitModel(ABC, Generic[T]):
             communication_history=communication_history,
             user_input=user_input,
         ):
-            if not isinstance(model, self.default_pydantic_model):
+            if not isinstance(model, self.default_streamable_pydantic_model):
                 raise ValueError(
-                    f"Expected result of type {self.default_pydantic_model}, "
+                    f"Expected result of type {self.default_streamable_pydantic_model}, "
                     f"but got {type(model)}"
                 )
             yield model
