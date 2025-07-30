@@ -162,14 +162,16 @@ class BaseToolkitModel(ABC, Generic[T]):
 
     def run_default(
         self,
-        user_input: str,
         system_prompt: Optional[str] = None,
         communication_history: Optional[List[OpenAIMessage]] = None,
+        *args,
+        **kwargs,
     ) -> T:
         result = self.run(
             system_prompt=system_prompt,
             communication_history=communication_history,
-            user_input=user_input,
+            *args,
+            **kwargs,
         )
         if not isinstance(result, self.default_pydantic_model):
             raise ValueError(
@@ -209,14 +211,16 @@ class BaseToolkitModel(ABC, Generic[T]):
 
     async def arun_default(
         self,
-        user_input: str,
         system_prompt: Optional[str] = None,
         communication_history: Optional[List[OpenAIMessage]] = None,
+        *args,
+        **kwargs,
     ) -> T:
         result = await self.arun(
             system_prompt=system_prompt,
             communication_history=communication_history,
-            user_input=user_input,
+            *args,
+            **kwargs,
         )
         if not isinstance(result, self.default_pydantic_model):
             raise ValueError(
@@ -252,14 +256,16 @@ class BaseToolkitModel(ABC, Generic[T]):
 
     def stream_default(
         self,
-        user_input: str,
         system_prompt: Optional[str] = None,
         communication_history: Optional[List[OpenAIMessage]] = None,
+        *args,
+        **kwargs,
     ) -> Generator[T, None, None]:
         for model in self.stream(
             system_prompt=system_prompt,
             communication_history=communication_history,
-            user_input=user_input,
+            *args,
+            **kwargs,
         ):
             if not isinstance(model, self.default_streamable_pydantic_model):
                 raise ValueError(
@@ -296,14 +302,16 @@ class BaseToolkitModel(ABC, Generic[T]):
 
     async def astream_default(
         self,
-        user_input: str,
         system_prompt: Optional[str] = None,
         communication_history: Optional[List[OpenAIMessage]] = None,
+        *args,
+        **kwargs,
     ) -> AsyncGenerator[T, None]:
         async for model in self.astream(
             system_prompt=system_prompt,
             communication_history=communication_history,
-            user_input=user_input,
+            *args,
+            **kwargs,
         ):
             if not isinstance(model, self.default_streamable_pydantic_model):
                 raise ValueError(
