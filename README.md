@@ -89,6 +89,17 @@ omni_model.run(
     user_input="Describe this image and generate a related image.",
     in_memory_image_stream=image_bytes,
 )
+
+# Estimate price for a model run
+import io
+import requests
+
+url = "https://raw.githubusercontent.com/Flagro/treefeeder/main/logo.png"
+image_bytes = io.BytesIO(requests.get(url, timeout=10).content)
+image_bytes.name = "image.png"
+omni_model.estimate_price(
+    user_input="What is the capital of France?", in_memory_image_stream=image_bytes
+)
 ```
 
 
