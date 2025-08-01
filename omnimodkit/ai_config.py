@@ -1,5 +1,6 @@
 from typing import Dict, Optional
 import yaml
+from importlib import resources
 from pydantic import BaseModel
 
 
@@ -70,3 +71,8 @@ class AIConfig(BaseModel):
                 return cls(**config_dict[cls.__name__])
             else:
                 raise KeyError(f"{cls.__name__} not found in {file_path}")
+
+    @classmethod
+    def load_default(cls):
+        with resources.path("omnimodkit.data", "default_ai_config.yaml") as file_path:
+            return cls.load(file_path)

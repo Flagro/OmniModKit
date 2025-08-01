@@ -14,7 +14,10 @@ from .moderation import Moderation
 
 class ModelsToolkit:
     def __init__(
-        self, openai_api_key: Optional[str] = None, ai_config: Optional[AIConfig] = None
+        self,
+        openai_api_key: Optional[str] = None,
+        ai_config: Optional[AIConfig] = None,
+        allow_default_ai_config: bool = False,
     ):
         if openai_api_key is None:
             openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -27,10 +30,13 @@ class ModelsToolkit:
             try:
                 ai_config = AIConfig.load("ai_config.yaml")
             except FileNotFoundError:
-                raise ValueError(
-                    "ai_config.yaml file not found! "
-                    "Set it for these integration tests."
-                )
+                if allow_default_ai_config:
+                    ai_config = AIConfig.load_default()
+                else:
+                    raise ValueError(
+                        "ai_config.yaml file not found! "
+                        "To use a default configuration, set allow_default_ai_config=True."
+                    )
         self.openai_api_key = openai_api_key
         self.ai_config = ai_config
         self._text_model: Optional[TextModel] = None
