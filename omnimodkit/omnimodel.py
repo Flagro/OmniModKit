@@ -100,9 +100,14 @@ class OmniModel:
         openai_api_key: Optional[str] = None,
         ai_config: Optional[AIConfig] = None,
         allowed_models: Optional[List[AvailableModelType]] = None,
+        allow_default_ai_config: bool = False,
     ):
         self.ai_config = ai_config
-        self.modkit = ModelsToolkit(openai_api_key=openai_api_key, ai_config=ai_config)
+        self.modkit = ModelsToolkit(
+            openai_api_key=openai_api_key,
+            ai_config=ai_config,
+            allow_default_ai_config=allow_default_ai_config,
+        )
         self.allowed_models = allowed_models
 
     def _all_models_allowed(self) -> bool:
