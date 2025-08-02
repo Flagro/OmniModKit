@@ -1,6 +1,15 @@
 import io
 import asyncio
-from typing import Optional, Union, Generator, AsyncGenerator, List, Literal
+from typing import (
+    Optional,
+    Union,
+    Generator,
+    AsyncGenerator,
+    List,
+    Literal,
+    Protocol,
+    Type,
+)
 from pydantic import BaseModel, Field, ConfigDict, create_model
 from .ai_config import AIConfig
 from .models_toolkit import ModelsToolkit
@@ -10,6 +19,12 @@ from .base_toolkit_model import OpenAIMessage
 AvailableModelType = Literal[
     "text", "vision", "image_generation", "audio_recognition", "audio_generation"
 ]
+
+
+class OutputTypeModel(Protocol):
+    """Protocol for dynamically created models with output_type field."""
+
+    output_type: Union[type, object]
 
 
 class TextResponse(BaseModel):
@@ -148,7 +163,9 @@ class OmniModel:
 
         return allowed_types
 
-    def _create_dynamic_output_type_model(self, is_streaming: bool = False) -> type:
+    def _create_dynamic_output_type_model(
+        self, is_streaming: bool = False
+    ) -> Type[OutputTypeModel]:
         """
         Create a dynamic output type model based on allowed models.
         """
@@ -271,7 +288,7 @@ class OmniModel:
         dynamic_output_type_model = self._create_dynamic_output_type_model(
             is_streaming=False
         )
-        output_type_model = self.modkit.text_model.run(
+        output_type_model: OutputTypeModel = self.modkit.text_model.run(
             system_prompt=system_prompt,
             pydantic_model=dynamic_output_type_model,
             user_input=user_input,
@@ -351,7 +368,7 @@ class OmniModel:
         dynamic_output_type_model = self._create_dynamic_output_type_model(
             is_streaming=False
         )
-        output_type_model = await self.modkit.text_model.arun(
+        output_type_model: OutputTypeModel = await self.modkit.text_model.arun(
             system_prompt=system_prompt,
             pydantic_model=dynamic_output_type_model,
             user_input=user_input,
@@ -430,7 +447,7 @@ class OmniModel:
         dynamic_output_type_model = self._create_dynamic_output_type_model(
             is_streaming=True
         )
-        output_type_model = self.modkit.text_model.run(
+        output_type_model: OutputTypeModel = self.modkit.text_model.run(
             system_prompt=system_prompt,
             pydantic_model=dynamic_output_type_model,
             user_input=user_input,
@@ -534,7 +551,7 @@ class OmniModel:
         dynamic_output_type_model = self._create_dynamic_output_type_model(
             is_streaming=True
         )
-        output_type_model = await self.modkit.text_model.arun(
+        output_type_model: OutputTypeModel = await self.modkit.text_model.arun(
             system_prompt=system_prompt,
             pydantic_model=dynamic_output_type_model,
             user_input=user_input,
