@@ -697,27 +697,18 @@ class OmniModel:
             + "\n".join([msg["text"] for msg in communication_history or []])
         )
 
-        # Only calculate prices for allowed models
         input_image = in_memory_image_stream if self._can_use_model("vision") else None
-        output_image_url = (
-            None if not self._can_use_model("image_generation") else "dummy_image_url"
-        )
         input_audio = (
             in_memory_audio_stream if self._can_use_model("audio_recognition") else None
         )
-        output_audio = (
-            None
-            if not self._can_use_model("audio_generation")
-            else io.BytesIO(b"dummy_audio")
-        )
 
-        return self.modkit.get_price(
+        return self.modkit.estimate_price(
             input_text=total_input_text,
-            output_text=None,
             input_image=input_image,
-            output_image_url=output_image_url,
             input_audio=input_audio,
-            output_audio=output_audio,
+            enable_text_output=self._can_use_model("text"),
+            enable_image_generation=self._can_use_model("image_generation"),
+            enable_audio_generation=self._can_use_model("audio_generation"),
         )
 
     def inject_price(
