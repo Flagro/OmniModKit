@@ -6,19 +6,13 @@ from typing import (
     Generator,
     AsyncGenerator,
     List,
-    Literal,
     Protocol,
     Type,
 )
 from pydantic import BaseModel, Field, ConfigDict, create_model
 from .ai_config import AIConfig
-from .models_toolkit import ModelsToolkit
+from .models_toolkit import ModelsToolkit, AvailableModelType
 from .base_toolkit_model import OpenAIMessage
-
-
-AvailableModelType = Literal[
-    "text", "vision", "image_generation", "audio_recognition", "audio_generation"
-]
 
 
 class OutputTypeModel(Protocol):

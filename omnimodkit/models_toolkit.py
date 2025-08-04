@@ -1,6 +1,6 @@
 import os
 import io
-from typing import Optional
+from typing import Optional, Literal, List
 from .ai_config import AIConfig
 from .audio_recognition_model.audio_recognition_model import (
     AudioRecognitionModel,
@@ -12,11 +12,17 @@ from .vision_model.vision_model import VisionModel
 from .moderation import Moderation
 
 
+AvailableModelType = Literal[
+    "text", "vision", "image_generation", "audio_recognition", "audio_generation"
+]
+
+
 class ModelsToolkit:
     def __init__(
         self,
         openai_api_key: Optional[str] = None,
         ai_config: Optional[AIConfig] = None,
+        allowed_models: Optional[List[AvailableModelType]] = None,
         allow_default_ai_config: bool = False,
     ):
         if openai_api_key is None:
@@ -39,6 +45,8 @@ class ModelsToolkit:
                     )
         self.openai_api_key = openai_api_key
         self.ai_config = ai_config
+        # TODO: check for allowed models here
+        self.allowed_models = allowed_models
         self._text_model: Optional[TextModel] = None
         self._vision_model: Optional[VisionModel] = None
         self._image_generation_model: Optional[ImageGenerationModel] = None
