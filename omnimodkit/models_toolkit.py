@@ -102,6 +102,18 @@ class ModelsToolkit:
             )
         return self._moderation_model
 
+    def all_models_allowed(self) -> bool:
+        """
+        Check if all model types are allowed.
+        """
+        return self.allowed_models is None
+
+    def can_use_model(self, model_type: AvailableModelType) -> bool:
+        """
+        Check if a specific model type is allowed.
+        """
+        return self.all_models_allowed() or model_type in self.allowed_models
+
     def get_price(
         self,
         input_text: Optional[str] = None,

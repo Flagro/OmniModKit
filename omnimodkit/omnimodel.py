@@ -115,6 +115,7 @@ class OmniModel:
         self.modkit = ModelsToolkit(
             openai_api_key=openai_api_key,
             ai_config=ai_config,
+            allowed_models=allowed_models,
             allow_default_ai_config=allow_default_ai_config,
         )
         self.allowed_models = allowed_models
