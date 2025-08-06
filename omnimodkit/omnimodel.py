@@ -118,19 +118,12 @@ class OmniModel:
             allowed_models=allowed_models,
             allow_default_ai_config=allow_default_ai_config,
         )
-        self.allowed_models = allowed_models
-
-    def _all_models_allowed(self) -> bool:
-        """
-        Check if all model types are allowed.
-        """
-        return self.allowed_models is None
 
     def _can_use_model(self, model_type: AvailableModelType) -> bool:
         """
         Check if a specific model type is allowed.
         """
-        return self._all_models_allowed() or model_type in self.allowed_models
+        return self.modkit.can_use_model(model_type)
 
     def _get_allowed_output_types(self, is_streaming: bool = False) -> List[type]:
         """
