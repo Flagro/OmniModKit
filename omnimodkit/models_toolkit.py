@@ -56,6 +56,8 @@ class ModelsToolkit:
 
     @property
     def text_model(self) -> TextModel:
+        if not self.can_use_model("text"):
+            raise ValueError("Text model is not allowed.")
         if self._text_model is None:
             self._text_model = TextModel(
                 ai_config=self.ai_config, openai_api_key=self.openai_api_key
@@ -64,6 +66,8 @@ class ModelsToolkit:
 
     @property
     def vision_model(self) -> VisionModel:
+        if not self.can_use_model("vision"):
+            raise ValueError("Vision model is not allowed.")
         if self._vision_model is None:
             self._vision_model = VisionModel(
                 ai_config=self.ai_config, openai_api_key=self.openai_api_key
@@ -72,6 +76,8 @@ class ModelsToolkit:
 
     @property
     def image_generation_model(self) -> ImageGenerationModel:
+        if not self.can_use_model("image_generation"):
+            raise ValueError("Image generation model is not allowed.")
         if self._image_generation_model is None:
             self._image_generation_model = ImageGenerationModel(
                 ai_config=self.ai_config, openai_api_key=self.openai_api_key
@@ -80,6 +86,8 @@ class ModelsToolkit:
 
     @property
     def audio_recognition_model(self) -> AudioRecognitionModel:
+        if not self.can_use_model("audio_recognition"):
+            raise ValueError("Audio recognition model is not allowed.")
         if self._audio_recognition_model is None:
             self._audio_recognition_model = AudioRecognitionModel(
                 ai_config=self.ai_config, openai_api_key=self.openai_api_key
@@ -88,6 +96,8 @@ class ModelsToolkit:
 
     @property
     def audio_generation_model(self) -> AudioGenerationModel:
+        if not self.can_use_model("audio_generation"):
+            raise ValueError("Audio generation model is not allowed.")
         if self._audio_generation_model is None:
             self._audio_generation_model = AudioGenerationModel(
                 ai_config=self.ai_config, openai_api_key=self.openai_api_key
