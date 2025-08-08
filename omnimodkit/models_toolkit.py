@@ -45,7 +45,6 @@ class ModelsToolkit:
                     )
         self.openai_api_key = openai_api_key
         self.ai_config = ai_config
-        # TODO: check for allowed models here
         self.allowed_models = allowed_models
         self._text_model: Optional[TextModel] = None
         self._vision_model: Optional[VisionModel] = None
@@ -171,37 +170,38 @@ class ModelsToolkit:
         """
         Estimate the price of the model based on inputs and expected output types.
         Uses dummy output values for estimation.
+        Only includes pricing for models that are allowed based on the allowed_models configuration.
         """
         total_price = 0.0
 
         # Text model pricing (input + estimated output)
-        if input_text is not None or enable_text_output:
+        if (input_text is not None or enable_text_output) and self.can_use_model("text"):
             estimated_output_text = input_text if enable_text_output else None
             total_price += self.text_model.get_price(
                 input_text=input_text, output_text=estimated_output_text
             )
 
         # Image generation pricing
-        if enable_image_generation:
+        if enable_image_generation and self.can_use_model("image_generation"):
             total_price += self.image_generation_model.get_price(
                 input_text=input_text, output_image_url="dummy_image_url"
             )
 
         # Vision model pricing (input image)
-        if input_image is not None:
+        if input_image is not None and self.can_use_model("vision"):
             estimated_output_text = "dummy_output_text" if enable_text_output else None
             total_price += self.vision_model.get_price(
                 input_image=input_image, output_text=estimated_output_text
             )
 
         # Audio generation pricing
-        if enable_audio_generation:
+        if enable_audio_generation and self.can_use_model("audio_generation"):
             total_price += self.audio_generation_model.get_price(
                 input_text=input_text, output_audio=io.BytesIO(b"dummy_audio")
             )
 
         # Audio recognition pricing (input audio)
-        if input_audio is not None:
+        if input_audio is not None and self.can_use_model("audio_recognition"):
             estimated_output_text = "dummy_output_text" if enable_text_output else None
             total_price += self.audio_recognition_model.get_price(
                 input_audio=input_audio, output_text=estimated_output_text
