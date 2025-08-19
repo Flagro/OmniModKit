@@ -22,6 +22,7 @@ from .ai_config import AIConfig, Model, GenerationType
 from .moderation import Moderation
 
 
+# TODO: add streaming type as well
 T = TypeVar("T", bound=BaseModel)
 
 
