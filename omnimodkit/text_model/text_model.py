@@ -30,7 +30,7 @@ class DefaultTextChunk(BaseModel):
         return self.text_chunk
 
 
-class TextModel(BaseToolkitModel[DefaultText]):
+class TextModel(BaseToolkitModel[DefaultText, DefaultTextChunk]):
     model_name = "text"
     default_pydantic_model: Type[DefaultText] = DefaultText
     default_streamable_pydantic_model: Optional[Type[DefaultTextChunk]] = DefaultTextChunk

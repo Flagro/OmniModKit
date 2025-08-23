@@ -13,7 +13,7 @@ class DefaultImage(BaseModel):
         return f"Image url: {self.image_url}"
 
 
-class ImageGenerationModel(BaseToolkitModel[DefaultImage]):
+class ImageGenerationModel(BaseToolkitModel[DefaultImage, DefaultImage]):
     model_name = "image_generation"
     default_pydantic_model: Type[DefaultImage] = DefaultImage
 

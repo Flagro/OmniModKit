@@ -20,7 +20,7 @@ class DefaultAudio(BaseModel):
         return f"Audio bytes: {self.audio_bytes.name} ({self.audio_bytes.getbuffer().nbytes} bytes)"
 
 
-class AudioGenerationModel(BaseToolkitModel[DefaultAudio]):
+class AudioGenerationModel(BaseToolkitModel[DefaultAudio, DefaultAudio]):
     model_name = "audio_generation"
     default_pydantic_model: Type[DefaultAudio] = DefaultAudio
 

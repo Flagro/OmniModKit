@@ -22,8 +22,9 @@ from .ai_config import AIConfig, Model, GenerationType
 from .moderation import Moderation
 
 
-# TODO: add streaming type as well
-T = TypeVar("T", bound=BaseModel)
+# Type variables for default and streamable models
+T = TypeVar("T", bound=BaseModel)  # Default model type
+S = TypeVar("S", bound=BaseModel)  # Streamable model type
 
 
 @functools.lru_cache()
@@ -40,11 +41,11 @@ class OpenAIMessage(TypedDict):
     content: str
 
 
-class BaseToolkitModel(ABC, Generic[T]):
+class BaseToolkitModel(ABC, Generic[T, S]):
     model_name: str
     openai_api_key: str
     default_pydantic_model: Type[T] = BaseModel
-    default_streamable_pydantic_model: Optional[Type[BaseModel]] = None
+    default_streamable_pydantic_model: Optional[Type[S]] = None
 
     def __init__(
         self,
@@ -261,7 +262,7 @@ class BaseToolkitModel(ABC, Generic[T]):
         communication_history: Optional[List[OpenAIMessage]] = None,
         *args,
         **kwargs,
-    ) -> Generator[T, None, None]:
+    ) -> Generator[S, None, None]:
         for model in self.stream(
             system_prompt=system_prompt,
             communication_history=communication_history,
@@ -307,7 +308,7 @@ class BaseToolkitModel(ABC, Generic[T]):
         communication_history: Optional[List[OpenAIMessage]] = None,
         *args,
         **kwargs,
-    ) -> AsyncGenerator[T, None]:
+    ) -> AsyncGenerator[S, None]:
         async for model in self.astream(
             system_prompt=system_prompt,
             communication_history=communication_history,

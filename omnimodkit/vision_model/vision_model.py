@@ -26,7 +26,7 @@ class DefaultImageInformation(BaseModel):
         )
 
 
-class VisionModel(BaseToolkitModel[DefaultImageInformation]):
+class VisionModel(BaseToolkitModel[DefaultImageInformation, DefaultImageInformation]):
     model_name = "vision"
     default_pydantic_model: Type[DefaultImageInformation] = DefaultImageInformation
 
