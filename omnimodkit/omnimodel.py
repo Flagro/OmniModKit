@@ -93,9 +93,17 @@ class OmniModelOutput(BaseModel):
         default=None,
         description="Generated image URL response from the model.",
     )
+    image_description: Optional[str] = Field(
+        default=None,
+        description="Description of the generated image.",
+    )
     audio_bytes: Optional[io.BytesIO] = Field(
         default=None,
         description="In-memory audio bytes response from the model.",
+    )
+    audio_description: Optional[str] = Field(
+        default=None,
+        description="Description of the generated audio.",
     )
     total_price: Optional[float] = Field(
         default=None,
