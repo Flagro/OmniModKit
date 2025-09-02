@@ -303,7 +303,10 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
-            result = OmniModelOutput(image_url=image_response.image_url)
+            result = OmniModelOutput(
+                image_url=image_response.image_url,
+                image_description=output_type.image_description_to_generate,
+            )
         elif isinstance(output_type, AudioResponse):
             if not self._can_use_model("audio_generation"):
                 raise ValueError(
@@ -314,7 +317,10 @@ class OmniModel:
                 user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
-            result = OmniModelOutput(audio_bytes=audio_response.audio_bytes)
+            result = OmniModelOutput(
+                audio_bytes=audio_response.audio_bytes,
+                audio_description=output_type.audio_description_to_generate,
+            )
         elif isinstance(output_type, TextWithImageResponse):
             if not self._can_use_model("image_generation"):
                 raise ValueError(
@@ -328,6 +334,7 @@ class OmniModel:
             result = OmniModelOutput(
                 total_text=output_type.text,
                 image_url=image_response.image_url,
+                image_description=output_type.image_description_to_generate,
             )
         elif isinstance(output_type, TextResponse):
             result = OmniModelOutput(total_text=output_type.text)
@@ -383,7 +390,10 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
-            result = OmniModelOutput(image_url=image_response.image_url)
+            result = OmniModelOutput(
+                image_url=image_response.image_url,
+                image_description=output_type.image_description_to_generate,
+            )
         elif isinstance(output_type, AudioResponse):
             if not self._can_use_model("audio_generation"):
                 raise ValueError(
@@ -394,7 +404,10 @@ class OmniModel:
                 user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
-            result = OmniModelOutput(audio_bytes=audio_response.audio_bytes)
+            result = OmniModelOutput(
+                audio_bytes=audio_response.audio_bytes,
+                audio_description=output_type.audio_description_to_generate,
+            )
         elif isinstance(output_type, TextWithImageResponse):
             if not self._can_use_model("image_generation"):
                 raise ValueError(
@@ -408,6 +421,7 @@ class OmniModel:
             result = OmniModelOutput(
                 total_text=output_type.text,
                 image_url=image_response.image_url,
+                image_description=output_type.image_description_to_generate,
             )
         elif isinstance(output_type, TextResponse):
             result = OmniModelOutput(total_text=output_type.text)
@@ -462,7 +476,10 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
-            final_response = OmniModelOutput(image_url=image_response.image_url)
+            final_response = OmniModelOutput(
+                image_url=image_response.image_url,
+                image_description=output_type.image_description_to_generate,
+            )
         elif isinstance(output_type, AudioResponse):
             if not self._can_use_model("audio_generation"):
                 raise ValueError(
@@ -473,7 +490,10 @@ class OmniModel:
                 user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
-            final_response = OmniModelOutput(audio_bytes=audio_response.audio_bytes)
+            final_response = OmniModelOutput(
+                audio_bytes=audio_response.audio_bytes,
+                audio_description=output_type.audio_description_to_generate,
+            )
         elif isinstance(output_type, TextWithImageStreamingResponse):
             if not self._can_use_model("image_generation"):
                 raise ValueError(
@@ -501,6 +521,7 @@ class OmniModel:
             final_response = OmniModelOutput(
                 total_text=text_response,
                 image_url=image_response.image_url,
+                image_description=output_type.image_description_to_generate,
             )
         elif isinstance(output_type, TextStreamingResponse):
             total_text = ""
@@ -566,7 +587,10 @@ class OmniModel:
                 user_input=output_type.image_description_to_generate,
                 communication_history=communication_history,
             )
-            final_response = OmniModelOutput(image_url=image_response.image_url)
+            final_response = OmniModelOutput(
+                image_url=image_response.image_url,
+                image_description=output_type.image_description_to_generate,
+            )
         elif isinstance(output_type, AudioResponse):
             if not self._can_use_model("audio_generation"):
                 raise ValueError(
@@ -577,7 +601,10 @@ class OmniModel:
                 user_input=output_type.audio_description_to_generate,
                 communication_history=communication_history,
             )
-            final_response = OmniModelOutput(audio_bytes=audio_response.audio_bytes)
+            final_response = OmniModelOutput(
+                audio_bytes=audio_response.audio_bytes,
+                audio_description=output_type.audio_description_to_generate,
+            )
         elif isinstance(output_type, TextWithImageStreamingResponse):
             if not self._can_use_model("image_generation"):
                 raise ValueError(
@@ -612,6 +639,7 @@ class OmniModel:
             final_response = OmniModelOutput(
                 total_text=total_text,
                 image_url=image_response.image_url,
+                image_description=output_type.image_description_to_generate,
             )
         elif isinstance(output_type, TextStreamingResponse):
             total_text = ""
