@@ -81,6 +81,10 @@ class OmniModelOutput(BaseModel):
         arbitrary_types_allowed=True,
     )
 
+    is_final_response: bool = Field(
+        default=True,
+        description="Indicates if the response is the final response.",
+    )
     total_text: Optional[str] = Field(
         default=None,
         description="Text response from the model.",
@@ -532,6 +536,7 @@ class OmniModel:
             ):
                 total_text += chunk.text_chunk
                 yield OmniModelOutput(
+                    is_final_response=False,
                     total_text=total_text,
                     text_new_chunk=chunk.text_chunk,
                 )
@@ -632,6 +637,7 @@ class OmniModel:
                 if chunk.text_chunk:
                     total_text += chunk.text_chunk
                     yield OmniModelOutput(
+                        is_final_response=False,
                         total_text=total_text,
                         text_new_chunk=chunk.text_chunk,
                     )
@@ -650,6 +656,7 @@ class OmniModel:
             ):
                 total_text += chunk.text_chunk
                 yield OmniModelOutput(
+                    is_final_response=False,
                     total_text=total_text,
                     text_new_chunk=chunk.text_chunk,
                 )
