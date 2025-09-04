@@ -175,7 +175,9 @@ class ModelsToolkit:
         total_price = 0.0
 
         # Text model pricing (input + estimated output)
-        if (input_text is not None or enable_text_output) and self.can_use_model("text"):
+        if (input_text is not None or enable_text_output) and self.can_use_model(
+            "text"
+        ):
             estimated_output_text = input_text if enable_text_output else None
             total_price += self.text_model.get_price(
                 input_text=input_text, output_text=estimated_output_text

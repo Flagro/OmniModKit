@@ -33,7 +33,9 @@ class DefaultTextChunk(BaseModel):
 class TextModel(BaseToolkitModel[DefaultText, DefaultTextChunk]):
     model_name = "text"
     default_pydantic_model: Type[DefaultText] = DefaultText
-    default_streamable_pydantic_model: Optional[Type[DefaultTextChunk]] = DefaultTextChunk
+    default_streamable_pydantic_model: Optional[Type[DefaultTextChunk]] = (
+        DefaultTextChunk
+    )
 
     def get_default_system_prompt(self) -> str:
         return "Please provide the necessary information."

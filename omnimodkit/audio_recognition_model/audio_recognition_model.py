@@ -16,7 +16,9 @@ class DefaultAudioInformation(BaseModel):
         return self.audio_description
 
 
-class AudioRecognitionModel(BaseToolkitModel[DefaultAudioInformation, DefaultAudioInformation]):
+class AudioRecognitionModel(
+    BaseToolkitModel[DefaultAudioInformation, DefaultAudioInformation]
+):
     model_name = "audio_recognition"
     default_pydantic_model: Type[DefaultAudioInformation] = DefaultAudioInformation
 
