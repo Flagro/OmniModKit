@@ -157,13 +157,17 @@ class TextModel(BaseToolkitModel[DefaultText, DefaultTextChunk]):
 
     def ask_yes_no_question(self, question: str) -> bool:
         response: YesNoResponse = self.run(
-            self.compose_message_openai(question), YesNoResponse
+            user_input=question,
+            system_prompt=self.get_default_system_prompt(),
+            pydantic_model=YesNoResponse,
         )
         return response.answer_is_yes
 
     async def async_ask_yes_no_question(self, question: str) -> bool:
         response: YesNoResponse = await self.arun(
-            self.compose_message_openai(question), YesNoResponse
+            user_input=question,
+            system_prompt=self.get_default_system_prompt(),
+            pydantic_model=YesNoResponse,
         )
         return response.answer_is_yes
 
