@@ -36,6 +36,7 @@ class AudioGenerationModel(BaseToolkitModel[DefaultAudio, DefaultAudio]):
         pydantic_model: Type[BaseModel],
         communication_history: List[OpenAIMessage],
         user_input: str,
+        voice: Optional[str] = None,
     ) -> BaseModel:
         if self.moderation_needed and not self.moderate_text(user_input):
             raise ModerationError(
@@ -49,7 +50,7 @@ class AudioGenerationModel(BaseToolkitModel[DefaultAudio, DefaultAudio]):
         client = OpenAI(api_key=self.openai_api_key)
         bytes_response = client.audio.speech.create(
             model=self.get_model().name,
-            voice=self.get_model_config().voice,
+            voice=voice or self.get_model_config().voice,
             input=user_input,
             response_format="opus",
         )
